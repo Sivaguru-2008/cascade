@@ -109,7 +109,8 @@ class StreamingPSSA:
         self.idx: dict[str, int] = {}
         self.counts = np.zeros((len(self.windows), 0, 0), dtype=np.int64)
         self.inc = np.zeros((0, horizon), dtype=np.float64)
-        self.max_day = 0
+        self.max_day = 0  # last day with an incident start (incidence horizon)
+        self.last_day = 0  # last event day seen (simulated "now")
         self.n_events = 0
         self.n_incident = 0
         for c in classes:
@@ -139,6 +140,8 @@ class StreamingPSSA:
     def process(self, st: PState, cls: str, day: int) -> Update:
         """Update patient state and counts for one dispense. Mutates st."""
         self.n_events += 1
+        if day > self.last_day:
+            self.last_day = day
         fields: dict[str, str] = {}
         if st.first_seen is None:
             st.first_seen = day
@@ -203,4 +206,4 @@ class StreamingPSSA:
         bh = np.zeros_like(sig)
         if tested.any():
             bh[tested] = benjamini_hochberg(stats[DISPLAY_WINDOW].p_value[tested], q)
-        return Snapshot(list(self.classes), self.windows, stats, sig, sig & bh, tested, self.max_day)
+        return Snapshot(list(self.classes), self.windows, stats, sig, sig & bh, tested, max(self.max_day, self.last_day))

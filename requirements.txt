@@ -7,6 +7,7 @@ scipy>=1.10
 scikit-learn>=1.2
 xgboost>=1.7        # optional: CASCADE_ML=hgb falls back to scikit-learn
 redis>=4.5
+hiredis>=2.0        # C reply parser for redis-py (~4x faster pipelines); has s390x wheels
 pg8000>=1.29
 cryptography>=38
 jinja2>=3.1
