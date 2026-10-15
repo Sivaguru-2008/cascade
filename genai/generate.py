@@ -260,7 +260,8 @@ async def generate_draft(inp: DraftInput, backend: str | None = None, settings: 
 def store_draft(db: Database, cipher: Cipher, d: DraftResult) -> None:
     db.execute(
         "INSERT INTO drafts (alert_id, note_text, report_json, generator, validator_pass, reject_reasons, gen_ms, "
-        "created_ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT (alert_id) DO UPDATE SET note_text = excluded.note_text, "
+        "created_ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?) "
+        "ON CONFLICT (alert_id) DO UPDATE SET note_text = excluded.note_text, "
         "report_json = excluded.report_json, generator = excluded.generator, validator_pass = excluded.validator_pass, "
         "reject_reasons = excluded.reject_reasons, gen_ms = excluded.gen_ms, created_ts = excluded.created_ts",
         (d.alert_id, cipher.encrypt_text(d.note_text, aad=d.alert_id),

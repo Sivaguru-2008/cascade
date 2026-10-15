@@ -41,3 +41,10 @@ One line each: date-time (IST), decision, reason.
 - 2026-10-15 10:50, The transformers backend decodes greedily (do_sample=False, equivalent to temperature 0, within the ≤0.2 cap), reason: deterministic and reproducible.
 - 2026-10-15 10:50, The validator is stricter than 7.4: it also rejects notes missing either drug, the day gap, the reaction, the evidence source, the word "possible" or the closing review request, and it bans word forms (stopping, discontinued, diagnosis, definite), reason: 7.2 requires those elements.
 - 2026-10-15 10:50, Ratios in the GenAI input are rounded to 1 decimal and an upper CI at the 999 cap becomes null ("lower bound x"), reason: the note may only use numbers present in the input, and "999" is a cap, not an estimate.
+- 2026-10-15 11:05, Missing or unknown API key → 401; valid key on a route its role may not use → 403, reason: standard HTTP semantics; every cross-role and cross-pharmacy access is a 403, as section 8.5 requires.
+- 2026-10-15 11:05, Small-cell rule applied literally: every regulator-visible count below 5, including 0, is shown as "<5", reason: section 8.5 says "any count below 5".
+- 2026-10-15 11:05, API responses and SSE never include patient tokens; the live feed sends only event id, time, pharmacy, drug and class, at most 20 events/s per client, reason: field minimisation.
+- 2026-10-15 11:05, SSE is read with fetch() + a streaming parser (not EventSource), reason: EventSource cannot send the X-API-Key header, and keys must not appear in URLs or logs.
+- 2026-10-15 11:05, TLS covers the API only (self-signed cert from run_all.sh); Redis and Postgres run on a private container network with no published ports, reason: "TLS on internal links" is on the cut list (section 14); not exposing them is the mitigation.
+- 2026-10-15 11:05, evidence.sh writes docs/screenshots/evidence.txt only on s390x and evidence_<arch>.txt elsewhere, reason: a dev-machine run must never pass as LinuxONE evidence.
+- 2026-10-15 11:10, ruff rule B008 ignored, reason: FastAPI's Depends()/Query() defaults are the framework's documented idiom.

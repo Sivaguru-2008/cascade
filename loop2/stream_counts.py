@@ -206,4 +206,5 @@ class StreamingPSSA:
         bh = np.zeros_like(sig)
         if tested.any():
             bh[tested] = benjamini_hochberg(stats[DISPLAY_WINDOW].p_value[tested], q)
-        return Snapshot(list(self.classes), self.windows, stats, sig, sig & bh, tested, max(self.max_day, self.last_day))
+        sim_day = max(self.max_day, self.last_day)
+        return Snapshot(list(self.classes), self.windows, stats, sig, sig & bh, tested, sim_day)

@@ -234,7 +234,8 @@ def main() -> None:
     args = ap.parse_args()
     if args.encrypted_sample:
         db = Database.connect()
-        row = db.fetchone("SELECT alert_id, pharmacy_id, score, status, enc_blob FROM alerts ORDER BY created_ts LIMIT 1")
+        row = db.fetchone("SELECT alert_id, pharmacy_id, score, status, enc_blob FROM alerts "
+                          "ORDER BY created_ts LIMIT 1")
         if row is None:
             print("no alerts stored yet")
             return

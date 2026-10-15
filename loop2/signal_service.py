@@ -93,7 +93,8 @@ class SignalService:
     def save_incidence(self) -> None:
         self.inc_path.parent.mkdir(parents=True, exist_ok=True)
         tmp = self.inc_path.with_suffix(".tmp.npz")
-        np.savez_compressed(tmp, classes=np.array(self.engine.classes), inc=self.engine.inc[:, :self.engine.max_day + 1])
+        np.savez_compressed(tmp, classes=np.array(self.engine.classes),
+                            inc=self.engine.inc[:, :self.engine.max_day + 1])
         os.replace(tmp, self.inc_path)
         self.last_snapshot = time.monotonic()
 
@@ -183,7 +184,8 @@ class SignalService:
         await self.bus.hset_many(asr_writes)
         self.db.executemany(
             "INSERT INTO signals_latest (a_l4, b_l4, win, sim_day, n_ab, n_ba, nsr, asr, lo, hi, p_value, is_signal, "
-            "is_signal_bh, status, first_signal_day, updated_ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            "is_signal_bh, status, first_signal_day, updated_ts) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
             "ON CONFLICT (a_l4, b_l4, win) DO UPDATE SET sim_day = excluded.sim_day, n_ab = excluded.n_ab, "
             "n_ba = excluded.n_ba, nsr = excluded.nsr, asr = excluded.asr, lo = excluded.lo, hi = excluded.hi, "
             "p_value = excluded.p_value, is_signal = excluded.is_signal, is_signal_bh = excluded.is_signal_bh, "
