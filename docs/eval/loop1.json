@@ -1,0 +1,285 @@
+{
+  "test_period": "2025-07-01..2025-12-31",
+  "test_rows": 20072,
+  "test_pos": 269,
+  "variants": {
+    "full": {
+      "backend": "xgboost",
+      "weights": {
+        "m1": 0.6,
+        "asr": 0.05,
+        "known": 0.35
+      },
+      "blend": {
+        "threshold": 0.394729,
+        "precision": 0.7708,
+        "recall": 1.0,
+        "f1": 0.8706,
+        "pr_auc": 0.9617,
+        "confusion": {
+          "tp": 269,
+          "fp": 80,
+          "fn": 0,
+          "tn": 19723
+        }
+      },
+      "m1": {
+        "threshold": 0.007793,
+        "precision": 0.7865,
+        "recall": 1.0,
+        "f1": 0.8805,
+        "pr_auc": 0.9533,
+        "confusion": {
+          "tp": 269,
+          "fp": 73,
+          "fn": 0,
+          "tn": 19730
+        }
+      },
+      "m2": {
+        "threshold": 0.375174,
+        "precision": 0.7843,
+        "recall": 1.0,
+        "f1": 0.8791,
+        "pr_auc": 0.9156,
+        "confusion": {
+          "tp": 269,
+          "fp": 74,
+          "fn": 0,
+          "tn": 19729
+        }
+      },
+      "event_level": {
+        "events_with_candidates": 12234,
+        "alerts": 347,
+        "true_alerts": 269,
+        "false_alerts": 78,
+        "missed_cascade_events": 0,
+        "precision": 0.7752,
+        "recall": 1.0
+      },
+      "blend_with_hidden_labels": {
+        "threshold": 0.394729,
+        "precision": 0.7708,
+        "recall": 0.6708,
+        "f1": 0.7173,
+        "pr_auc": 0.887,
+        "confusion": {
+          "tp": 269,
+          "fp": 80,
+          "fn": 132,
+          "tn": 19591
+        }
+      },
+      "per_pair_recall": {
+        "K1": {
+          "positives": 27,
+          "recall": 1.0
+        },
+        "K2": {
+          "positives": 37,
+          "recall": 1.0
+        },
+        "K3": {
+          "positives": 26,
+          "recall": 1.0
+        },
+        "K4": {
+          "positives": 34,
+          "recall": 1.0
+        },
+        "K5": {
+          "positives": 20,
+          "recall": 1.0
+        },
+        "K6": {
+          "positives": 38,
+          "recall": 1.0
+        },
+        "K7": {
+          "positives": 36,
+          "recall": 1.0
+        },
+        "K8": {
+          "positives": 28,
+          "recall": 1.0
+        },
+        "K9": {
+          "positives": 23,
+          "recall": 1.0
+        }
+      },
+      "coincidental_known_pair": {
+        "rows": 109,
+        "alerted": 80,
+        "false_alert_rate": 0.7339
+      },
+      "label0_false_alert_rate": 0.0041,
+      "hidden_H1_rows_alerted": {
+        "rows": 132,
+        "alerted": 0,
+        "note": "H1 labels were never used for training; evaluation only"
+      }
+    },
+    "no_known": {
+      "backend": "xgboost",
+      "weights": {
+        "m1": 0.8,
+        "asr": 0.2,
+        "known": 0.0
+      },
+      "blend": {
+        "threshold": 0.526419,
+        "precision": 0.5583,
+        "recall": 0.9963,
+        "f1": 0.7156,
+        "pr_auc": 0.94,
+        "confusion": {
+          "tp": 268,
+          "fp": 212,
+          "fn": 1,
+          "tn": 19591
+        }
+      },
+      "m1": {
+        "threshold": 0.506044,
+        "precision": 0.5539,
+        "recall": 0.9926,
+        "f1": 0.7111,
+        "pr_auc": 0.9472,
+        "confusion": {
+          "tp": 267,
+          "fp": 215,
+          "fn": 2,
+          "tn": 19588
+        }
+      },
+      "m2": {
+        "threshold": 0.96488,
+        "precision": 0.6686,
+        "recall": 0.8699,
+        "f1": 0.7561,
+        "pr_auc": 0.6524,
+        "confusion": {
+          "tp": 234,
+          "fp": 116,
+          "fn": 35,
+          "tn": 19687
+        }
+      },
+      "event_level": {
+        "events_with_candidates": 12234,
+        "alerts": 476,
+        "true_alerts": 268,
+        "false_alerts": 208,
+        "missed_cascade_events": 1,
+        "precision": 0.563,
+        "recall": 0.9963
+      },
+      "blend_with_hidden_labels": {
+        "threshold": 0.526419,
+        "precision": 0.8292,
+        "recall": 0.9925,
+        "f1": 0.9035,
+        "pr_auc": 0.9376,
+        "confusion": {
+          "tp": 398,
+          "fp": 82,
+          "fn": 3,
+          "tn": 19589
+        }
+      },
+      "coincidental_known_pair": {
+        "rows": 109,
+        "alerted": 56,
+        "false_alert_rate": 0.5138
+      },
+      "label0_false_alert_rate": 0.0042,
+      "hidden_H1_rows_alerted": {
+        "rows": 132,
+        "alerted": 130,
+        "note": "H1 labels were never used for training; evaluation only"
+      }
+    },
+    "no_asr": {
+      "backend": "xgboost",
+      "weights": {
+        "m1": 0.7,
+        "asr": 0.0,
+        "known": 0.3
+      },
+      "blend": {
+        "threshold": 0.302393,
+        "precision": 0.7775,
+        "recall": 1.0,
+        "f1": 0.8748,
+        "pr_auc": 0.9482,
+        "confusion": {
+          "tp": 269,
+          "fp": 77,
+          "fn": 0,
+          "tn": 19726
+        }
+      },
+      "m1": {
+        "threshold": 0.003419,
+        "precision": 0.7775,
+        "recall": 1.0,
+        "f1": 0.8748,
+        "pr_auc": 0.9482,
+        "confusion": {
+          "tp": 269,
+          "fp": 77,
+          "fn": 0,
+          "tn": 19726
+        }
+      },
+      "m2": {
+        "threshold": 0.375203,
+        "precision": 0.7843,
+        "recall": 1.0,
+        "f1": 0.8791,
+        "pr_auc": 0.9169,
+        "confusion": {
+          "tp": 269,
+          "fp": 74,
+          "fn": 0,
+          "tn": 19729
+        }
+      },
+      "event_level": {
+        "events_with_candidates": 12234,
+        "alerts": 344,
+        "true_alerts": 269,
+        "false_alerts": 75,
+        "missed_cascade_events": 0,
+        "precision": 0.782,
+        "recall": 1.0
+      },
+      "blend_with_hidden_labels": {
+        "threshold": 0.302393,
+        "precision": 0.7775,
+        "recall": 0.6708,
+        "f1": 0.7202,
+        "pr_auc": 0.773,
+        "confusion": {
+          "tp": 269,
+          "fp": 77,
+          "fn": 132,
+          "tn": 19594
+        }
+      },
+      "coincidental_known_pair": {
+        "rows": 109,
+        "alerted": 77,
+        "false_alert_rate": 0.7064
+      },
+      "label0_false_alert_rate": 0.0039,
+      "hidden_H1_rows_alerted": {
+        "rows": 132,
+        "alerted": 0,
+        "note": "H1 labels were never used for training; evaluation only"
+      }
+    }
+  }
+}

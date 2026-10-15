@@ -1,0 +1,119 @@
+{
+  "source": "https://api.fda.gov/drug/event.json",
+  "fetched": "2026-10-15",
+  "note": "spontaneous-report counts; not incidence, not causation",
+  "pairs": [
+    {
+      "pair_id": "K1",
+      "index_atc_l4": "C08CA",
+      "marker_atc_l4": "C03CA",
+      "index_drug": "amlodipine",
+      "reaction": "Oedema peripheral",
+      "count": 8312,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"amlodipine\"+AND+patient.reaction.reactionmeddrapt.exact:\"Oedema%20peripheral\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K2",
+      "index_atc_l4": "C09AA",
+      "marker_atc_l4": "R05DA",
+      "index_drug": "enalapril|ramipril",
+      "reaction": "Cough",
+      "count": 4705,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"enalapril\"+AND+patient.reaction.reactionmeddrapt.exact:\"Cough\"&limit=1",
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"ramipril\"+AND+patient.reaction.reactionmeddrapt.exact:\"Cough\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K3",
+      "index_atc_l4": "A03FA",
+      "marker_atc_l4": "N04BA",
+      "index_drug": "metoclopramide",
+      "reaction": "Parkinsonism",
+      "count": 614,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"metoclopramide\"+AND+patient.reaction.reactionmeddrapt.exact:\"Parkinsonism\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K4",
+      "index_atc_l4": "N05AD",
+      "marker_atc_l4": "N04AA",
+      "index_drug": "haloperidol",
+      "reaction": "Extrapyramidal disorder",
+      "count": 1381,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"haloperidol\"+AND+patient.reaction.reactionmeddrapt.exact:\"Extrapyramidal%20disorder\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K5",
+      "index_atc_l4": "N06DA",
+      "marker_atc_l4": "G04BD",
+      "index_drug": "donepezil",
+      "reaction": "Urinary incontinence",
+      "count": 381,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"donepezil\"+AND+patient.reaction.reactionmeddrapt.exact:\"Urinary%20incontinence\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K6",
+      "index_atc_l4": "G04CA",
+      "marker_atc_l4": "N07CA",
+      "index_drug": "tamsulosin",
+      "reaction": "Dizziness",
+      "count": 1307,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"tamsulosin\"+AND+patient.reaction.reactionmeddrapt.exact:\"Dizziness\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K7",
+      "index_atc_l4": "N03AX",
+      "marker_atc_l4": "C03CA",
+      "index_drug": "pregabalin|gabapentin",
+      "reaction": "Oedema peripheral",
+      "count": 9493,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"pregabalin\"+AND+patient.reaction.reactionmeddrapt.exact:\"Oedema%20peripheral\"&limit=1",
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"gabapentin\"+AND+patient.reaction.reactionmeddrapt.exact:\"Oedema%20peripheral\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K8",
+      "index_atc_l4": "C03AA",
+      "marker_atc_l4": "M04AA",
+      "index_drug": "hydrochlorothiazide",
+      "reaction": "Gout",
+      "count": 623,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"hydrochlorothiazide\"+AND+patient.reaction.reactionmeddrapt.exact:\"Gout\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K9",
+      "index_atc_l4": "M01AB",
+      "marker_atc_l4": "C08CA",
+      "index_drug": "diclofenac",
+      "reaction": "Blood pressure increased",
+      "count": 1999,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"diclofenac\"+AND+patient.reaction.reactionmeddrapt.exact:\"Blood%20pressure%20increased\"&limit=1"
+      ]
+    },
+    {
+      "pair_id": "K9",
+      "index_atc_l4": "M01AB",
+      "marker_atc_l4": "C09CA",
+      "index_drug": "diclofenac",
+      "reaction": "Blood pressure increased",
+      "count": 1999,
+      "query_urls": [
+        "https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:\"diclofenac\"+AND+patient.reaction.reactionmeddrapt.exact:\"Blood%20pressure%20increased\"&limit=1"
+      ]
+    }
+  ]
+}

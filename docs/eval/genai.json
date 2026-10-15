@@ -1,0 +1,42 @@
+{
+  "backend_requested": "template",
+  "arch": "x86_64",
+  "n_drafts": 50,
+  "validator_pass_rate": 1.0,
+  "template_fallback_rate": 0.0,
+  "generator_mix": {
+    "template": 50
+  },
+  "gen_ms_mean": 5.08,
+  "gen_ms_p95": 5.31,
+  "fallback_reasons_sample": [],
+  "validator_failures": [],
+  "llm_evaluated": false,
+  "examples": [
+    {
+      "alert_id": "EV-001",
+      "index_drug": "Diclofenac",
+      "marker_drug": "Amlodipine",
+      "generator": "template",
+      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (20-24, male). Amlodipine 5 mg was started 1 day after Diclofenac 100 mg, by a different prescriber. This is a possible prescribing cascade. Suspected reaction: possible raised BP. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 1.7 (CI 1.2–2.5). Thank you for considering this. Could you please review whether Amlodipine 5 mg is treating a side-effect of Diclofenac 100 mg?",
+      "reaction_description": "Possible raised BP: Amlodipine 5 mg was started 1 day after Diclofenac 100 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 1.7 (CI 1.2–2.5). Please review."
+    },
+    {
+      "alert_id": "EV-002",
+      "index_drug": "Amlodipine",
+      "marker_drug": "Furosemide",
+      "generator": "template",
+      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (25-29, male). Furosemide 40 mg was started 28 days after Amlodipine 10 mg, by a different prescriber. This is a possible prescribing cascade. Suspected reaction: possible ankle oedema. Evidence: listed in ThinkCascades (source not yet verified); population signal aSR 24.6 (CI 9.3–92.1). Thank you for considering this. Could you please review whether Furosemide 40 mg is treating a side-effect of Amlodipine 10 mg?",
+      "reaction_description": "Possible ankle oedema: Furosemide 40 mg was started 28 days after Amlodipine 10 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in ThinkCascades (source not yet verified); population signal aSR 24.6 (CI 9.3–92.1). Please review."
+    },
+    {
+      "alert_id": "EV-003",
+      "index_drug": "Hydrochlorothiazide",
+      "marker_drug": "Allopurinol",
+      "generator": "template",
+      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (45-49, female). Allopurinol 300 mg was started 57 days after Hydrochlorothiazide 12.5 mg, by a different prescriber. This is a possible prescribing cascade. Suspected reaction: possible gout / hyperuricaemia. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 12.8 (CI 6–32.9). Thank you for considering this. Could you please review whether Allopurinol 300 mg is treating a side-effect of Hydrochlorothiazide 12.5 mg?",
+      "reaction_description": "Possible gout / hyperuricaemia: Allopurinol 300 mg was started 57 days after Hydrochlorothiazide 12.5 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 12.8 (CI 6–32.9). Please review."
+    }
+  ],
+  "human_review_csv": "docs/eval/genai_human_review.csv"
+}
