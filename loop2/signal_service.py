@@ -62,6 +62,7 @@ class SignalService:
         self._written_latest: dict[tuple[str, str, int], tuple[Any, ...]] = {}
         self._history_day: dict[tuple[str, str, int], int] = {}
         self._signal: dict[tuple[str, str], bool] = {}
+        self._signal_bh: dict[tuple[str, str], bool] = {}
         self._first_signal: dict[tuple[str, str], int] = {}
         self.n_recomputes = 0
         self.last_snapshot_obj: Snapshot | None = None
@@ -152,8 +153,11 @@ class SignalService:
             if sig and (a, b) not in self._first_signal:
                 self._first_signal[(a, b)] = sim_day
                 self.db.set_state(f"first_signal:{a}>{b}", str(sim_day), now)
-            if sig and not self._signal.get((a, b), False):
-                new_signals.append({"a": a, "b": b, "status": status, "asr": _f(s90.asr[i, j]),
+            became = sig and not self._signal.get((a, b), False)
+            became_bh = sig_bh and not self._signal_bh.get((a, b), False)
+            self._signal_bh[(a, b)] = sig_bh
+            if became or became_bh:
+                new_signals.append({"a": a, "b": b, "status": status, "bh": sig_bh, "asr": _f(s90.asr[i, j]),
                                     "lo": _f(s90.lo[i, j]), "hi": _f(s90.hi[i, j])})
             flag_changed = self._signal.get((a, b), False) != sig
             self._signal[(a, b)] = sig

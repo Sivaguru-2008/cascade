@@ -1,1 +1,103 @@
-<!doctype html><title>CASCADE</title><p>Dashboard is built in phase 8.</p>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CASCADE dashboard</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <header class="strip" aria-label="System status">
+    <div class="brand"><strong>CASCADE</strong><span class="sub">prescribing-cascade detection · synthetic data</span></div>
+    <dl class="kpis">
+      <div><dt>Events/s</dt><dd id="k-eps">—</dd></div>
+      <div><dt>Scoring p95</dt><dd id="k-p95">—</dd></div>
+      <div><dt>Architecture</dt><dd id="k-arch">—</dd></div>
+      <div><dt>Encryption</dt><dd id="k-enc">—</dd></div>
+      <div><dt>Validator pass</dt><dd id="k-val">—</dd></div>
+      <div><dt>Simulated date</dt><dd id="k-sim">—</dd></div>
+    </dl>
+  </header>
+
+  <form class="keys" id="keys" autocomplete="off" aria-label="API keys (kept in memory only)">
+    <label>Pharmacist key <input id="key-ph" type="password" spellcheck="false"></label>
+    <label>Regulator key <input id="key-reg" type="password" spellcheck="false"></label>
+    <button type="submit" class="primary">Connect</button>
+    <fieldset class="roles" aria-label="View">
+      <legend class="sr-only">View</legend>
+      <label><input type="radio" name="view" value="both" checked> Both</label>
+      <label><input type="radio" name="view" value="pharmacist"> Pharmacist</label>
+      <label><input type="radio" name="view" value="regulator"> Regulator</label>
+    </fieldset>
+    <button type="button" id="demo-btn" hidden>Run demo script</button>
+    <span id="demo-status" class="muted" aria-live="polite"></span>
+  </form>
+
+  <main class="grid" id="grid">
+    <section class="panel" id="panel-ph" aria-labelledby="ph-title">
+      <div class="panel-head"><h2 id="ph-title">Pharmacy counter</h2><span class="muted" id="ph-who">not connected</span></div>
+      <div class="ph-body">
+        <div class="feed-wrap">
+          <h3>Live dispensing</h3>
+          <ul class="feed" id="feed" aria-label="Recent dispensing events"></ul>
+        </div>
+        <div class="alerts-wrap">
+          <h3>Alerts <span class="muted" id="alert-count"></span></h3>
+          <div id="alerts" class="alerts" aria-live="polite"><p class="empty">No alerts yet.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-reg" aria-labelledby="reg-title">
+      <div class="panel-head">
+        <h2 id="reg-title">Population signals</h2>
+        <label class="muted">Window
+          <select id="win"><option>30</option><option selected>90</option><option>180</option></select> days</label>
+        <label class="muted"><input type="checkbox" id="bh"> BH-corrected</label>
+      </div>
+      <p class="muted small" id="sig-summary">not connected</p>
+      <div class="table-wrap">
+        <table class="signals" aria-label="Signals ranked by lower confidence bound">
+          <thead><tr><th scope="col">Pair (A → B)</th><th scope="col">aSR [95% CI]</th><th scope="col">n</th>
+            <th scope="col">Since</th><th scope="col">Status</th></tr></thead>
+          <tbody id="sig-rows"></tbody>
+        </table>
+      </div>
+      <div class="chart-wrap" id="chart-wrap" hidden>
+        <div class="chart-head"><strong id="chart-title"></strong>
+          <button type="button" class="link" id="chart-close" aria-label="Close chart">Close</button></div>
+        <canvas id="chart" height="150" role="img" aria-label="aSR over simulated time"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" hidden>
+    <div class="drawer-inner">
+      <div class="drawer-head">
+        <h2 id="dr-title">Draft</h2>
+        <button type="button" class="link" id="dr-close" aria-label="Close draft">Close</button>
+      </div>
+      <p class="muted small" id="dr-meta"></p>
+      <h3>Note to prescriber</h3>
+      <p id="dr-note" class="note"></p>
+      <h3>PvPI Suspected ADR report (draft)</h3>
+      <p class="small amber-key"><span class="swatch"></span> To be completed by reporter</p>
+      <div id="dr-form" class="pvpi"></div>
+      <div class="drawer-actions">
+        <button type="button" class="primary" id="dr-approve">Approve &amp; export</button>
+        <button type="button" id="dr-dismiss">Dismiss</button>
+      </div>
+      <div id="dismiss-box" hidden>
+        <label for="dismiss-reason">Reason (stored as feedback)</label>
+        <textarea id="dismiss-reason" rows="2"></textarea>
+        <button type="button" id="dismiss-confirm">Confirm dismiss</button>
+      </div>
+      <p class="small muted">Drafts are suggestions for professional review. Nothing is sent automatically.</p>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

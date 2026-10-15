@@ -118,8 +118,6 @@ class Scorer:
                               n_candidates=len(res.candidates), threshold=self.threshold)
             if res.incident and res.candidates:
                 feats = [feature_row(self.cat, ev, res, c, lookup) for c in res.candidates]
-                for f in feats:
-                    f["_age_band"] = ev.age_band
                 scores, _, _, X = self.model.score(feats)
                 k = int(np.argmax(scores))
                 d.scored, d.score = True, round(float(scores[k]), 6)
@@ -137,26 +135,9 @@ class Scorer:
 
     async def _alert(self, e: DispenseEvent, ev: Ev, res: StepResult, f: Mapping[str, Any], x: np.ndarray,
                      score: float) -> Alert:
-        a = self.cat.by_id.get(f["_A_drug_id"])
-        b = self.cat.by_id.get(ev.drug_id)
-        known = self.cat.known_by_id.get(f.get("_known_pair_id") or "")
-        n = int(f["_aSR_n"])
         seq = await self.bus.incr("seq:alert")
-        alert = Alert(
-            alert_id=f"AL-{seq:06d}", event_id=ev.event_id, ts=e.ts, pharmacy_id=ev.pharmacy_id,
-            patient_token=ev.patient, index_drug=a.display_name if a else f["_A_drug_id"],
-            marker_drug=b.display_name if b else ev.drug_id, index_atc_l4=f["_A_atc_l4"], marker_atc_l4=ev.atc_l4,
-            days_between=int(f["days_since_A_start"]), score=round(score, 4),
-            reasons=self.model.reasons(f, x, ev.drug_id),
-            pair_aSR=round(float(f["pair_aSR_live"]), 3) if n else None,
-            pair_aSR_ci=[round(float(f["pair_aSR_lower_ci"]), 3), _r(f.get("_aSR_hi"))] if n else [None, None],
-            known_source=known_source_label(self.cat, known.pair_id if known else None),
-            index_drug_id=f["_A_drug_id"], marker_drug_id=ev.drug_id, index_dose_mg=float(f["_A_dose"]),
-            marker_dose_mg=ev.dose_mg, suspected_reaction=known.reaction if known else UNKNOWN_REACTION,
-            age_band=ev.age_band, sex=ev.sex, n_active_drugs=res.n_active_drugs,
-            different_prescriber=bool(f["different_prescriber"]),
-            pair_status=classify(f["_A_atc_l4"], ev.atc_l4, self.cat.known_class_pairs, self.faers),  # type: ignore[arg-type]
-        )
+        alert = make_alert(self.cat, self.faers, f"AL-{seq:06d}", ev.event_id, e.ts, ev.pharmacy_id, ev.patient,
+                           ev.drug_id, ev.atc_l4, f, score, self.model.reasons(f, x, ev.drug_id))
         payload = alert.model_dump(mode="json")
         ts = now_iso()
         self.db.execute(
@@ -189,6 +170,30 @@ class Scorer:
                 await self.bus.ack(STREAM_DISPENSE, "scorer", [i for i, _ in msgs])
             elif self._latency:
                 self.flush_latency()
+
+
+def make_alert(cat: Catalogue, faers: set[tuple[str, str]], alert_id: str, event_id: str, ts: datetime,
+               pharmacy_id: str, patient: str, b_drug_id: str, b_l4: str, f: Mapping[str, Any], score: float,
+               reasons: list[str]) -> Alert:
+    """The Alert payload (section 5.5) from a scored feature row; shared by the live scorer and eval."""
+    a = cat.by_id.get(f["_A_drug_id"])
+    b = cat.by_id.get(b_drug_id)
+    known = cat.known_by_id.get(f.get("_known_pair_id") or "")
+    n = int(f["_aSR_n"])
+    return Alert(
+        alert_id=alert_id, event_id=event_id, ts=ts, pharmacy_id=pharmacy_id, patient_token=patient,
+        index_drug=a.display_name if a else f["_A_drug_id"], marker_drug=b.display_name if b else b_drug_id,
+        index_atc_l4=f["_A_atc_l4"], marker_atc_l4=b_l4, days_between=int(f["days_since_A_start"]),
+        score=round(score, 4), reasons=reasons,
+        pair_aSR=round(float(f["pair_aSR_live"]), 3) if n else None,
+        pair_aSR_ci=[round(float(f["pair_aSR_lower_ci"]), 3), _r(f.get("_aSR_hi"))] if n else [None, None],
+        known_source=known_source_label(cat, known.pair_id if known else None),
+        index_drug_id=f["_A_drug_id"], marker_drug_id=b_drug_id, index_dose_mg=float(f["_A_dose"]),
+        marker_dose_mg=float(f["_B_dose"]), suspected_reaction=known.reaction if known else UNKNOWN_REACTION,
+        age_band=f["_age_band"], sex=f["sex"], n_active_drugs=int(f["n_active_drugs"]),
+        different_prescriber=bool(f["different_prescriber"]),
+        pair_status=classify(f["_A_atc_l4"], b_l4, cat.known_class_pairs, faers),  # type: ignore[arg-type]
+    )
 
 
 def _r(x: Any) -> float | None:

@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-10-15T12:54:07",
+  "threshold": 0.39472876417586034,
+  "events_file": "/home/vishant/cascade/data/generated/events.csv.gz",
+  "demo_pharmacy": "PH030",
+  "k1_cascade": {
+    "event_id": "37466007-27f7-4c2b-8bfc-19c56e8dc528",
+    "ts": "2025-06-19T16:28:35",
+    "pharmacy_id": "PH030",
+    "index_drug_id": "D001",
+    "marker_drug_id": "D014",
+    "pair": [
+      "C08CA",
+      "C03CA"
+    ],
+    "label": 1,
+    "offline_score": 0.9949,
+    "row_index": 1720352
+  },
+  "coincidental": {
+    "event_id": "622b5948-ecb9-4079-b75e-21bd2484ac50",
+    "ts": "2025-06-26T14:06:29",
+    "pharmacy_id": "PH030",
+    "index_drug_id": "D053",
+    "marker_drug_id": "D002",
+    "pair": [
+      "M01AB",
+      "C08CA"
+    ],
+    "label": 0,
+    "offline_score": 0.3778,
+    "row_index": 1738797
+  },
+  "coincidental_note": "label 0 on a known class pair, scored below threshold offline",
+  "h1_pair": [
+    "C09XX",
+    "A02BC"
+  ],
+  "segments": [
+    {
+      "name": "warmup",
+      "start": 0,
+      "stop": 1720344,
+      "speed": "max"
+    },
+    {
+      "name": "k1_cascade",
+      "start": 1720344,
+      "stop": 1720356,
+      "speed": "events_per_sec=1"
+    },
+    {
+      "name": "to_coincidental",
+      "start": 1720356,
+      "stop": 1738789,
+      "speed": "max"
+    },
+    {
+      "name": "coincidental",
+      "start": 1738789,
+      "stop": 1738801,
+      "speed": "events_per_sec=1"
+    },
+    {
+      "name": "novacor_fast_forward",
+      "start": 1738801,
+      "stop": 2273481,
+      "speed": "max",
+      "stop_when_signal": [
+        "C09XX",
+        "A02BC"
+      ]
+    }
+  ],
+  "note": "offline_score uses time-correct offline features; the live score can differ slightly because Loop 2 refreshes on a timer in the live system."
+}

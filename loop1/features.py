@@ -119,7 +119,7 @@ def feature_row(cat: Catalogue, ev: Ev, res: StepResult, cand: Candidate, asr: A
         "B_started_before_A_ever": int(res.b_class_first_prev is not None and res.b_class_first_prev < a.first_day),
         # metadata (not model inputs)
         "_A_drug_id": a.drug_id, "_A_atc_l4": a.atc_l4, "_A_dose": a.last_dose, "_aSR_hi": a_hi, "_aSR_n": a_n,
-        "_known_pair_id": known.pair_id if known else None,
+        "_known_pair_id": known.pair_id if known else None, "_B_dose": ev.dose_mg, "_age_band": ev.age_band,
     }
 
 

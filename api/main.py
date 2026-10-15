@@ -81,6 +81,14 @@ async def index() -> FileResponse:
     return FileResponse(STATIC / "index.html", headers={"Cache-Control": "no-cache"})
 
 
+@app.get("/pvpi/fields", include_in_schema=False)
+async def pvpi_fields() -> dict[str, Any]:
+    """Public: labels of the PvPI draft form (no data), used by the dashboard to render drafts."""
+    from genai.pdf import form_fields
+
+    return form_fields()
+
+
 @app.get("/health")
 async def health(request: Request) -> dict[str, Any]:
     ctx: Context | None = getattr(request.app.state, "ctx", None)
