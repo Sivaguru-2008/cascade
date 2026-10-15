@@ -55,6 +55,11 @@ class Bus(ABC):
         """Broadcast read (no group); last_id='$' means only new entries."""
 
     @abstractmethod
+    async def tail_many(self, cursors: dict[str, str], count: int = 200,
+                        block_ms: int = 1000) -> list[tuple[str, str, dict[str, Any]]]:
+        """Broadcast read over several streams; returns (stream, id, data). Cursors must be concrete ids."""
+
+    @abstractmethod
     async def last_id(self, stream: str) -> str: ...
 
     @abstractmethod
@@ -144,6 +149,8 @@ class MemoryBus(Bus):
         self._streams: dict[str, _MemStream] = {}
         self._hashes: dict[str, dict[str, str]] = {}
         self._kv: dict[str, str] = {}
+        self._any = asyncio.Condition()
+        self._version = 0
 
     def _s(self, stream: str) -> _MemStream:
         if stream not in self._streams:
@@ -157,6 +164,9 @@ class MemoryBus(Bus):
             s.next_seq += 1
         async with s.cond:
             s.cond.notify_all()
+        self._version += 1
+        async with self._any:
+            self._any.notify_all()
         if len(s.entries) > self.keep_tail * 4:
             await self.trim(stream)
 
@@ -197,6 +207,27 @@ class MemoryBus(Bus):
                     return []
         start = max(start, s.base())
         return [(str(seq), data) for seq, data in s.slice_from(start, count)]
+
+    async def tail_many(self, cursors: dict[str, str], count: int = 200,
+                        block_ms: int = 1000) -> list[tuple[str, str, dict[str, Any]]]:
+        def collect() -> list[tuple[str, str, dict[str, Any]]]:
+            out: list[tuple[str, str, dict[str, Any]]] = []
+            for name, cur in cursors.items():
+                s = self._s(name)
+                start = max(int(cur) + 1, s.base())
+                out += [(name, str(seq), data) for seq, data in s.slice_from(start, count)]
+            return out
+
+        got = collect()
+        if got:
+            return got
+        seen = self._version
+        async with self._any:
+            try:
+                await asyncio.wait_for(self._any.wait_for(lambda: self._version != seen), block_ms / 1000)
+            except TimeoutError:
+                return []
+        return collect()
 
     async def last_id(self, stream: str) -> str:
         return str(self._s(stream).next_seq - 1)
@@ -318,6 +349,15 @@ class RedisBus(Bus):
         for _, entries in resp or []:
             for msg_id, fields in entries:
                 out.append((msg_id, json.loads(fields["d"])))
+        return out
+
+    async def tail_many(self, cursors: dict[str, str], count: int = 200,
+                        block_ms: int = 1000) -> list[tuple[str, str, dict[str, Any]]]:
+        resp = await self._r.xread(dict(cursors), count=count, block=block_ms)
+        out: list[tuple[str, str, dict[str, Any]]] = []
+        for name, entries in resp or []:
+            for msg_id, fields in entries:
+                out.append((name, msg_id, json.loads(fields["d"])))
         return out
 
     async def last_id(self, stream: str) -> str:
