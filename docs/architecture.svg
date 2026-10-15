@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600" font-family="Inter, system-ui, sans-serif">
+  <title>CASCADE architecture</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1b2430"/>
+    </marker>
+    <style>
+      .box { fill: #ffffff; stroke: #1b2430; stroke-width: 1.4; }
+      .acc { fill: #eaf1fb; stroke: #1f5fbf; stroke-width: 1.6; }
+      .data { fill: #f5f7fa; stroke: #5d6877; stroke-width: 1.2; }
+      .t { font-size: 15px; font-weight: 600; fill: #1b2430; }
+      .s { font-size: 12px; fill: #3d4756; }
+      .l { font-size: 12px; fill: #1f5fbf; font-weight: 600; }
+      .e { stroke: #1b2430; stroke-width: 1.4; fill: none; marker-end: url(#a); }
+      .d { stroke: #1f5fbf; stroke-width: 1.6; fill: none; marker-end: url(#a); stroke-dasharray: 6 4; }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1200" height="600" fill="#ffffff"/>
+  <rect x="250" y="20" width="930" height="560" rx="10" fill="none" stroke="#1f5fbf" stroke-dasharray="4 4"/>
+  <text x="265" y="42" class="l">IBM LinuxONE VM (s390x) · Podman containers · only the API port is published</text>
+
+  <rect x="20" y="230" width="200" height="110" rx="8" class="box"/>
+  <text x="34" y="256" class="t">Pharmacy edge</text>
+  <text x="34" y="278" class="s">synthetic replay, time order</text>
+  <text x="34" y="296" class="s">HMAC-SHA256 tokenises</text>
+  <text x="34" y="312" class="s">patient + prescriber IDs</text>
+  <text x="34" y="328" class="s">(EDGE_SECRET only here)</text>
+
+  <rect x="290" y="210" width="230" height="150" rx="8" class="data"/>
+  <text x="304" y="236" class="t">Redis</text>
+  <text x="304" y="258" class="s">stream:dispense (tokens only)</text>
+  <text x="304" y="276" class="s">pstate:{token}  patient state</text>
+  <text x="304" y="294" class="s">pinc:{token}, pair:{A}:{B} counts</text>
+  <text x="304" y="312" class="s">asr:{A}:{B}  live Loop 2 statistics</text>
+  <text x="304" y="330" class="s">stream:alerts, stream:signals</text>
+  <path d="M220,285 L288,285" class="e"/>
+  <text x="224" y="276" class="s">tokens</text>
+
+  <rect x="590" y="70" width="250" height="120" rx="8" class="acc"/>
+  <text x="604" y="96" class="t">Loop 1 · real-time scorer</text>
+  <text x="604" y="118" class="s">incident check → candidate A drugs</text>
+  <text x="604" y="136" class="s">features → XGBoost + LR blend</text>
+  <text x="604" y="154" class="s">alert + 3 SHAP reasons</text>
+  <text x="604" y="172" class="s">latency logged per event</text>
+
+  <rect x="590" y="380" width="250" height="120" rx="8" class="acc"/>
+  <text x="604" y="406" class="t">Loop 2 · population signals</text>
+  <text x="604" y="428" class="s">streaming PSSA, W = 30 / 90 / 180</text>
+  <text x="604" y="446" class="s">nSR trend correction, aSR + 95% CI</text>
+  <text x="604" y="464" class="s">known / corroborated / new · BH</text>
+  <text x="604" y="482" class="s">recompute every 5,000 events or 10 s</text>
+
+  <path d="M520,250 C560,220 560,150 588,140" class="e"/>
+  <path d="M520,320 C560,350 560,420 588,430" class="e"/>
+  <path d="M590,400 C545,380 545,330 522,322" class="d"/>
+  <text x="292" y="384" class="l">live aSR → Loop 1 feature</text>
+
+  <rect x="900" y="70" width="260" height="110" rx="8" class="box"/>
+  <text x="914" y="96" class="t">GenAI</text>
+  <text x="914" y="118" class="s">prescriber note + PvPI ADR draft</text>
+  <text x="914" y="136" class="s">sees only the de-identified contract</text>
+  <text x="914" y="154" class="s">validator → template fallback</text>
+  <text x="914" y="172" class="s">human approves; nothing auto-sent</text>
+
+  <rect x="900" y="230" width="260" height="110" rx="8" class="data"/>
+  <text x="914" y="256" class="t">PostgreSQL</text>
+  <text x="914" y="278" class="s">alerts / drafts: AES-256-GCM blobs</text>
+  <text x="914" y="296" class="s">signals history, latency, audit</text>
+  <text x="914" y="314" class="s">(SQLite in the fallback mode)</text>
+
+  <path d="M840,150 C870,190 880,240 898,260" class="e"/>
+  <path d="M840,440 C880,400 880,330 898,315" class="e"/>
+  <path d="M1030,180 L1030,228" class="e"/>
+
+  <rect x="900" y="390" width="260" height="110" rx="8" class="acc"/>
+  <text x="914" y="416" class="t">API + dashboard (FastAPI, TLS)</text>
+  <text x="914" y="438" class="s">role-based API keys · SSE · audit log</text>
+  <text x="914" y="456" class="s">Pharmacist: own pharmacy alerts</text>
+  <text x="914" y="474" class="s">Regulator: aggregates, counts &lt;5 hidden</text>
+  <path d="M1030,342 L1030,388" class="e"/>
+  <path d="M1160,430 L1174,430 L1174,125 L1163,125" class="e"/>
+  <text x="1040" y="370" class="s">reads</text>
+  <text x="1082" y="215" class="s" transform="rotate(-90 1186 215)">draft request</text>
+</svg>
