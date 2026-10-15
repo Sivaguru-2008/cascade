@@ -31,8 +31,9 @@ class Runtime:
 
     async def start(self, with_edge: bool = True) -> None:
         self.db.init_schema()
-        self.scorer = build_scorer(self.bus, self.db, self.s)
-        self.signals = build_signal_service(self.bus, self.db, self.s)
+        # separate connections: the scorer, Loop 2 and API readers never wait on each other's connection lock
+        self.scorer = build_scorer(self.bus, self.db.clone(), self.s)
+        self.signals = build_signal_service(self.bus, self.db.clone(), self.s)
         await self.signals.restore()
         self.tasks += [asyncio.create_task(self.scorer.consume_forever("scorer-single")),
                        asyncio.create_task(self.signals.consume_forever("signals-single"))]

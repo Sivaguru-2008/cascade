@@ -1,0 +1,136 @@
+# CASCADE on one VM. Started by deploy/run_all.sh (podman compose / podman-compose / docker compose).
+# Only the API port is published. Redis and PostgreSQL stay on the private network.
+name: cascade
+
+x-app: &app
+  image: localhost/cascade-app:latest
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  security_opt: [no-new-privileges:true]
+  cap_drop: [ALL]
+  env_file: [../secrets/app.env]
+  environment:
+    CASCADE_MODE: services
+    CASCADE_DB: postgres
+    REDIS_URL: redis://redis:6379/0
+    DATABASE_URL: postgresql://cascade@postgres:5432/cascade
+    SCORER_URL: http://scorer:8001
+    GENAI_URL: http://genai:8003
+    CASCADE_STATE_DIR: /state
+  volumes:
+    - ../data:/app/data:ro
+    - ../loop1/model:/app/loop1/model:ro
+    - ../docs:/app/docs:ro
+  depends_on:
+    redis: {condition: service_healthy}
+    postgres: {condition: service_healthy}
+  networks: [internal]
+
+services:
+  redis:
+    image: docker.io/library/redis:7.2-alpine   # 7.2 = last BSD-3-Clause line (7.4+ is RSALv2/SSPL)
+    container_name: cascade-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", ""]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [internal]
+
+  postgres:
+    image: docker.io/library/postgres:16-alpine
+    container_name: cascade-postgres
+    restart: unless-stopped
+    env_file: [../secrets/postgres.env]
+    environment:
+      POSTGRES_USER: cascade
+      POSTGRES_DB: cascade
+    volumes: [pg-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cascade -d cascade"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    networks: [internal]
+
+  edge:
+    <<: *app
+    container_name: cascade-edge
+    env_file: [../secrets/edge.env]   # EDGE_SECRET lives only here
+    environment:
+      CASCADE_MODE: services
+      REDIS_URL: redis://redis:6379/0
+      EDGE_PORT: "8004"
+    command: ["python", "-m", "edge.pharmacy_edge", "--serve"]
+    depends_on:
+      redis: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8004/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  scorer:
+    <<: *app
+    container_name: cascade-scorer
+    command: ["uvicorn", "loop1.score_service:app", "--host", "0.0.0.0", "--port", "8001", "--log-level", "warning"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8001/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  signals:
+    <<: *app
+    container_name: cascade-signals
+    command: ["uvicorn", "loop2.signal_service:app", "--host", "0.0.0.0", "--port", "8002", "--log-level", "warning"]
+    volumes:
+      - ../data:/app/data:ro
+      - signals-state:/state
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8002/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+  genai:
+    <<: *app
+    container_name: cascade-genai
+    command: ["uvicorn", "genai.generate:app", "--host", "0.0.0.0", "--port", "8003", "--log-level", "warning"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8003/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks: [internal, public]  # the "lab" LLM backend may live outside the VM
+
+  api:
+    <<: *app
+    container_name: cascade-api
+    command: ["python", "-m", "api.main"]
+    ports: ["8443:8443"]
+    volumes:
+      - ../data:/app/data:ro
+      - ../loop1/model:/app/loop1/model:ro
+      - ../docs:/app/docs:ro
+      - ../secrets/tls:/tls:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import ssl,urllib.request;urllib.request.urlopen('https://localhost:8443/health',timeout=3,context=ssl._create_unverified_context())"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks: [internal, public]
+
+volumes:
+  redis-data: {}
+  pg-data: {}
+  signals-state: {}
+
+networks:
+  internal:
+    internal: true
+  public: {}

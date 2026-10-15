@@ -1,0 +1,9 @@
+# pip-installed inside the container. numpy, scipy, scikit-learn, cryptography, jinja2 and reportlab come
+# from Debian bookworm apt packages (PyPI has no s390x wheels for them; see docs/DECISIONS.md).
+fastapi>=0.100
+uvicorn>=0.23
+pydantic>=2.4
+redis>=4.5
+hiredis>=2.0
+pg8000>=1.29
+httpx>=0.24

@@ -130,7 +130,7 @@ class Scorer:
         await self.bus.hset_many({f"pstate:{t}": f for t, f in dirty.items() if f})
         self.n_events += len(events)
         if time.monotonic() - self._last_flush > LATENCY_FLUSH_S or len(self._latency) > 5000:
-            self.flush_latency()
+            await self.aflush_latency()
         return decisions
 
     async def _alert(self, e: DispenseEvent, ev: Ev, res: StepResult, f: Mapping[str, Any], x: np.ndarray,
@@ -140,7 +140,8 @@ class Scorer:
                            ev.drug_id, ev.atc_l4, f, score, self.model.reasons(f, x, ev.drug_id))
         payload = alert.model_dump(mode="json")
         ts = now_iso()
-        self.db.execute(
+        await asyncio.to_thread(
+            self.db.execute,
             "INSERT INTO alerts (alert_id, event_id, ts, pharmacy_id, score, status, index_atc_l4, marker_atc_l4, "
             "pair_status, enc_blob, created_ts, updated_ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (alert.alert_id, alert.event_id, payload["ts"], alert.pharmacy_id, alert.score, alert.status,
@@ -149,6 +150,14 @@ class Scorer:
         await self.bus.publish(STREAM_ALERTS, payload)
         self.n_alerts += 1
         return alert
+
+    async def aflush_latency(self) -> None:
+        """Latency rows are written in a worker thread so a slow disk never blocks the event loop."""
+        rows, self._latency = self._latency, []
+        self._last_flush = time.monotonic()
+        if rows:
+            await asyncio.to_thread(
+                self.db.executemany, "INSERT INTO latency (event_id, ms, alerted, wall_ts) VALUES (?, ?, ?, ?)", rows)
 
     def flush_latency(self) -> None:
         rows, self._latency = self._latency, []
@@ -169,7 +178,7 @@ class Scorer:
                     log.exception("batch failed; acknowledging to avoid a poison loop", extra={"n": len(msgs)})
                 await self.bus.ack(STREAM_DISPENSE, "scorer", [i for i, _ in msgs])
             elif self._latency:
-                self.flush_latency()
+                await self.aflush_latency()
 
 
 def make_alert(cat: Catalogue, faers: set[tuple[str, str]], alert_id: str, event_id: str, ts: datetime,

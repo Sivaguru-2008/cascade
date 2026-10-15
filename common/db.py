@@ -129,10 +129,15 @@ def ddl_statements(dialect: str) -> list[str]:
 
 
 class Database:
-    def __init__(self, dialect: str, conn: Any) -> None:
+    def __init__(self, dialect: str, conn: Any, target: dict[str, Any] | None = None) -> None:
         self.dialect = dialect
         self._conn = conn
         self._lock = threading.Lock()
+        self._target = target or {}
+
+    def clone(self) -> Database:
+        """A second connection to the same database (e.g. a writer separate from API readers)."""
+        return Database.connect(self.dialect, **self._target)
 
     # ----- connection -----
     @classmethod
@@ -148,7 +153,7 @@ class Database:
             conn = sqlite3.connect(str(path), check_same_thread=False, isolation_level=None, timeout=30)
             conn.execute("PRAGMA journal_mode=WAL")
             conn.execute("PRAGMA synchronous=NORMAL")
-            return cls("sqlite", conn)
+            return cls("sqlite", conn, {"sqlite_path": Path(path)})
         import pg8000.dbapi
 
         u = urlparse(url or s.database_url)
@@ -157,7 +162,7 @@ class Database:
                 "POSTGRES_PASSWORD") or None, host=u.hostname or "localhost", port=u.port or 5432,
             database=(u.path or "/cascade").lstrip("/") or "cascade")
         conn.autocommit = True
-        return cls("postgres", conn)
+        return cls("postgres", conn, {"url": url or s.database_url})
 
     def close(self) -> None:
         with self._lock:
@@ -179,10 +184,11 @@ class Database:
             return
         with self._lock:
             cur = self._conn.cursor()
-            if self.dialect == "sqlite":
-                cur.execute("BEGIN")
-                cur.executemany(sql, rows)
-                cur.execute("COMMIT")
+            if self.dialect == "sqlite":  # short transactions: never hold the single SQLite writer lock for long
+                for i in range(0, len(rows), 500):
+                    cur.execute("BEGIN")
+                    cur.executemany(sql, rows[i:i + 500])
+                    cur.execute("COMMIT")
             else:
                 m = _INSERT_VALUES.match(sql)
                 if m is None:

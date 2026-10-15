@@ -186,6 +186,20 @@ class SignalService:
                     self._history_day[(a, b, W)] = sim_day
                     history_rows.append((now,) + (row[3], a, b, W) + row[4:])
         await self.bus.hset_many(asr_writes)
+        # bulk writes run in a worker thread so a slow disk never blocks the event loop (and the API in single mode)
+        await asyncio.to_thread(self._write_rows, latest_rows, history_rows, sim_day, now)
+        sim_date = (self.s.epoch + timedelta(days=sim_day)).isoformat()
+        await self.bus.set("loop2:sim_day", str(sim_day))
+        n_sig = int(snap.signal.sum())
+        await self.bus.publish(STREAM_SIGNALS, {"type": "signals", "sim_day": sim_day, "sim_date": sim_date,
+                                                "n_signals": n_sig, "n_signals_bh": int(snap.signal_bh.sum()),
+                                                "new_signals": new_signals, "changed": len(latest_rows)})
+        for sgl in new_signals:
+            log.info("new signal", extra={**sgl, "sim_date": sim_date})
+        return snap
+
+    def _write_rows(self, latest_rows: list[tuple[Any, ...]], history_rows: list[tuple[Any, ...]], sim_day: int,
+                    now: str) -> None:
         self.db.executemany(
             "INSERT INTO signals_latest (a_l4, b_l4, win, sim_day, n_ab, n_ba, nsr, asr, lo, hi, p_value, is_signal, "
             "is_signal_bh, status, first_signal_day, updated_ts) "
@@ -198,16 +212,7 @@ class SignalService:
         self.db.executemany(
             "INSERT INTO signals (snapshot_ts, sim_day, a_l4, b_l4, win, n_ab, n_ba, nsr, asr, lo, hi, p_value, "
             "is_signal, is_signal_bh, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", history_rows)
-        sim_date = (self.s.epoch + timedelta(days=sim_day)).isoformat()
         self.db.set_state("loop2_sim_day", str(sim_day), now)
-        await self.bus.set("loop2:sim_day", str(sim_day))
-        n_sig = int(snap.signal.sum())
-        await self.bus.publish(STREAM_SIGNALS, {"type": "signals", "sim_day": sim_day, "sim_date": sim_date,
-                                                "n_signals": n_sig, "n_signals_bh": int(snap.signal_bh.sum()),
-                                                "new_signals": new_signals, "changed": len(latest_rows)})
-        for sgl in new_signals:
-            log.info("new signal", extra={**sgl, "sim_date": sim_date})
-        return snap
 
     async def consume_forever(self, consumer: str = "signals-1") -> None:
         await self.bus.ensure_group(STREAM_DISPENSE, "signals")
