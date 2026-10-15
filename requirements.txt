@@ -1,0 +1,16 @@
+# Local development (pip). Version floors match Debian bookworm, which the s390x container uses.
+fastapi>=0.100
+uvicorn>=0.23
+pydantic>=2.4
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.2
+xgboost>=1.7        # optional: CASCADE_ML=hgb falls back to scikit-learn
+redis>=4.5
+pg8000>=1.29
+cryptography>=38
+jinja2>=3.1
+reportlab>=3.6
+httpx>=0.24
+pytest>=7.2
+ruff>=0.4

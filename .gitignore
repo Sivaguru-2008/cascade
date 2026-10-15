@@ -1,0 +1,20 @@
+# secrets and keys
+.env
+secrets/
+*.key
+*.pem
+
+# generated data and artefacts
+data/generated/
+loop1/model/*
+!loop1/model/.gitkeep
+docs/screenshots/evidence_*.txt
+
+# python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+.ipynb_checkpoints/
