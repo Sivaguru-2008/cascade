@@ -1,0 +1,45 @@
+{
+  "status": "PLACEHOLDER: the team must replace these fields with those of the current official PvPI Suspected Adverse Drug Reaction Reporting Form (IPC, Ghaziabad) before any real use. Sections follow section 7.2 of docs/AGENT_PROMPT.md.",
+  "form": "PvPI Suspected Adverse Drug Reaction Reporting Form (draft)",
+  "sections": [
+    {"key": "A_patient", "title": "A. Patient information", "fields": [
+      {"key": "patient_initials", "label": "Patient initials", "source": "reporter"},
+      {"key": "age_at_onset", "label": "Age at time of event", "source": "input (age band only)"},
+      {"key": "sex", "label": "Sex", "source": "input"},
+      {"key": "weight_kg", "label": "Weight (kg)", "source": "reporter"}]},
+    {"key": "B_reaction", "title": "B. Suspected adverse reaction", "fields": [
+      {"key": "reaction_start_date", "label": "Date reaction started", "source": "reporter"},
+      {"key": "reaction_stop_date", "label": "Date of recovery", "source": "reporter"},
+      {"key": "reaction_description", "label": "Describe the reaction", "source": "generated, validated"},
+      {"key": "relevant_investigations", "label": "Relevant tests / laboratory data", "source": "reporter"},
+      {"key": "relevant_medical_history", "label": "Other relevant history", "source": "reporter"},
+      {"key": "seriousness", "label": "Seriousness of the reaction", "source": "reporter"},
+      {"key": "outcome", "label": "Outcome", "source": "reporter"}]},
+    {"key": "C_suspected_medications", "title": "C. Suspected medication(s)", "repeating": true, "fields": [
+      {"key": "drug_name", "label": "Name (brand / generic)", "source": "input"},
+      {"key": "manufacturer", "label": "Manufacturer", "source": "reporter"},
+      {"key": "batch_lot_no", "label": "Batch / lot no.", "source": "reporter"},
+      {"key": "expiry_date", "label": "Expiry date", "source": "reporter"},
+      {"key": "dose", "label": "Dose used", "source": "input"},
+      {"key": "route", "label": "Route used", "source": "reporter"},
+      {"key": "frequency", "label": "Frequency", "source": "reporter"},
+      {"key": "therapy_start_date", "label": "Therapy start date", "source": "reporter"},
+      {"key": "therapy_stop_date", "label": "Therapy stop date", "source": "reporter"},
+      {"key": "indication", "label": "Reason for use", "source": "reporter"},
+      {"key": "dechallenge", "label": "Reaction abated after drug withdrawn / dose reduced?", "source": "reporter"},
+      {"key": "rechallenge", "label": "Reaction reappeared after reintroduction?", "source": "reporter"}]},
+    {"key": "concomitant_medications", "title": "Concomitant medical product(s)", "repeating": true, "fields": [
+      {"key": "drug_name", "label": "Name", "source": "input"},
+      {"key": "dose", "label": "Dose", "source": "input"},
+      {"key": "therapy_start_date", "label": "Therapy start date", "source": "reporter"},
+      {"key": "indication", "label": "Reason for use", "source": "reporter"}]},
+    {"key": "D_reporter", "title": "D. Reporter details", "fields": [
+      {"key": "reporter_name", "label": "Name", "source": "reporter"},
+      {"key": "professional_address", "label": "Professional address", "source": "reporter"},
+      {"key": "email", "label": "Email", "source": "reporter"},
+      {"key": "contact_number", "label": "Contact number", "source": "reporter"},
+      {"key": "occupation", "label": "Occupation", "source": "reporter"},
+      {"key": "report_date", "label": "Date of this report", "source": "reporter"}]}
+  ],
+  "null_rendering": "To be completed by reporter"
+}

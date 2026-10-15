@@ -1,0 +1,12 @@
+Write the "Describe the reaction" field of a draft Suspected Adverse Drug Reaction report.
+Use ONLY the facts in the JSON below. Do not add any drug, number or date that is not in the JSON.
+
+Rules:
+- One or two sentences, at most 50 words.
+- Describe it as a POSSIBLE reaction that needs review; mention both drugs exactly as written and the gap in days.
+- Never use the words: stop, discontinue, diagnose, definitely, must.
+
+Input JSON:
+{input_json}
+
+Reply with JSON only: {{"reaction_description": "<text>"}}
