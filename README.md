@@ -16,8 +16,7 @@
 [![Standards: WHO ATC & PvPI](https://img.shields.io/badge/Clinical-WHO%20ATC%20%7C%20PvPI%20%7C%20ThinkCascades-red)](data/cascades_known.csv)
 
 <p align="center">
-  <b>Built for the IBM Z Datathon 2026 &bull; Team OVERCLOCKED</b><br>
-  <i>Sivaguru R.M. (Lead Systems & Full-Stack Architect) &bull; Clinical Advisory Group</i>
+  <b>IBM Z Datathon 2026</b>
 </p>
 
 ---
@@ -279,12 +278,3 @@ python -m eval.make_report --run
 - **Human-in-the-Loop Oversight:** Every GenAI draft note and PvPI regulatory report requires explicit pharmacist verification, completion, and signature prior to export.
 - **Real-World Next Steps:** Initiation of a retrospective pilot study on anonymized dispensing archives in collaboration with public healthcare distribution networks, evaluating real-world aSR sensitivity across multi-facility electronic health records.
 
----
-
-## 👥 Team & Acknowledgments
-
-**Team OVERCLOCKED — IBM Z Datathon 2026**
-- **Sivaguru R.M.** — Lead Systems Architect, Full-Stack & LinuxONE Engineer ([@Sivaguru-2008](https://github.com/Sivaguru-2008))
-- **Clinical & Pharmacovigilance Advisory Group** — Medical literature alignment & PvPI schema validation
-
-*Built with passion for high-reliability enterprise systems, confidential AI, and patient safety on IBM Z & LinuxONE.*
