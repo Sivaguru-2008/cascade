@@ -33,7 +33,7 @@ from genai.validate import BANNED, validate_note
 def print_banner() -> None:
     print("=" * 76)
     print("CASCADE: Automated Verification Suite")
-    print("   Built for IBM Z Datathon 2026 • Team sudo")
+    print("   Built for IBM Z Datathon 2026 • Team sudo make us win")
     print(f"   Architecture: {platform.machine()} | Python: {platform.python_version()} | OS: {platform.system()}")
     print("=" * 76)
 

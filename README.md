@@ -16,10 +16,10 @@
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](pyproject.toml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](LICENSE)
 [![Standards: WHO ATC & PvPI](https://img.shields.io/badge/Clinical-WHO%20ATC%20%7C%20PvPI%20%7C%20ThinkCascades-red)](data/cascades_known.csv)
-[![Team: sudo](https://img.shields.io/badge/Team-sudo-0062FF?style=flat&logo=linux&logoColor=white)](pyproject.toml)
+[![Team: sudo make us win](https://img.shields.io/badge/Team-sudo%20make%20us%20win-0062FF?style=flat&logo=linux&logoColor=white)](pyproject.toml)
 
 <p align="center">
-  <b>Built for the IBM Z Datathon 2026 &bull; Team <code>sudo</code></b>
+  <b>Built for the IBM Z Datathon 2026 &bull; Team <code>sudo make us win</code></b>
 </p>
 
 ---
@@ -52,7 +52,7 @@
 - [🛡️ Security, Privacy & Zero-Trust Compliance](#️-security-privacy--zero-trust-compliance)
 - [📁 Repository Map](#-repository-map)
 - [⚖️ Ethics, Limitations & Real-World Next Steps](#️-ethics-limitations--real-world-next-steps)
-- [👥 Team sudo](#-team-sudo)
+- [👥 Team sudo make us win](#-team-sudo-make-us-win)
 
 ---
 
@@ -505,20 +505,18 @@ To provide exhaustive technical proof addressing all judging evaluation criteria
 
 ---
 
-## 👥 Team `sudo`
+## 👥 Team `sudo make us win`
 
 <div align="center">
 
-### **Built for the IBM Z Datathon 2026 by Team `sudo`**
+### **Built for the IBM Z Datathon 2026 by Team `sudo make us win`**
 *Pioneering Mission-Critical Healthcare AI, Zero-Knowledge Edge Privacy & Enterprise LinuxONE Acceleration*
 
-```
-   _____ _    _ _____   ____  
-  / ____| |  | |  __ \ / __ \ 
- | (___ | |  | | |  | | |  | |
-  \___ \| |  | | |  | | |  | |
-  ____) | |__| | |__| | |__| |
- |_____/ \____/|_____/ \____/ 
+```bash
+$ sudo make us win
+[sudo] password for team: ******************
+Executing: 1st Place Pharmacovigilance on IBM LinuxONE (s390x)... [SUCCESS]
+Status: 9,355 events/sec · 6.0 ms latency · CPACF HW Crypto (13.3 GB/s) · Dual-Loop AI Active
 ```
 **Enterprise AI &bull; Confidential Computing &bull; IBM z/Architecture**
 
