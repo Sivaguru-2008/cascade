@@ -48,6 +48,7 @@
   - [6. IBM LinuxONE CPACF Hardware Benchmarks & Throughput](#6-ibm-linuxone-cpacf-hardware-benchmarks--throughput)
 - [🏛️ System Architecture & Dual-Loop Pipeline](#️-system-architecture--dual-loop-pipeline)
 - [⚡ Quick Start Guide (Judges' 3-Minute Tour)](#-quick-start-guide-judges-3-minute-tour)
+- [📄 Scientific Audit & Benchmark Methodology Documentation](#-scientific-audit--benchmark-methodology-documentation)
 - [🛡️ Security, Privacy & Zero-Trust Compliance](#️-security-privacy--zero-trust-compliance)
 - [📁 Repository Map](#-repository-map)
 - [⚖️ Ethics, Limitations & Real-World Next Steps](#️-ethics-limitations--real-world-next-steps)
@@ -161,6 +162,12 @@ All metrics are experimentally measured on an **IBM LinuxONE Community Cloud VM*
 | **Novel Cascade Discovery (H1)** | Detect within 90 days | **Detected within 50 days** (97.7% recall) | **44% faster detection** | [Section 3](#3-loop-2-population-scale-streaming-pssa-discovery) |
 | **Hardware Cryptography** | Hardware Acceleration | **13.3 GB/s** AES-256-GCM (CPACF `msa`) | **Hardware verified** | [Section 6](#6-ibm-linuxone-cpacf-hardware-benchmarks--throughput) |
 | **GenAI Validator Pass Rate** | 100% Schema & Content | **100.0%** (10-draft blinded review: 90% usable) | **Zero hallucinations** | [Section 5](#5-genai-regulatory-dossier--blinded-human-review) |
+
+> [!IMPORTANT]
+> **Complete Technical & Scientific Methodology Audit:**
+> For full measurement boundaries, raw outputs, and experimental parameters answering all technical review questions, see:
+> - 📄 [**Benchmark Methodology Report**](docs/BENCHMARK_METHODOLOGY.md) — Detailed breakdown of 9,355 events/s throughput, 6.0 ms latency boundaries, CPACF block-size analysis, and zero-hallucination validation definitions.
+> - 🔬 [**Scientific Evaluation & Platform Fit Audit**](docs/EVALUATION_AUDIT.md) — The 4 core validation experiments (Known Recovery, Novel Discovery, Null Control, and LOPO Generalization) + verified s390x execution vs roadmap.
 
 ---
 
@@ -380,10 +387,14 @@ You can launch and explore CASCADE locally on Linux, macOS, or Windows in under 
 git clone https://github.com/Sivaguru-2008/cascade.git
 cd cascade
 
-# 2. Set up virtual environment and dependencies
+# 2. Set up virtual environment and install dependencies
 python -m venv .venv
-# On Windows:
-.venv\Scripts\activate
+
+# Activate the virtual environment:
+# On Windows (PowerShell):
+.\.venv\Scripts\Activate.ps1
+# On Windows (Command Prompt):
+.venv\Scripts\activate.bat
 # On Linux / macOS:
 source .venv/bin/activate
 
@@ -391,6 +402,7 @@ pip install -r requirements.txt
 
 # 3. Launch the single-process frontend & API server
 python start_frontend.py
+# (Or run directly without activation: .venv/bin/python start_frontend.py or .venv\Scripts\python start_frontend.py)
 ```
 *Open **`http://localhost:8443`** in your browser. The dashboard launches with demo credentials pre-loaded!*
 
@@ -411,15 +423,39 @@ python start_frontend.py
 
 ---
 
-### Option C: Run Full Automated Verification Suite
+### Option C: Run 1-Click Verification & Automated Audit (Instant Judge Check)
 
 ```bash
-# Run all 87 unit, integration, role-security, and statistical tests
+# 1. Run the instant 5-point benchmark auditor (validates catalogues, Loop 1, Loop 2, GenAI, and Crypto in <1 sec):
+python -m eval.verify_all
+
+# 2. Run all 87 unit, integration, role-security, and statistical tests:
 pytest -v
 
-# Run the end-to-end evaluation benchmark (recomputes all numbers in docs/evaluation.md)
+# 3. Regenerate all published tables and metrics in docs/evaluation.md:
 python -m eval.make_report --run
 ```
+
+---
+
+## 📄 Scientific Audit & Benchmark Methodology Documentation
+
+To provide exhaustive technical proof addressing all judging evaluation criteria, the repository includes two comprehensive technical audit documents:
+
+1. [**Benchmark Methodology Report** (`docs/BENCHMARK_METHODOLOGY.md`)](docs/BENCHMARK_METHODOLOGY.md):
+   - **Throughput Protocol:** Full breakdown of the 556,641 events scored in 59.5 seconds at **9,355.5 events/sec** through the complete parsing, lookback, scoring, TreeSHAP explanation, and latency logging pipeline.
+   - **Latency Measurement Definition:** Details the exact start ($t_{\text{read}}$) and stop ($t_{\text{decision}}$) timestamps, explicitly showing that the **6.0 ms median** includes micro-batch consumer queueing of up to 200 events.
+   - **Data Split & Label Independence:** Documents the strict temporal holdout split (Train: 2023–2024, Validation: 2025-H1, Test: 2025-H2) and confirms that novel cascade H1 (*Novacor* &rarr; PPI) had **zero positive training labels**.
+   - **Hardware Crypto Configuration:** Documents the OpenSSL EVP benchmark on s390x CPACF hardware instructions (`msa`, `KMA`) achieving **13.3 GB/s** at 16KB blocks.
+   - **GenAI Hallucination Criteria:** Details the 5 explicit failure conditions in the AST validator and breaks down the 10-draft blinded clinical pharmacist review sheet.
+
+2. [**Scientific Evaluation & Platform Fit Audit** (`docs/EVALUATION_AUDIT.md`)](docs/EVALUATION_AUDIT.md):
+   - **Experiment 1 (Known Recovery):** Autonomously recovered 9/9 benchmark cascades.
+   - **Experiment 2 (Novel Discovery):** Detected uncatalogued cascade H1 in 50 days with $\text{aSR} = 8.05$.
+   - **Experiment 3 (Null Control):** Proves that running on an un-injected population yields **0 false alarms** under Benjamini–Hochberg ($q < 0.05$).
+   - **Experiment 4 (LOPO Generalization):** Proves 100% held-out recall on distinct physiological markers and transparently analyzes methodological boundaries on gradual metabolic pairs.
+   - **Platform Fit Separation:** Clear distinction between verified s390x execution today vs roadmap evolution (IBM Secure Execution and Telum NNPA).
+   - **Assistive CDSS Positioning:** Affirms CASCADE as an assistive clinical safety system, distinguishing statistical association from biological causation.
 
 ---
 
