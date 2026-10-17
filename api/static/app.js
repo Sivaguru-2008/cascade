@@ -3,7 +3,7 @@
 /**
  * CASCADE — Real-Time Prescribing Cascade Detection & Pharmacovigilance
  * Production Single Page Application Engine
- * IBM Z Datathon 2026 · Team OVERCLOCKED
+ * IBM Z Datathon 2026 · Team sudo
  */
 
 // Official Zero-Friction Demonstration Keys

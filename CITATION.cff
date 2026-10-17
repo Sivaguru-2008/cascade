@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use or reference CASCADE in your research or project, please cite it as below."
 title: "CASCADE: Confidential AI Surveillance of Clinical Adverse Cascades & Drug Events on IBM LinuxONE"
 authors:
-  - name: "CASCADE Project"
+  - name: "Team sudo (IBM Z Datathon 2026)"
 version: "0.1.0"
 date-released: "2026-10-18"
 url: "https://github.com/Sivaguru-2008/cascade"

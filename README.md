@@ -16,9 +16,10 @@
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python&logoColor=white)](pyproject.toml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-yellow.svg)](LICENSE)
 [![Standards: WHO ATC & PvPI](https://img.shields.io/badge/Clinical-WHO%20ATC%20%7C%20PvPI%20%7C%20ThinkCascades-red)](data/cascades_known.csv)
+[![Team: sudo](https://img.shields.io/badge/Team-sudo-0062FF?style=flat&logo=linux&logoColor=white)](pyproject.toml)
 
 <p align="center">
-  <b>IBM Z Datathon 2026 Submission</b>
+  <b>Built for the IBM Z Datathon 2026 &bull; Team <code>sudo</code></b>
 </p>
 
 ---
@@ -50,6 +51,7 @@
 - [🛡️ Security, Privacy & Zero-Trust Compliance](#️-security-privacy--zero-trust-compliance)
 - [📁 Repository Map](#-repository-map)
 - [⚖️ Ethics, Limitations & Real-World Next Steps](#️-ethics-limitations--real-world-next-steps)
+- [👥 Team sudo](#-team-sudo)
 
 ---
 
@@ -464,3 +466,24 @@ python -m eval.make_report --run
 - **Clinical Advisory Tool Only:** CASCADE is designed strictly as an assistive clinical decision support system. It does not replace clinical judgment and never issues prescriptive recommendations.
 - **Human-in-the-Loop Oversight:** Every GenAI draft note and PvPI regulatory report requires explicit pharmacist verification, completion, and signature prior to export.
 - **Real-World Next Steps:** Initiation of a retrospective pilot study on anonymized dispensing archives in collaboration with public healthcare distribution networks, evaluating real-world aSR sensitivity across multi-facility electronic health records.
+
+---
+
+## 👥 Team `sudo`
+
+<div align="center">
+
+### **Built for the IBM Z Datathon 2026 by Team `sudo`**
+*Pioneering Mission-Critical Healthcare AI, Zero-Knowledge Edge Privacy & Enterprise LinuxONE Acceleration*
+
+```
+   _____ _    _ _____   ____  
+  / ____| |  | |  __ \ / __ \ 
+ | (___ | |  | | |  | | |  | |
+  \___ \| |  | | |  | | |  | |
+  ____) | |__| | |__| | |__| |
+ |_____/ \____/|_____/ \____/ 
+```
+**Enterprise AI &bull; Confidential Computing &bull; IBM z/Architecture**
+
+</div>
