@@ -566,12 +566,4 @@ To provide exhaustive technical proof addressing all judging evaluation criteria
 ### **Built for the IBM Z Datathon 2026 by Team `sudo make us win`**
 *Pioneering Mission-Critical Healthcare AI, Zero-Knowledge Edge Privacy & Enterprise LinuxONE Acceleration*
 
-```bash
-$ sudo make us win
-[sudo] password for team: ******************
-Executing: 1st Place Pharmacovigilance on IBM LinuxONE (s390x)... [SUCCESS]
-Status: 9,355 events/sec · 6.0 ms latency · CPACF HW Crypto (13.3 GB/s) · Dual-Loop AI Active
-```
-**Enterprise AI &bull; Confidential Computing &bull; IBM z/Architecture**
-
 </div>
