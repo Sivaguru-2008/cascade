@@ -2611,3 +2611,362 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   OFFICIAL HOSPITAL PRESCRIPTION SLIP (Rx) & PRINT STYLES
+   ========================================================================== */
+
+.hospital-rx-modal-container {
+  max-width: 860px;
+}
+
+.hospital-rx-scroll-body {
+  background: #E2E8F0;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.hospital-rx-document {
+  background: #FFFFFF;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  padding: 32px 36px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #0F172A;
+  border: 1px solid #CBD5E1;
+}
+
+.rx-header-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.rx-hospital-emblem {
+  flex-shrink: 0;
+}
+
+.rx-hospital-identity {
+  flex: 1;
+}
+
+.rx-hospital-name {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 800;
+  color: #0F766E;
+  letter-spacing: 0.5px;
+}
+
+.rx-hospital-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  letter-spacing: 0.8px;
+  margin-top: 2px;
+}
+
+.rx-hospital-contact {
+  font-size: 10.5px;
+  color: #64748B;
+  margin-top: 3px;
+}
+
+.rx-header-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.rx-badge-nabh {
+  display: inline-block;
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid #14B8A6;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.rx-opd-meta {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-top: 4px;
+}
+
+.rx-divider-double {
+  height: 4px;
+  border-top: 2px solid #0F766E;
+  border-bottom: 1px solid #0F766E;
+  margin: 14px 0;
+}
+
+.rx-divider-single {
+  height: 1px;
+  background: #E2E8F0;
+  margin: 14px 0;
+}
+
+.rx-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.rx-pane-title {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  color: #0F766E;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.rx-doc-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.rx-doc-dept {
+  font-size: 12px;
+  color: #475569;
+}
+
+.rx-doc-reg {
+  font-size: 10.5px;
+  color: #64748B;
+  font-family: var(--font-mono);
+  margin-top: 2px;
+}
+
+.rx-patient-pane {
+  background: #F8FAFC;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+}
+
+.rx-patient-row {
+  font-size: 12px;
+  margin-bottom: 3px;
+  color: #1E293B;
+}
+
+.rx-lbl {
+  color: #64748B;
+  font-size: 11px;
+}
+
+.rx-clinical-summary-box {
+  background: #F1F5F9;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border-left: 3px solid #0F766E;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rx-sum-item {
+  font-size: 12px;
+}
+
+.rx-sum-lbl {
+  font-weight: 700;
+  color: #334155;
+  margin-right: 6px;
+}
+
+.rx-sum-val {
+  color: #0F172A;
+}
+
+.rx-body-section {
+  position: relative;
+  margin-top: 14px;
+}
+
+.rx-symbol {
+  font-size: 32px;
+  font-weight: 900;
+  color: #0F766E;
+  font-family: serif;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.rx-print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.rx-print-table th {
+  background: #F8FAFC;
+  border-top: 1px solid #CBD5E1;
+  border-bottom: 1px solid #CBD5E1;
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  text-transform: uppercase;
+}
+
+.rx-print-table td {
+  padding: 10px;
+  border-bottom: 1px solid #E2E8F0;
+  vertical-align: top;
+}
+
+.rx-freq-pill {
+  display: inline-block;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  color: #1D4ED8;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+.rx-advice-section {
+  margin-top: 20px;
+  background: #FAFAFA;
+  padding: 12px 16px;
+  border-radius: 6px;
+  border: 1px dashed #CBD5E1;
+}
+
+.rx-advice-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #334155;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.rx-advice-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.rx-footer-block {
+  margin-top: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #E2E8F0;
+}
+
+.rx-cdss-seal {
+  flex: 1;
+}
+
+.rx-seal-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #0F766E;
+  letter-spacing: 0.5px;
+}
+
+.rx-seal-text {
+  font-size: 10.5px;
+  color: #64748B;
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.rx-hash-stamp {
+  font-size: 9.5px;
+  color: #94A3B8;
+  font-family: var(--font-mono);
+  margin-top: 6px;
+}
+
+.rx-signature-box {
+  text-align: center;
+  min-width: 200px;
+}
+
+.rx-sig-line {
+  border-top: 1.5px solid #0F172A;
+  margin-bottom: 8px;
+  width: 180px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.rx-sig-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.rx-sig-sub {
+  font-size: 11px;
+  color: #64748B;
+}
+
+.rx-sig-date {
+  font-size: 10px;
+  color: #0F766E;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* Print Overrides for Browser window.print() */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #modal-hospital-rx,
+  #modal-hospital-rx *,
+  #printable-rx-doc,
+  #printable-rx-doc * {
+    visibility: visible;
+  }
+  #modal-hospital-rx {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+  }
+  .modal-box.hospital-rx-modal-container {
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  .rx-modal-top-bar,
+  .modal-footer {
+    display: none !important;
+  }
+  .hospital-rx-scroll-body {
+    background: transparent !important;
+    padding: 0 !important;
+  }
+  .hospital-rx-document {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+}

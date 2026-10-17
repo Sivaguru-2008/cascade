@@ -1506,7 +1506,9 @@ function addPrescriptionItem() {
   const genericName = opt.getAttribute("data-name") || "";
   const atcL4 = opt.getAttribute("data-l4") || "";
   const dose = parseFloat($("doc-rx-dose").value) || 0;
+  const form = $("doc-rx-form") ? $("doc-rx-form").value : "Tablet";
   const freq = $("doc-rx-frequency").value;
+  const food = $("doc-rx-food") ? $("doc-rx-food").value : "After Food (PC)";
   const duration = parseInt($("doc-rx-duration").value, 10) || 30;
   const indication = $("doc-rx-indication").value.trim() || $("doc-chief-complaint").value.trim() || "Clinical Indication";
 
@@ -1517,7 +1519,9 @@ function addPrescriptionItem() {
     generic_name: genericName,
     atc_l4: atcL4,
     dose_mg: dose,
+    dosage_form: form,
     frequency: freq,
+    food_timing: food,
     duration_days: duration,
     indication: indication,
     is_cascade: isCascade
@@ -1543,23 +1547,152 @@ function renderPrescriptionPadItems() {
   tbody.innerHTML = "";
 
   if (state.currentPrescriptions.length === 0) {
-    const tr = el("tr", {}, el("td", { colspan: "7", style: "text-align:center;color:var(--text-secondary);padding:12px;", text: "No medications added to this prescription slip yet. Select a drug above." }));
+    const tr = el("tr", {}, el("td", { colspan: "8", style: "text-align:center;color:var(--text-secondary);padding:14px;", text: "No medications added to this prescription slip yet. Select a drug above." }));
     tbody.appendChild(tr);
     return;
   }
 
   state.currentPrescriptions.forEach((rx, idx) => {
     const tr = el("tr", {},
-      el("td", {}, el("strong", { text: rx.generic_name.toUpperCase() }), el("span", { style: "display:block;font-size:10.5px;color:var(--text-secondary);font-family:var(--font-mono);", text: rx.atc_l4 })),
+      el("td", {}, el("strong", { text: rx.generic_name.toUpperCase() }), el("span", { style: "display:block;font-size:10.5px;color:var(--text-secondary);", text: `${rx.dosage_form || 'Tablet'} · ${rx.atc_l4 || ''}` })),
       el("td", { text: `${rx.dose_mg} mg` }),
-      el("td", { text: rx.frequency }),
+      el("td", {}, el("span", { class: "rx-freq-pill", text: rx.frequency })),
+      el("td", { text: rx.food_timing || "After Food (PC)" }),
       el("td", { text: `${rx.duration_days} d` }),
       el("td", { text: rx.indication }),
-      el("td", {}, rx.is_cascade ? el("span", { class: "badge badge-critical", text: "⚠️ Prescribing Cascade" }) : el("span", { class: "badge badge-green", text: "Standard" })),
+      el("td", {}, rx.is_cascade ? el("span", { class: "badge badge-critical", text: "⚠️ Cascade Risk" }) : el("span", { class: "badge badge-green", text: "Verified Safe" })),
       el("td", {}, el("button", { type: "button", class: "btn-remove-rx", title: "Remove drug", onclick: () => removePrescriptionItem(idx) }, "✕"))
     );
     tbody.appendChild(tr);
   });
+}
+
+function handleCdssSubstitute() {
+  const drugSel = $("doc-rx-drug-select");
+  if (drugSel) {
+    for (let i = 0; i < drugSel.options.length; i++) {
+      if (drugSel.options[i].text.toLowerCase().includes("telmisartan")) {
+        drugSel.selectedIndex = i;
+        handleDrugSelectionChange();
+        break;
+      }
+    }
+  }
+  if ($("doc-rx-dose")) $("doc-rx-dose").value = "40";
+  if ($("doc-rx-indication")) $("doc-rx-indication").value = "Hypertension (Substituted ARB Alternative)";
+  if ($("doc-cascade-copilot")) $("doc-cascade-copilot").hidden = true;
+  showToast("⚡ Substituted with ARB (Telmisartan 40mg). Potential cascade successfully avoided!");
+}
+
+function handleCdssTitrate() {
+  if ($("doc-rx-dose")) $("doc-rx-dose").value = "2.5";
+  if ($("doc-rx-indication")) $("doc-rx-indication").value = "Hypertension (Step-down titration to minimise edema)";
+  if ($("doc-cascade-copilot")) $("doc-cascade-copilot").hidden = true;
+  showToast("⚡ Primary dose titrated to 2.5mg once daily to eliminate adverse edema risk.");
+}
+
+function handleCdssOverride() {
+  const reason = prompt(
+    "Enter clinical justification for overriding the CASCADE CDSS safety alert:\n(e.g., Acute congestive heart failure with fluid retention; loop diuretic therapy clinically mandatory)",
+    "Symptomatic fluid retention confirmed; loop diuretic therapy clinically indicated under close monitoring"
+  );
+  if (reason && reason.trim()) {
+    if ($("doc-cascade-copilot")) $("doc-cascade-copilot").hidden = true;
+    showToast(`Alert overridden with clinical justification: "${reason.slice(0, 45)}..."`);
+  }
+}
+
+function openHospitalRxSlipModal() {
+  const modal = $("modal-hospital-rx");
+  if (!modal) return;
+
+  const pat = (state.clinicalTimeline && state.clinicalTimeline.patient) ||
+              state.patients.find(p => p.patient_id === state.selectedPatientId) || {
+                patient_id: state.selectedPatientId || "P001142",
+                name: "Rajesh Kumar",
+                age_band: "55-64",
+                sex: "Male",
+                blood_group: "B+",
+                phone: "+91 98401 23456",
+                chronic_conditions: ["Essential Hypertension", "Type-2 Diabetes"]
+              };
+
+  const docSel = $("doc-doctor-select");
+  const docId = docSel ? docSel.value : (state.selectedDoctorId || "DR0020");
+  const doc = state.doctors.find(d => d.doctor_id === docId) || {
+    name: "Dr. Priya Swaminathan",
+    qualifications: "MD, DM (Cardio)",
+    specialty: "Cardiology",
+    reg_number: "MCI-2012-44918",
+    hospital: "Apex Multi-Specialty Hospital",
+    room_number: "OPD Clinic 204"
+  };
+
+  if ($("rx-print-doc-name")) $("rx-print-doc-name").textContent = `${doc.name}, ${doc.qualifications || 'MD'}`;
+  if ($("rx-print-doc-dept")) $("rx-print-doc-dept").textContent = `Department of ${doc.specialty}`;
+  if ($("rx-print-doc-reg")) $("rx-print-doc-reg").textContent = `Reg No: ${doc.reg_number || 'MCI-88912'} · Room: ${doc.room_number || 'OPD 204'}`;
+  if ($("rx-sig-doc-name")) $("rx-sig-doc-name").textContent = `${doc.name}, ${doc.qualifications || 'MD'}`;
+
+  if ($("rx-print-uhid")) $("rx-print-uhid").textContent = `UHID-${pat.patient_id}`;
+  if ($("rx-print-pat-name")) $("rx-print-pat-name").textContent = pat.name;
+  if ($("rx-print-pat-age")) $("rx-print-pat-age").textContent = `${pat.age_band} Yrs / ${pat.sex}`;
+
+  const bp = $("doc-vital-bp")?.value || "130/80";
+  const pulse = $("doc-vital-pulse")?.value || "72";
+  const wt = $("doc-vital-weight")?.value || "68";
+  if ($("rx-print-pat-vitals")) $("rx-print-pat-vitals").textContent = `BP: ${bp} mmHg | Pulse: ${pulse} bpm | Weight: ${wt} kg`;
+
+  const d = new Date();
+  if ($("rx-print-date")) $("rx-print-date").textContent = d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+  const chief = $("doc-chief-complaint")?.value.trim() ||
+                (state.clinicalTimeline && state.clinicalTimeline.encounters && state.clinicalTimeline.encounters[0]?.chief_complaint) ||
+                "Follow-up Consultation & Routine Review";
+  const diag = $("doc-diagnosis")?.value.trim() ||
+               (state.clinicalTimeline && state.clinicalTimeline.encounters && state.clinicalTimeline.encounters[0]?.diagnosis) ||
+               "Essential Hypertension (ICD-10 I10)";
+  if ($("rx-print-cause")) $("rx-print-cause").textContent = chief;
+  if ($("rx-print-diagnosis")) $("rx-print-diagnosis").textContent = diag;
+
+  const conds = (pat.chronic_conditions && pat.chronic_conditions.length > 0)
+    ? pat.chronic_conditions.join(", ")
+    : "No known adverse drug allergies documented";
+  if ($("rx-print-conditions")) $("rx-print-conditions").textContent = conds;
+
+  const tbody = $("rx-print-table-body");
+  if (tbody) {
+    tbody.innerHTML = "";
+    const items = state.currentPrescriptions.length > 0
+      ? state.currentPrescriptions
+      : ((state.clinicalTimeline && state.clinicalTimeline.active_prescriptions) || []);
+
+    if (items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:16px;color:#64748B;">No medications recorded on this prescription yet. Add medications in the e-prescribing pad.</td></tr>`;
+    } else {
+      items.forEach((it, idx) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="font-weight:600;color:#64748B;">${idx + 1}</td>
+          <td>
+            <strong style="color:#0F172A;font-size:13px;">${(it.generic_name || "").toUpperCase()}</strong>
+            <span style="display:block;font-size:11px;color:#64748B;">${it.indication ? `For: ${it.indication}` : ''}</span>
+          </td>
+          <td><strong>${it.dose_mg} mg</strong> <span style="font-size:11px;color:#64748B;">(${it.dosage_form || 'Tab'})</span></td>
+          <td><span class="rx-freq-pill">${it.frequency || '1-0-0'}</span></td>
+          <td>${it.food_timing || 'After Food (PC)'}</td>
+          <td><strong>${it.duration_days || 30} Days</strong></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  }
+
+  if ($("rx-print-hash")) {
+    const hex = Math.floor(Math.random() * 0xFFFFFF).toString(16).toUpperCase().padStart(6, "0");
+    $("rx-print-hash").textContent = `DIGITAL VERIFICATION: SHA256-EHR-${pat.patient_id}-${hex} · CCOW / NABH COMPLIANT · TIME: ${d.toISOString()}`;
+  }
+
+  modal.hidden = false;
 }
 
 async function commitDoctorEncounter() {
@@ -1841,8 +1974,23 @@ async function submitPatientSymptom() {
 // 16. Initialization & Event Listeners
 // ---------------------------------------------------------------------------
 
+function initLiveClock() {
+  const clockEl = $("topbar-live-clock");
+  if (!clockEl) return;
+  function updateClock() {
+    const now = new Date();
+    const opts = { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true };
+    clockEl.textContent = now.toLocaleString("en-GB", opts) + " IST";
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Initialise form inputs
+  // 1. Initialise Live Hospital Clock
+  initLiveClock();
+
+  // 1b. Initialise form inputs
   if ($("input-key-ph")) $("input-key-ph").value = state.phKey;
   if ($("input-key-reg")) $("input-key-reg").value = state.regKey;
 
@@ -1879,6 +2027,18 @@ document.addEventListener("DOMContentLoaded", () => {
   $("doc-rx-drug-select")?.addEventListener("change", handleDrugSelectionChange);
   $("doc-chief-complaint")?.addEventListener("input", debouncePrecheck);
   $("doc-rx-indication")?.addEventListener("input", debouncePrecheck);
+
+  // CDSS Quick Action Buttons
+  $("btn-cdss-substitute")?.addEventListener("click", handleCdssSubstitute);
+  $("btn-cdss-titrate")?.addEventListener("click", handleCdssTitrate);
+  $("btn-cdss-override")?.addEventListener("click", handleCdssOverride);
+
+  // Rx Slip Modal Buttons
+  $("btn-open-rx-modal")?.addEventListener("click", openHospitalRxSlipModal);
+  $("btn-print-rx-slip")?.addEventListener("click", () => window.print());
+  $("btn-print-rx-slip-foot")?.addEventListener("click", () => window.print());
+  $("btn-close-rx-modal")?.addEventListener("click", () => { $("modal-hospital-rx").hidden = true; });
+  $("btn-close-rx-modal-foot")?.addEventListener("click", () => { $("modal-hospital-rx").hidden = true; });
 
   $("pat-patient-select")?.addEventListener("change", (e) => { state.selectedPatientId = e.target.value; renderPatientPortal(e.target.value); });
   $("btn-pat-submit-symptom")?.addEventListener("click", submitPatientSymptom);

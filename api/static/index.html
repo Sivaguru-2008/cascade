@@ -14,17 +14,18 @@
 <body>
   <div class="app-container">
     <!-- ================= PERSISTENT SIDEBAR NAVIGATION ================= -->
+    <!-- ================= PERSISTENT SIDEBAR NAVIGATION ================= -->
     <aside class="app-sidebar" id="app-sidebar" aria-label="Main Navigation">
       <div class="sidebar-header">
-        <a href="#/overview" class="sidebar-brand">
-          <div class="brand-icon" aria-hidden="true">
+        <a href="#/doctor" class="sidebar-brand">
+          <div class="brand-icon" aria-hidden="true" style="background:#0284C7;color:#fff;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
             </svg>
           </div>
           <div class="brand-meta">
-            <span class="brand-name">CASCADE</span>
-            <span class="brand-tagline">Pharmacovigilance</span>
+            <span class="brand-name" style="letter-spacing:-0.02em;">APEX CLINICAL</span>
+            <span class="brand-tagline">Hospital Information System</span>
           </div>
         </a>
         <button type="button" class="btn-sidebar-toggle" id="btn-toggle-sidebar" aria-label="Toggle navigation drawer" title="Collapse sidebar">
@@ -33,24 +34,8 @@
       </div>
 
       <nav class="sidebar-nav">
-        <span class="nav-section-title">Clinical Operations</span>
-        <a href="#/overview" class="nav-link active" data-route="overview">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          <span class="nav-text">Overview</span>
-        </a>
-        <a href="#/monitoring" class="nav-link" data-route="monitoring">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <span class="nav-text">Live Monitoring</span>
-          <span class="nav-badge" id="nav-badge-stream">Live</span>
-        </a>
-        <a href="#/alerts" class="nav-link" data-route="alerts">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span class="nav-text">Cascade Alerts</span>
-          <span class="nav-badge badge-critical" id="nav-badge-alerts">0</span>
-        </a>
-
-        <span class="nav-section-title">EHR &amp; Patient Portal</span>
-        <a href="#/doctor" class="nav-link" data-route="doctor">
+        <span class="nav-section-title">Clinical Care &amp; Patients</span>
+        <a href="#/doctor" class="nav-link active" data-route="doctor">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
           <span class="nav-text">Doctor Station</span>
           <span class="nav-badge badge-blue">EHR</span>
@@ -60,35 +45,46 @@
           <span class="nav-text">Patient Portal</span>
           <span class="nav-badge badge-green">MyHealth</span>
         </a>
+        <a href="#/alerts" class="nav-link" data-route="alerts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span class="nav-text">Prescribing Cascade Alerts</span>
+          <span class="nav-badge badge-critical" id="nav-badge-alerts">0</span>
+        </a>
+        <a href="#/monitoring" class="nav-link" data-route="monitoring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span class="nav-text">Dispensary &amp; Counter</span>
+          <span class="nav-badge" id="nav-badge-stream">Active</span>
+        </a>
 
-        <span class="nav-section-title">Epidemiology &amp; Discovery</span>
+        <span class="nav-section-title">Pharmacovigilance &amp; Hospital Admin</span>
+        <a href="#/overview" class="nav-link" data-route="overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span class="nav-text">Hospital Operations</span>
+        </a>
         <a href="#/signals" class="nav-link" data-route="signals">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <span class="nav-text">Population Signals</span>
-          <span class="nav-badge badge-purple" id="nav-badge-signals">PSSA</span>
+          <span class="nav-text">Population Signals (PSSA)</span>
         </a>
         <a href="#/reports" class="nav-link" data-route="reports">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          <span class="nav-text">Reports &amp; PvPI</span>
+          <span class="nav-text">ADR Reports &amp; PvPI</span>
         </a>
-
-        <span class="nav-section-title">Governance &amp; System</span>
         <a href="#/audit" class="nav-link" data-route="audit">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          <span class="nav-text">Audit Trail</span>
+          <span class="nav-text">Clinical Audit Trail</span>
         </a>
         <a href="#/system" class="nav-link" data-route="system">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
-          <span class="nav-text">System Status</span>
+          <span class="nav-text">Hospital IT Telemetry</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
         <div class="active-role-card" id="sidebar-role-indicator">
-          <div class="role-avatar avatar-pharmacist" id="role-avatar-icon">PH</div>
+          <div class="role-avatar avatar-doctor" id="role-avatar-icon">DOC</div>
           <div class="role-info">
-            <span class="role-title" id="role-display-title">Pharmacist PH030</span>
-            <span class="role-sub" id="role-display-sub">Loop 1 Counter Access</span>
+            <span class="role-title" id="role-display-title">Dr. Priya Patel (MD)</span>
+            <span class="role-sub" id="role-display-sub">Attending Physician · OPD</span>
           </div>
         </div>
       </div>
@@ -96,72 +92,58 @@
 
     <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
     <div class="app-main">
-      <!-- Persistent Safety Disclaimer Banner -->
-      <div class="safety-banner" role="alert" aria-label="Clinical safety warning">
-        <div class="safety-banner-content">
-          <span class="safety-banner-badge">Synthetic Data Mode</span>
-          <span><strong>CLINICAL SAFETY NOTICE:</strong> CASCADE identifies potential prescribing cascade patterns for professional investigation. It does not establish causation, diagnose medical conditions, or recommend altering medications. All generated reports require human clinical verification before dispatch.</span>
-        </div>
-        <button type="button" class="btn btn-sm btn-secondary" id="btn-banner-guide">Learn Limitations</button>
-      </div>
-
-      <!-- Compact Topbar -->
+      <!-- Compact Professional Hospital Topbar -->
       <header class="app-topbar">
         <div class="topbar-left">
+          <div class="hospital-branding-badge">
+            <span class="hosp-logo-icon">🏥</span>
+            <div class="hosp-info">
+              <span class="hosp-title">Apex Multi-Specialty Hospital</span>
+              <span class="hosp-subtitle">NABH Accredited · Tertiary Care EHR</span>
+            </div>
+          </div>
+          <div class="topbar-divider"></div>
           <div class="page-breadcrumb">
-            <span class="breadcrumb-root">CASCADE</span>
+            <span class="breadcrumb-root">Clinical System</span>
             <span class="breadcrumb-sep">/</span>
-            <span class="breadcrumb-current" id="topbar-breadcrumb">Overview</span>
+            <span class="breadcrumb-current" id="topbar-breadcrumb">Doctor Station (EHR)</span>
           </div>
 
-          <!-- Live Telemetry KPI Pills -->
-          <div class="telemetry-pills" aria-label="System telemetry">
-            <div class="kpi-pill" title="Real-time ingestion rate">
-              <span class="kpi-label">Ingestion:</span>
-              <span class="kpi-value" id="topbar-eps">—</span>
+          <!-- Hospital Operational Live Indicators -->
+          <div class="telemetry-pills">
+            <div class="kpi-pill pill-blue" title="Active Ward/OPD Unit">
+              <span class="kpi-label">Unit:</span>
+              <span class="kpi-value">OPD Clinic 204</span>
             </div>
-            <div class="kpi-pill pill-blue" title="Loop 1 Dispensing Scorer 95th Percentile Latency">
-              <span class="kpi-label">p95 Latency:</span>
-              <span class="kpi-value" id="topbar-p95">—</span>
+            <div class="kpi-pill pill-green" title="Clinical Decision Support System">
+              <span class="kpi-label">CDSS Guard:</span>
+              <span class="kpi-value">Active (Loop 1)</span>
             </div>
-            <div class="kpi-pill" title="Target System Architecture">
-              <span class="kpi-label">Arch:</span>
-              <span class="kpi-value" id="topbar-arch">s390x / LinuxONE</span>
-            </div>
-            <div class="kpi-pill pill-green" title="Deterministic medical safety validator pass rate">
-              <span class="kpi-label">PvPI Validator:</span>
-              <span class="kpi-value" id="topbar-val">—</span>
-            </div>
-            <div class="kpi-pill" title="Current simulated chronological date">
-              <span class="kpi-label">Sim Date:</span>
-              <span class="kpi-value" id="topbar-sim">—</span>
+            <div class="kpi-pill" title="Live Hospital Time">
+              <span class="kpi-label">Time:</span>
+              <span class="kpi-value" id="topbar-live-clock">10:45 AM</span>
             </div>
           </div>
         </div>
 
         <div class="topbar-right">
           <!-- Connection Status -->
-          <div class="connection-badge connected" id="connection-status-pill" title="Server-Sent Events Stream">
+          <div class="connection-badge connected" id="connection-status-pill" title="Hospital Network Online">
             <span class="conn-dot"></span>
-            <span id="connection-status-text">Connected</span>
+            <span id="connection-status-text">Hospital Net Online</span>
           </div>
 
-          <!-- Role Switcher -->
+          <!-- Professional Role Switcher -->
           <div class="role-switch-group" role="group" aria-label="Role Switcher">
-            <button type="button" class="role-btn active" id="role-btn-ph" title="View as Pharmacist (Counter & Alerts)">🏥 Pharmacist</button>
-            <button type="button" class="role-btn" id="role-btn-reg" title="View as Health Authority / Regulator (PSSA Signals)">🏛️ Regulator</button>
-            <button type="button" class="role-btn" id="role-btn-doc" title="View as Doctor (EHR Consultation Station)">🩺 Doctor</button>
-            <button type="button" class="role-btn" id="role-btn-pat" title="View as Patient (MyHealth Portal)">👤 Patient</button>
+            <button type="button" class="role-btn active" id="role-btn-doc" title="View as Doctor (EHR Consultation Station)">🩺 Doctor Station</button>
+            <button type="button" class="role-btn" id="role-btn-pat" title="View as Patient (MyHealth Portal)">👤 Patient Portal</button>
+            <button type="button" class="role-btn" id="role-btn-ph" title="View as Hospital Pharmacist">💊 Pharmacy</button>
+            <button type="button" class="role-btn" id="role-btn-reg" title="View as Pharmacovigilance Authority">🏛️ Regulator</button>
           </div>
 
-          <!-- Action Buttons -->
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-demo" title="Run Guided Demonstration Simulation">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            Demo Simulation
-          </button>
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-open-settings" title="API Credentials Configuration">
+          <!-- Subtle Settings Icon -->
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-open-settings" title="System Configuration &amp; Keys" style="padding:6px 10px;">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-            Keys
           </button>
         </div>
       </header>
@@ -887,6 +869,10 @@
                   <!-- Populated dynamically -->
                 </select>
               </div>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-open-rx-modal" title="Generate Official Hospital Prescription Slip (Print)">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Official Rx Slip
+              </button>
             </div>
           </div>
 
@@ -894,7 +880,7 @@
           <div class="patient-banner-card">
             <div class="patient-banner-left">
               <div class="patient-selector-wrap">
-                <label for="doc-patient-select" class="clinical-label">Select Patient File:</label>
+                <label for="doc-patient-select" class="clinical-label">Select Patient Master Record:</label>
                 <select id="doc-patient-select" class="form-select" style="min-width:260px;font-weight:700;">
                   <!-- Populated dynamically -->
                 </select>
@@ -915,11 +901,11 @@
               <div class="clinical-col-header">
                 <div class="col-title-wrap">
                   <span class="col-icon">📋</span>
-                  <h3 class="col-title">Longitudinal Encounters</h3>
+                  <h3 class="col-title">Longitudinal Medical Chart</h3>
                 </div>
                 <span class="badge badge-neutral" id="doc-encounter-count">0 Visits</span>
               </div>
-              <p class="col-desc">Complete cross-doctor consultation timeline across all hospitals and clinics.</p>
+              <p class="col-desc">Complete cross-physician encounter history and previous prescriptions across all hospitals.</p>
               
               <div class="encounter-timeline-feed" id="doc-encounter-feed">
                 <!-- Encounter history cards rendered here -->
@@ -931,29 +917,29 @@
               <div class="clinical-col-header">
                 <div class="col-title-wrap">
                   <span class="col-icon">🩺</span>
-                  <h3 class="col-title">Current Consultation &amp; Rx Pad</h3>
+                  <h3 class="col-title">Consultation &amp; e-Prescribing Pad</h3>
                 </div>
-                <span class="badge badge-blue">Active Encounter</span>
+                <span class="badge badge-blue">Active Consultation</span>
               </div>
 
               <!-- Consultation Encounter Form -->
               <form id="doc-consultation-form" onsubmit="return false;" class="clinical-form">
                 <div class="form-row-2">
                   <div class="form-group">
-                    <label class="clinical-label">Visit Timestamp</label>
+                    <label class="clinical-label">Consultation Date &amp; Time</label>
                     <input type="text" id="doc-visit-ts" class="form-input form-input-sm" readonly>
                   </div>
                   <div class="form-group">
-                    <label class="clinical-label">Provisional / Final Diagnosis <span class="required">*</span></label>
-                    <input type="text" id="doc-diagnosis" class="form-input form-input-sm" placeholder="e.g. Peripheral dependent oedema" required>
+                    <label class="clinical-label">ICD-10 Clinical Diagnosis <span class="required">*</span></label>
+                    <input type="text" id="doc-diagnosis" class="form-input form-input-sm" placeholder="e.g. R60.0 - Localized Pedal Oedema" required>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="clinical-label">Chief Complaint / Cause of Visit <span class="required">*</span></label>
-                  <input type="text" id="doc-chief-complaint" list="reactions-datalist" class="form-input" placeholder="e.g. Bilateral ankle swelling and tight shoes for 10 days" required autocomplete="off">
+                  <label class="clinical-label">Chief Complaint / Reason for Visit <span class="required">*</span></label>
+                  <input type="text" id="doc-chief-complaint" list="reactions-datalist" class="form-input" placeholder="e.g. Bilateral ankle swelling and shoe tightness for 10 days" required autocomplete="off">
                   <datalist id="reactions-datalist"></datalist>
-                  <span class="form-hint">State the primary symptom or clinical reason reported by the patient.</span>
+                  <span class="form-hint">State the primary symptom reported by patient during triage.</span>
                 </div>
 
                 <!-- Objective Vitals Strip -->
@@ -982,74 +968,102 @@
 
                 <div class="form-group">
                   <label class="clinical-label">Clinical Observations &amp; Progress Notes (SOAP)</label>
-                  <textarea id="doc-clinical-notes" class="form-textarea" rows="2" placeholder="Physical examination findings, oedema pitting grading, auscultation notes..."></textarea>
+                  <textarea id="doc-clinical-notes" class="form-textarea" rows="2" placeholder="Examination findings, pedal oedema grading (e.g. 2+ pitting), cardiovascular status..."></textarea>
                 </div>
 
                 <!-- Prescription Section -->
                 <div class="rx-pad-section">
                   <div class="rx-pad-header">
-                    <h4>Electronic Prescription (e-Rx)</h4>
-                    <span class="badge badge-purple">Formulary Verified</span>
+                    <h4>Hospital e-Prescription (Formulary Verified)</h4>
+                    <span class="badge badge-purple">Electronic Rx</span>
                   </div>
 
                   <!-- Drug Add Row -->
                   <div class="rx-add-box">
                     <div class="rx-row-top">
                       <div class="form-group" style="flex:2;">
-                        <label class="clinical-label">Select Medication <span class="required">*</span></label>
+                        <label class="clinical-label">Hospital Formulary Drug <span class="required">*</span></label>
                         <select id="doc-rx-drug-select" class="form-select form-select-sm">
-                          <option value="">-- Choose drug from catalogue --</option>
+                          <option value="">-- Choose drug from hospital formulary --</option>
                         </select>
                       </div>
                       <div class="form-group" style="flex:1;">
-                        <label class="clinical-label">Dose (mg)</label>
+                        <label class="clinical-label">Strength (mg)</label>
                         <input type="number" step="0.5" id="doc-rx-dose" class="form-input form-input-sm" placeholder="e.g. 20">
+                      </div>
+                      <div class="form-group" style="flex:1;">
+                        <label class="clinical-label">Dosage Form</label>
+                        <select id="doc-rx-form" class="form-select form-select-sm">
+                          <option value="Tablet">Tablet (Tab)</option>
+                          <option value="Capsule">Capsule (Cap)</option>
+                          <option value="Syrup">Syrup (Syr)</option>
+                          <option value="Injection">Injection (Inj)</option>
+                        </select>
                       </div>
                     </div>
                     <div class="rx-row-bottom">
-                      <div class="form-group" style="flex:1.5;">
-                        <label class="clinical-label">Frequency / Timing</label>
+                      <div class="form-group" style="flex:1.4;">
+                        <label class="clinical-label">Dosage Schedule</label>
                         <select id="doc-rx-frequency" class="form-select form-select-sm">
-                          <option value="Once Daily (Morning)">Once Daily (Morning)</option>
-                          <option value="Once Daily (Night)">Once Daily (Night)</option>
-                          <option value="Twice Daily (After Meals)">Twice Daily (After Meals)</option>
-                          <option value="Thrice Daily">Thrice Daily</option>
-                          <option value="As Needed (SOS)">As Needed (SOS)</option>
+                          <option value="1-0-0 (Once Daily Morning)">1-0-0 (Once Daily Morning)</option>
+                          <option value="0-0-1 (Once Daily Bedtime)">0-0-1 (Once Daily Bedtime)</option>
+                          <option value="1-0-1 (Twice Daily)">1-0-1 (Twice Daily)</option>
+                          <option value="1-1-1 (Thrice Daily)">1-1-1 (Thrice Daily)</option>
+                          <option value="SOS (As Needed)">SOS (As Needed)</option>
                         </select>
                       </div>
-                      <div class="form-group" style="flex:1;">
-                        <label class="clinical-label">Duration (Days)</label>
+                      <div class="form-group" style="flex:1.2;">
+                        <label class="clinical-label">Food Timing</label>
+                        <select id="doc-rx-food" class="form-select form-select-sm">
+                          <option value="After Food (PC)">After Food (PC)</option>
+                          <option value="Before Food (AC)">Before Food (AC)</option>
+                          <option value="With Meals">With Meals</option>
+                        </select>
+                      </div>
+                      <div class="form-group" style="flex:0.8;">
+                        <label class="clinical-label">Days</label>
                         <input type="number" id="doc-rx-duration" class="form-input form-input-sm" value="30">
                       </div>
-                      <div class="form-group" style="flex:2;">
-                        <label class="clinical-label">Indication (Prescribed For)</label>
+                      <div class="form-group" style="flex:1.6;">
+                        <label class="clinical-label">Clinical Indication / Cause</label>
                         <input type="text" id="doc-rx-indication" class="form-input form-input-sm" placeholder="e.g. Peripheral swelling">
                       </div>
                       <div class="form-group" style="align-self:flex-end;">
-                        <button type="button" class="btn btn-secondary btn-sm" id="btn-doc-add-drug">+ Add Drug</button>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-doc-add-drug">+ Add Rx</button>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Real-Time CASCADE Interception Co-Pilot Banner -->
+                  <!-- Real-Time Hospital CDSS Prescribing Cascade Interception Banner -->
                   <div class="cascade-interception-card" id="doc-cascade-copilot" hidden>
                     <div class="cascade-copilot-header">
                       <div class="copilot-alert-badge">
                         <span class="copilot-pulse"></span>
-                        <span id="doc-copilot-level">HIGH SUSPICION CASCADE</span>
+                        <span id="doc-copilot-level">CDSS LEVEL 1 ALERT — HIGH-RISK PRESCRIBING CASCADE</span>
                       </div>
-                      <span class="copilot-model-tag">CASCADE Loop 1 Live Interceptor</span>
+                      <span class="copilot-model-tag">CASCADE CDSS Active</span>
                     </div>
                     <div class="copilot-body">
-                      <h4 class="copilot-title" id="doc-copilot-title">Prescribing Cascade Warning</h4>
+                      <h4 class="copilot-title" id="doc-copilot-title">Suspected Prescribing Cascade: Adverse Reaction Mistaken for New Disease</h4>
                       <p class="copilot-text" id="doc-copilot-text">
-                        The candidate drug appears to treat an adverse effect of a recently initiated medication from another prescriber.
+                        The candidate medication addresses a known adverse effect of a recently initiated drug prescribed by another physician.
                       </p>
                       <div class="copilot-evidence-box" id="doc-copilot-evidence">
                         <!-- Evidence breakdown -->
                       </div>
                       <div class="copilot-recommendation" id="doc-copilot-recom">
                         <!-- Clinical recommendation -->
+                      </div>
+                      <div class="copilot-action-row" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                        <button type="button" class="btn btn-sm btn-primary" id="btn-cdss-substitute" style="background:#0284C7;font-size:11.5px;">
+                          ⚡ Auto-Substitute with ARB (Telmisartan 40mg)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" id="btn-cdss-titrate" style="font-size:11.5px;">
+                          ⚡ Titrate Primary Drug (Amlodipine 2.5mg)
+                        </button>
+                        <button type="button" class="btn btn-sm btn-secondary" id="btn-cdss-override" style="font-size:11.5px;color:#991B1B;">
+                          Override Alert with Justification
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1059,17 +1073,17 @@
                     <table class="table-compact" id="doc-rx-table">
                       <thead>
                         <tr>
-                          <th>Medication</th>
-                          <th>Dose</th>
-                          <th>Schedule</th>
+                          <th>Medication &amp; Form</th>
+                          <th>Strength</th>
+                          <th>Dosage Schedule</th>
+                          <th>Food Timing</th>
                           <th>Duration</th>
-                          <th>Prescribed For</th>
-                          <th>Cascade Risk</th>
+                          <th>Indication (Cause)</th>
+                          <th>CDSS Safety Status</th>
                           <th>Action</th>
                         </tr>
                       </thead>
                       <tbody id="doc-rx-items-body">
-                        <!-- Added drugs -->
                       </tbody>
                     </table>
                   </div>
@@ -1363,6 +1377,153 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" id="btn-guide-close-foot">Understood</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= OFFICIAL HOSPITAL E-PRESCRIPTION SLIP MODAL ================= -->
+  <div class="modal-backdrop" id="modal-hospital-rx" hidden>
+    <div class="modal-box modal-lg hospital-rx-modal-container" role="dialog" aria-modal="true" aria-labelledby="rx-slip-title">
+      <div class="modal-header rx-modal-top-bar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">📄</span>
+          <h3 id="rx-slip-title" style="margin:0;font-size:16px;">Apex Hospital · Official e-Prescription (Rx)</h3>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-print-rx-slip">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            Print Prescription
+          </button>
+          <button type="button" class="btn-close-modal" id="btn-close-rx-modal">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body hospital-rx-scroll-body">
+        <div class="hospital-rx-document" id="printable-rx-doc">
+          <!-- Hospital Official Letterhead -->
+          <div class="rx-header-banner">
+            <div class="rx-hospital-emblem">
+              <svg viewBox="0 0 48 48" width="44" height="44" fill="none">
+                <rect width="48" height="48" rx="8" fill="#0F766E"/>
+                <path d="M24 10V38M10 24H38" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="rx-hospital-identity">
+              <h2 class="rx-hospital-name">APEX MULTI-SPECIALTY HOSPITAL &amp; RESEARCH INSTITUTE</h2>
+              <div class="rx-hospital-sub">NABH ACCREDITED · JCI COMPLIANT · TERTIARY REFERRAL CENTRE</div>
+              <div class="rx-hospital-contact">120 Jawaharlal Nehru Road, Anna Nagar, Chennai 600040 | Ph: +91 44 2626 9000 | 24x7 Emergency: 1066</div>
+            </div>
+            <div class="rx-header-right">
+              <div class="rx-badge-nabh">NABH / 2024 / H-8841</div>
+              <div class="rx-opd-meta">OPD CLINIC 204</div>
+            </div>
+          </div>
+
+          <div class="rx-divider-double"></div>
+
+          <!-- Physician and Patient Meta Block -->
+          <div class="rx-meta-grid">
+            <div class="rx-physician-pane">
+              <div class="rx-pane-title">ATTENDING CONSULTANT</div>
+              <div class="rx-doc-name" id="rx-print-doc-name">Dr. Priya Swaminathan, MD, DM</div>
+              <div class="rx-doc-dept" id="rx-print-doc-dept">Department of Cardiology</div>
+              <div class="rx-doc-reg" id="rx-print-doc-reg">MCI Reg No: MCI-2012-44918 · Room: OPD 204</div>
+            </div>
+            <div class="rx-patient-pane">
+              <div class="rx-pane-title">PATIENT PARTICULARS</div>
+              <div class="rx-patient-row">
+                <span class="rx-lbl">UHID:</span> <strong id="rx-print-uhid">UHID-2024-00104</strong> &nbsp;|&nbsp; 
+                <span class="rx-lbl">Date:</span> <strong id="rx-print-date">18-Oct-2026</strong>
+              </div>
+              <div class="rx-patient-row">
+                <span class="rx-lbl">Patient:</span> <strong id="rx-print-pat-name">Rajesh Kumar</strong> &nbsp;|&nbsp; 
+                <span class="rx-lbl">Age/Sex:</span> <span id="rx-print-pat-age">58 Yrs / Male</span>
+              </div>
+              <div class="rx-patient-row">
+                <span class="rx-lbl">Vitals:</span> <span id="rx-print-pat-vitals">BP: 130/80 mmHg | Pulse: 72 bpm | Wt: 68 kg</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="rx-divider-single"></div>
+
+          <!-- Clinical Diagnosis & Chief Complaint -->
+          <div class="rx-clinical-summary-box">
+            <div class="rx-sum-item">
+              <span class="rx-sum-lbl">Chief Complaint (Cause of Visit):</span>
+              <span class="rx-sum-val" id="rx-print-cause">Bilateral ankle swelling and pedal oedema for 10 days</span>
+            </div>
+            <div class="rx-sum-item">
+              <span class="rx-sum-lbl">Provisional Diagnosis:</span>
+              <span class="rx-sum-val" id="rx-print-diagnosis">Essential (Primary) Hypertension (I10)</span>
+            </div>
+            <div class="rx-sum-item" id="rx-print-allergies-wrap">
+              <span class="rx-sum-lbl">Known Allergies / Chronic Conditions:</span>
+              <span class="rx-sum-val" id="rx-print-conditions">Type-2 Diabetes Mellitus, Dyslipidemia (Penicillin: No Known Allergy)</span>
+            </div>
+          </div>
+
+          <!-- Rx Section -->
+          <div class="rx-body-section">
+            <div class="rx-symbol">℞</div>
+            <table class="rx-print-table">
+              <thead>
+                <tr>
+                  <th style="width:5%;">#</th>
+                  <th style="width:35%;">Generic &amp; Brand Medication</th>
+                  <th style="width:18%;">Strength &amp; Form</th>
+                  <th style="width:18%;">Schedule (M-A-N)</th>
+                  <th style="width:14%;">Food Timing</th>
+                  <th style="width:10%;">Duration</th>
+                </tr>
+              </thead>
+              <tbody id="rx-print-table-body">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Advice & Follow up -->
+          <div class="rx-advice-section">
+            <div class="rx-advice-title">CLINICAL ADVICE &amp; INVESTIGATIONS:</div>
+            <ul class="rx-advice-list" id="rx-print-advice-list">
+              <li>Adhere strictly to daily dosage schedule; take at consistent times.</li>
+              <li>Low sodium diet (&lt; 2g salt/day); monitor daily morning blood pressure readings.</li>
+              <li>Serum Electrolytes (Na+, K+, Creatinine) check after 14 days.</li>
+              <li>Review in Cardiology OPD Clinic 204 after 30 days or immediately if dyspnoea/swelling worsens.</li>
+            </ul>
+          </div>
+
+          <!-- CDSS Safety Verification Seal & Signatures -->
+          <div class="rx-footer-block">
+            <div class="rx-cdss-seal">
+              <div class="rx-seal-badge">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0F766E" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>CASCADE CDSS VALIDATED</span>
+              </div>
+              <div class="rx-seal-text">
+                Cross-physician prescribing sequence symmetry checked. Zero active cascade risks detected.
+              </div>
+              <div class="rx-hash-stamp" id="rx-print-hash">
+                DIGITAL VERIFICATION: SHA256-EHR-7721-BC49-9A02 · TIME: 2026-10-18T02:45:00+05:30
+              </div>
+            </div>
+
+            <div class="rx-signature-box">
+              <div class="rx-sig-line"></div>
+              <div class="rx-sig-name" id="rx-sig-doc-name">Dr. Priya Swaminathan, MD, DM</div>
+              <div class="rx-sig-sub">Senior Consultant Cardiologist</div>
+              <div class="rx-sig-date">Digitally Signed &amp; Approved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-close-rx-modal-foot">Close</button>
+        <button type="button" class="btn btn-primary" id="btn-print-rx-slip-foot">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:4px;"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Prescription Slip
+        </button>
       </div>
     </div>
   </div>

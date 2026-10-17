@@ -36,17 +36,20 @@ def _now() -> str:
 class PrescriptionItem(BaseModel):
     drug_id: str
     generic_name: str
-    atc_l4: str
-    dose_mg: float = Field(ge=0)
-    frequency: str = "Once Daily (Morning)"
+    atc_l4: str = ""
+    dose_mg: float = Field(default=0.0, ge=0)
+    dosage_form: str = "Tablet"
+    frequency: str = "1-0-0 (Once Daily Morning)"
+    food_timing: str = "After Food (PC)"
     duration_days: int = 30
     indication: str = ""
+    is_cascade: bool = False
 
 
 class EncounterCreate(BaseModel):
     patient_id: str
     doctor_id: str
-    visit_ts: str
+    visit_ts: str = ""
     chief_complaint: str
     vitals: dict[str, Any] = Field(default_factory=dict)
     clinical_notes: str = ""
