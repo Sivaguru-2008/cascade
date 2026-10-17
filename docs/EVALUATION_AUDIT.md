@@ -77,7 +77,7 @@ A critical question for technical judges is distinguishing between what was **ph
 
 | IBM Z / LinuxONE Capability | Status | Evidence & Verification Reference |
 |---|:---:|---|
-| **s390x Native Compatibility** | ✅ **VERIFIED** | Successfully compiled, containerized, and benchmarked on active IBM LinuxONE Community Cloud VM (`cascadevm`, IP: `148.100.98.73`, `uname -m = s390x`). See [VM Portal Proof](screenshots/ibm_linuxone_instance_proof.png) and [`evidence.txt`](screenshots/evidence.txt). |
+| **s390x Native Compatibility** | ✅ **VERIFIED** | Successfully compiled, containerized, and benchmarked on active IBM LinuxONE Community Cloud VM (`cascadevm`, IP: `[REDACTED]`, `uname -m = s390x`). See [VM Portal Proof](screenshots/ibm_linuxone_instance_proof.png) and [`evidence.txt`](screenshots/evidence.txt). |
 | **CPACF Hardware Cryptography** | ✅ **VERIFIED** | Kernel drivers `gcm-aes-s390` (priority 900) and `aes-s390` (priority 300) verified in `/proc/crypto`; OpenSSL EVP benchmark clocked at **13.3 GB/s**. |
 | **Microservices Container Stack** | ✅ **VERIFIED** | 7 microservices running on Debian Bookworm `s390x` multi-arch container images using rootless Podman. |
 | **Mainframe Stream Throughput** | ✅ **VERIFIED** | **9,355.5 events/sec** sustained scoring throughput with **6.0 ms median latency**. |

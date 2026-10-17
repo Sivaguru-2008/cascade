@@ -6,7 +6,7 @@
 > - **VM Name:** `cascadevm`
 > - **Flavor Profile:** `AI_LAB` (3 vCPUs, 8,192 MB RAM, 50 GB Root Disk)
 > - **OS:** Ubuntu 22.04 LTS (`Linux cascadevm 5.15.0-56-generic s390x`)
-> - **Assigned Public IP:** `148.100.98.73`
+> - **Assigned Public IP:** `[REDACTED]` (Masked for Security)
 > - **Linux User & Key Pair:** `linux1` &bull; `cascade`
 > - **Verified Portal Proof:** [`docs/screenshots/ibm_linuxone_instance_proof.png`](../docs/screenshots/ibm_linuxone_instance_proof.png)
 

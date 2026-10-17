@@ -88,7 +88,7 @@ CASCADE was engineered specifically to capitalize on the architectural strengths
 
 > [!IMPORTANT]
 > **Verified Native Deployment on IBM LinuxONE Community Cloud:**
-> CASCADE is not a simulated or theoretical prototype. It was provisioned, deployed, and benchmarked natively on the **IBM LinuxONE Community Cloud** on an active `s390x` virtual server (**VM Name: `cascadevm`**, IP: `148.100.98.73`, Flavor: `AI_LAB` with 3 vCPUs, 8 GB RAM, 50 GB storage, Ubuntu 22.04 LTS). See [**Live VM Console & Hardware Proof**](#5-ibm-linuxone-s390x-native-cloud-instance--hardware-evidence).
+> CASCADE is not a simulated or theoretical prototype. It was provisioned, deployed, and benchmarked natively on the **IBM LinuxONE Community Cloud** on an active `s390x` virtual server (**VM Name: `cascadevm`**, IP: `[REDACTED FOR SECURITY]`, Flavor: `AI_LAB` with 3 vCPUs, 8 GB RAM, 50 GB storage, Ubuntu 22.04 LTS). See [**Live VM Console & Hardware Proof**](#5-ibm-linuxone-s390x-native-cloud-instance--hardware-evidence).
 
 ### 1. CPACF Hardware Cryptography & 13.3 GB/s Throughput
 Every point-of-sale dispensing transaction and population history payload requires encryption at rest and in transit. On general-purpose x86 servers, cryptographic overhead severely degrades streaming inference throughput. 
@@ -224,7 +224,7 @@ All metrics are experimentally measured on an **IBM LinuxONE Community Cloud VM*
 |---|---|:---:|
 | **Virtual Server Name** | `cascadevm` | ✅ **ACTIVE** |
 | **Architecture** | **IBM z/Architecture (`s390x`)** &mdash; Machine Type `8561` (IBM LinuxONE III / z15) | ✅ Verified |
-| **Public IP Address** | `148.100.98.73` | ✅ Allocated |
+| **Public IP Address** | `[REDACTED / SECURED]` | ✅ Masked for Security |
 | **Instance Flavor** | `AI_LAB` (3 vCPUs, 8,192 MB RAM, 50 GB Root Disk) | ✅ Provisioned |
 | **Operating System** | Ubuntu 22.04 LTS (`Linux cascadevm 5.15.0-56-generic s390x`) | ✅ Deployed |
 | **Linux User & Key** | User: `linux1` &bull; Key Pair: `cascade` | ✅ Authenticated |
@@ -357,7 +357,7 @@ Benchmarked directly on the active **IBM LinuxONE Community Cloud** instance ([`
 
 > [!NOTE]
 > **Complete Verifiable Hardware Proof & Audit Trail:**
-> - **Cloud Portal Proof:** Verified instance snapshot at [`docs/screenshots/ibm_linuxone_instance_proof.png`](docs/screenshots/ibm_linuxone_instance_proof.png) (VM `cascadevm`, IP `148.100.98.73`, Flavor `AI_LAB`).
+> - **Cloud Portal Proof:** Verified instance snapshot at [`docs/screenshots/ibm_linuxone_instance_proof.png`](docs/screenshots/ibm_linuxone_instance_proof.png) (VM `cascadevm`, IP `[REDACTED]`, Flavor `AI_LAB`).
 > - **Hardware Terminal Evidence:** Raw output log of `uname -a`, `/proc/cpuinfo` flags, `/proc/crypto` drivers, OpenSSL EVP speeds, and container health checks at [`docs/screenshots/evidence.txt`](docs/screenshots/evidence.txt).
 
 ---
