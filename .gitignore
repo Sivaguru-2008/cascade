@@ -6,8 +6,6 @@ secrets/
 
 # generated data and artefacts
 data/generated/
-loop1/model/*
-!loop1/model/.gitkeep
 docs/screenshots/evidence_*.txt
 
 # python

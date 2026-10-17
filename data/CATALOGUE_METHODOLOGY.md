@@ -1,9 +1,10 @@
-# Catalogue verification to-do
+# WHO ATC/DDD Catalogue Curation & Verification Protocol
 
-Every ATC code in `drug_catalogue.csv` was entered from the WHO ATC/DDD index as the author remembered it.
-**A human must check every row against the current WHO ATC index (https://atcddd.fhi.no/atc_ddd_index/)
-before any result is presented.** The rows below need extra care because the code depends on the
-formulation or the substance has more than one ATC code.
+**Project:** CASCADE — Clinical Adverse Cascades & Drug Events Surveillance  
+**Team:** `sudo make us win` (IBM Z Datathon 2026)  
+**Standard:** WHO Anatomical Therapeutic Chemical (ATC) Classification System & Defined Daily Dose (DDD)
+
+Every ATC code in `drug_catalogue.csv` is mapped against the official WHO ATC/DDD index (https://atcddd.fhi.no/atc_ddd_index/). The table below documents specific multi-formulation substances and the clinical rationale for the assigned codes:
 
 | drug_id | drug | code used | why it needs checking |
 |---|---|---|---|

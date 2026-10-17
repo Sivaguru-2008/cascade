@@ -1,0 +1,64 @@
+{
+  "variant": "full",
+  "ml_backend": "xgboost",
+  "arch": "AMD64",
+  "fit_seconds": 0.6,
+  "sizes": {
+    "train": 37689,
+    "validation": 20982
+  },
+  "class_balance": {
+    "train_pos": 673,
+    "train_neg": 37016,
+    "val_pos": 369,
+    "val_neg": 20613
+  },
+  "validation": {
+    "blend": {
+      "threshold": 0.740281,
+      "precision": 0.8205,
+      "recall": 0.9783,
+      "f1": 0.8925,
+      "pr_auc": 0.9508,
+      "confusion": {
+        "tp": 361,
+        "fp": 79,
+        "fn": 8,
+        "tn": 20534
+      }
+    },
+    "m1": {
+      "threshold": 0.914344,
+      "precision": 0.8208,
+      "recall": 0.9431,
+      "f1": 0.8777,
+      "pr_auc": 0.9285,
+      "confusion": {
+        "tp": 348,
+        "fp": 76,
+        "fn": 21,
+        "tn": 20537
+      }
+    },
+    "m2": {
+      "threshold": 0.960525,
+      "precision": 0.82,
+      "recall": 0.3333,
+      "f1": 0.474,
+      "pr_auc": 0.5839,
+      "confusion": {
+        "tp": 123,
+        "fp": 27,
+        "fn": 246,
+        "tn": 20586
+      }
+    }
+  },
+  "weights": {
+    "m1": 0.75,
+    "asr": 0.05,
+    "known": 0.2
+  },
+  "threshold_rule": "lowest threshold with validation precision >= 0.82",
+  "validation_pr_auc_at_tuned_weights": 0.9508
+}

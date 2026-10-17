@@ -1,4 +1,4 @@
-# Build prompt: CASCADE (IBM Z Datathon 2026, Team OVERCLOCKED)
+# Build prompt: CASCADE (IBM Z Datathon 2026, Team sudo make us win)
 
 > **How to use this prompt.** Paste everything below the line into your AI coding agent (Claude Code, Cursor, Copilot agent, etc.) **after the Datathon kickoff on 17 Oct 2026**. The rules forbid project code written before kickoff. Run the agent once per phase: tell it "Do Phase N only", review its output, commit, then continue. Do not let it run all phases unattended. Keep this file in the repo as `docs/AGENT_PROMPT.md`.
 
@@ -143,7 +143,7 @@ One `Containerfile.app` builds a Python image used by all app services, with a d
 Columns: `drug_id, generic_name, atc_code, atc_l4, atc_l3, is_marker_class, typical_daily_dose_mg`.
 
 - Include about 120 commonly dispensed drugs. They must cover every drug in the cascade table below, plus common chronic medicines (antihypertensives, antidiabetics, statins, antiplatelets, PPIs, analgesics, antibiotics, antidepressants, antipsychotics, antiparkinson agents, urological drugs, antihistamines, laxatives, hypnotics).
-- Take ATC codes from the WHO ATC index. If you are unsure of a code, leave a `# VERIFY` note in a separate `data/catalogue_todo.md`. Do not invent codes.
+- Take ATC codes from the WHO ATC index. If you are unsure of a code, leave a `# VERIFY` note in a separate `data/CATALOGUE_METHODOLOGY.md`. Do not invent codes.
 - Add the fictional drug `Novacor` with `drug_id=DNOVA`, `atc_code=C09XX99` (clearly fake, flagged fictional) and `atc_l3=C09` (renin–angiotensin agents).
 - `is_marker_class = 1` for: loop and thiazide diuretics, antitussives, antiparkinson agents, anticholinergics, urinary antimuscarinics, antiemetics, vestibular sedatives, laxatives, PPIs, antihistamines, potassium supplements, allopurinol, hypnotics.
 
@@ -561,7 +561,7 @@ Commit after each phase with message `phase N: <summary>`.
 | 8 | Dashboard: three panels, SSE, demo-script button | Demo flow runs start to finish in the browser |
 | 9 | Containers + compose + LinuxONE deployment guide | `run_all.sh` brings everything up on the VM; `uname -m` = s390x shown on the dashboard |
 | 10 | Evaluation scripts + `docs/evaluation.md` on the VM | Report generated from real runs; all four sections present |
-| 11 | README finalisation | Problem, architecture image, how to run, dataset/library attributions with links and licences, honest limitations, team, the hackathon title `OVERCLOCKED_IBM Z Datathon 2026 Project` |
+| 11 | README finalisation | Problem, architecture image, how to run, dataset/library attributions with links and licences, honest limitations, team, the hackathon title `sudo make us win_IBM Z Datathon 2026 Project` |
 
 **Priority if time runs short** (cut from the bottom of this list first):
 - **Never cut:** Loop 1 live alert, the H1 discovery, LinuxONE evidence, the evaluation report.

@@ -1,4 +1,4 @@
-"""CASCADE Automated Verification Suite (Team sudo, IBM Z Datathon 2026).
+"""CASCADE Automated Verification Suite (Team sudo make us win, IBM Z Datathon 2026).
 
 One single command that allows hackathon judges to verify the entire system:
   python -m eval.verify_all

@@ -1,5 +1,11 @@
 # CASCADE: Benchmark Methodology & Technical Verification Audit
 
+**Project:** CASCADE — Clinical Adverse Cascades & Drug Events Surveillance  
+**Built for:** IBM Z Datathon 2026  
+**Team:** `sudo make us win`  
+**Host Architecture:** IBM LinuxONE Community Cloud Virtual Server (`s390x`, VM: `cascadevm`, IP: `148.100.98.73`)  
+**Instance Proof:** [`docs/screenshots/ibm_linuxone_instance_proof.png`](screenshots/ibm_linuxone_instance_proof.png)
+
 This document provides complete, transparent, and reproducible technical specifications for all benchmark results reported for **CASCADE** on **IBM LinuxONE (s390x)** during the **IBM Z Datathon 2026**.
 
 ---

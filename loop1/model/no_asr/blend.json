@@ -1,0 +1,27 @@
+{
+  "variant": "no_asr",
+  "dropped_features": [
+    "A_atc_l3",
+    "B_atc_l3",
+    "pair_in_known_list",
+    "pair_aSR_live",
+    "pair_aSR_lower_ci"
+  ],
+  "ml_backend": "xgboost",
+  "weights": {
+    "m1": 0.8,
+    "asr": 0.0,
+    "known": 0.2
+  },
+  "weights_default": {
+    "m1": 0.6,
+    "asr": 0.2,
+    "known": 0.2
+  },
+  "weights_tuned_on": "validation 2025-01-01..2025-06-30, max PR-AUC",
+  "threshold": 0.7653804421424866,
+  "threshold_rule": "lowest threshold with validation precision >= 0.82",
+  "m1_threshold": 0.964897871017456,
+  "m2_threshold": 0.7937944531440735,
+  "trained_at": "2026-10-18T00:06:26"
+}

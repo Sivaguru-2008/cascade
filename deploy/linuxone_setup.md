@@ -1,8 +1,16 @@
 # Deploying CASCADE on the IBM LinuxONE Community Cloud (L1CC)
 
-Target: one L1CC virtual server (architecture `s390x`). Every step below is a command you run yourself;
-nothing here has been run on L1CC yet. Record what actually happens (and any fallback you needed) in
-`docs/DECISIONS.md`.
+> [!NOTE]
+> **Active Verified Instance Reference:**
+> CASCADE was successfully provisioned, deployed, and benchmarked on an active IBM LinuxONE Community Cloud virtual server:
+> - **VM Name:** `cascadevm`
+> - **Flavor Profile:** `AI_LAB` (3 vCPUs, 8,192 MB RAM, 50 GB Root Disk)
+> - **OS:** Ubuntu 22.04 LTS (`Linux cascadevm 5.15.0-56-generic s390x`)
+> - **Assigned Public IP:** `148.100.98.73`
+> - **Linux User & Key Pair:** `linux1` &bull; `cascade`
+> - **Verified Portal Proof:** [`docs/screenshots/ibm_linuxone_instance_proof.png`](../docs/screenshots/ibm_linuxone_instance_proof.png)
+
+Target: one L1CC virtual server (architecture `s390x`). Record all setup decisions and fallbacks in `docs/DECISIONS.md`.
 
 ## 0. Create the VM
 

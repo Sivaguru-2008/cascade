@@ -5,7 +5,8 @@
 #### *Real-Time Dual-Loop Pharmacovigilance on IBM LinuxONE (s390x)*
 
 [![CI Test & Build](https://github.com/Sivaguru-2008/cascade/actions/workflows/ci.yml/badge.svg)](https://github.com/Sivaguru-2008/cascade/actions/workflows/ci.yml)
-[![Architecture: s390x](https://img.shields.io/badge/Architecture-IBM%20LinuxONE%20(s390x)-052FAD?logo=ibm&logoColor=white)](deploy/linuxone_setup.md)
+[![Architecture: s390x](https://img.shields.io/badge/Architecture-IBM%20LinuxONE%20(s390x)-052FAD?logo=ibm&logoColor=white)](docs/screenshots/ibm_linuxone_instance_proof.png)
+[![IBM LinuxONE Verified](https://img.shields.io/badge/IBM%20LinuxONE-VM%20Verified%20(cascadevm)-052FAD?logo=ibm&logoColor=white)](docs/screenshots/ibm_linuxone_instance_proof.png)
 [![Hardware Crypto: CPACF](https://img.shields.io/badge/CPACF-HW%20Accelerated%20(13.3%20GB%2Fs)-008080?logo=ibm&logoColor=white)](docs/screenshots/linuxone_cpacf_evidence.png)
 [![IBM Telum AI Ready](https://img.shields.io/badge/IBM%20Telum-NNPA%20%26%20SIMD%20Ready-0062FF?logo=ibm&logoColor=white)](docs/evaluation.md)
 [![IBM Secure Execution](https://img.shields.io/badge/Confidential%20Computing-IBM%20Secure%20Execution-198038?logo=ibm&logoColor=white)](docs/screenshots/linuxone_cpacf_evidence.png)
@@ -74,7 +75,7 @@ A **prescribing cascade** occurs when an adverse drug reaction (ADR) is misinter
 | Evaluation Criterion | The Problem | The CASCADE Innovation | Verified Proof & Metric |
 |---|---|---|---|
 | **1. Innovation & Clinical Impact** | Prescribing cascades cause massive preventable hospitalizations; 94% of ADRs are never reported. | Intercepts pharmacy dispensing streams in real time; generates automated CDSCO/PvPI regulatory dossiers. | **81.5% Precision, 98.0% Recall**; 0% hallucination rate on verified drafts. |
-| **2. IBM LinuxONE & s390x Exploitation** | Healthcare compliance demands ultra-fast transaction rates and end-to-end encryption. | Natively built and benchmarked on IBM LinuxONE VM; leverages hardware **CPACF** instructions. | **9,355 events/sec throughput**; **13.3 GB/s** AES-256-GCM hardware crypto. |
+| **2. IBM LinuxONE & s390x Exploitation** | Healthcare compliance demands ultra-fast transaction rates and end-to-end encryption. | Natively provisioned and benchmarked on IBM LinuxONE Community Cloud VM (`cascadevm`); leverages hardware **CPACF** instructions. | **9,355 events/sec throughput**; **13.3 GB/s** AES-256-GCM hardware crypto; [**Active VM Console Proof**](docs/screenshots/ibm_linuxone_instance_proof.png). |
 | **3. AI/ML Engineering & Explainability** | Black-box models cause alert fatigue; tabular healthcare data requires causal explainability. | Dual-Loop AI: XGBoost with monotonic aSR constraints + TreeSHAP attributions with top 3 clinical reasons. | **p50 = 6.0 ms latency**; TreeSHAP feature contributions rendered live in UI. |
 | **4. Statistical & Scientific Rigour** | Spurious statistical correlations and temporal prescribing trends trigger false alerts. | Crude Sequence Ratios normalized by Null Sequence Ratios (nSR) + Benjamini-Hochberg FDR control ($q < 0.05$). | **1,000 bootstrap resamples CI [0.783, 0.849]**; LOPO generalization verified on 9 pairs. |
 | **5. Confidentiality & Security** | Patient PII must never leak across hospital networks or multi-tenant clouds. | Zero-knowledge HMAC tokenization at the edge; database-level AES-256-GCM; $k \ge 5$ DP suppression. | **403 Forbidden enforcement**; immutable audit trail on every pharmacist action. |
@@ -84,6 +85,10 @@ A **prescribing cascade** occurs when an adverse drug reaction (ADR) is misinter
 ## 🔷 IBM Z & LinuxONE (s390x) Enterprise Architecture Deep Dive
 
 CASCADE was engineered specifically to capitalize on the architectural strengths of **IBM z/Architecture** and the **IBM LinuxONE** platform:
+
+> [!IMPORTANT]
+> **Verified Native Deployment on IBM LinuxONE Community Cloud:**
+> CASCADE is not a simulated or theoretical prototype. It was provisioned, deployed, and benchmarked natively on the **IBM LinuxONE Community Cloud** on an active `s390x` virtual server (**VM Name: `cascadevm`**, IP: `148.100.98.73`, Flavor: `AI_LAB` with 3 vCPUs, 8 GB RAM, 50 GB storage, Ubuntu 22.04 LTS). See [**Live VM Console & Hardware Proof**](#5-ibm-linuxone-s390x-native-cloud-instance--hardware-evidence).
 
 ### 1. CPACF Hardware Cryptography & 13.3 GB/s Throughput
 Every point-of-sale dispensing transaction and population history payload requires encryption at rest and in transit. On general-purpose x86 servers, cryptographic overhead severely degrades streaming inference throughput. 
@@ -205,8 +210,31 @@ All metrics are experimentally measured on an **IBM LinuxONE Community Cloud VM*
 
 ---
 
-### 5. IBM LinuxONE (s390x) Native Hardware & Crypto Evidence
-*Direct VM execution evidence: CPACF hardware acceleration, sub-10ms latency distribution, and LOPO cross-validation.*
+### 5. IBM LinuxONE (s390x) Native Cloud Instance & Hardware Evidence
+*Direct verifiable proof: active VM provisioning on IBM LinuxONE Community Cloud (`cascadevm` on s390x), CPACF hardware cryptographic acceleration (13.3 GB/s), and sub-10ms latency distribution.*
+<br><br>
+
+#### 🖥️ Proof 1: IBM LinuxONE Community Cloud Active Instance (`cascadevm`)
+*Official IBM LinuxONE Community Cloud console snapshot verifying the active s390x virtual server provisioned for CASCADE:*
+<br><br>
+<img src="docs/screenshots/ibm_linuxone_instance_proof.png" alt="IBM LinuxONE Community Cloud Active Instance Proof" width="920" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+<br><br>
+
+| Instance Parameter | IBM LinuxONE Community Cloud Portal Specification | Verified Live Status |
+|---|---|:---:|
+| **Virtual Server Name** | `cascadevm` | ✅ **ACTIVE** |
+| **Architecture** | **IBM z/Architecture (`s390x`)** &mdash; Machine Type `8561` (IBM LinuxONE III / z15) | ✅ Verified |
+| **Public IP Address** | `148.100.98.73` | ✅ Allocated |
+| **Instance Flavor** | `AI_LAB` (3 vCPUs, 8,192 MB RAM, 50 GB Root Disk) | ✅ Provisioned |
+| **Operating System** | Ubuntu 22.04 LTS (`Linux cascadevm 5.15.0-56-generic s390x`) | ✅ Deployed |
+| **Linux User & Key** | User: `linux1` &bull; Key Pair: `cascade` | ✅ Authenticated |
+| **Creation Date** | `2026-10-17 08:52:29 UTC` | ✅ Documented |
+| **Microservices Workload** | 7 healthy Docker microservices (`cascade-signals`, `cascade-scorer`, `cascade-genai`, `cascade-api`, `cascade-edge`, `cascade-postgres`, `cascade-redis`) | ✅ Up & Healthy |
+
+<br>
+
+#### ⚡ Proof 2: Direct s390x Host Execution & CPACF Hardware Cryptography
+*Direct terminal execution on `cascadevm` verifying `uname -m = s390x`, `msa` CPU facility flag, CPACF 13.3 GB/s throughput, and sub-10ms latency profile:*
 <br><br>
 <p align="center">
   <img src="docs/screenshots/linuxone_cpacf_evidence.png" alt="LinuxONE CPACF Evidence" width="450" />
@@ -316,7 +344,7 @@ Evaluated using local LLM inference (`Llama 3` via OpenAI-compatible endpoint) p
 
 ### 6. IBM LinuxONE CPACF Hardware Benchmarks & Throughput
 
-Benchmarked on **IBM LinuxONE Community Cloud** (`s390x`, Linux 5.15.0-56-generic s390x, 3 vCPUs):
+Benchmarked directly on the active **IBM LinuxONE Community Cloud** instance ([`cascadevm`](docs/screenshots/ibm_linuxone_instance_proof.png), `s390x`, Linux 5.15.0-56-generic s390x, 3 vCPUs, 8,192 MB RAM):
 
 | Benchmark Stage | Measured Throughput / Latency | Benchmark Significance |
 |---|:---:|---|
@@ -326,6 +354,11 @@ Benchmarked on **IBM LinuxONE Community Cloud** (`s390x`, Linux 5.15.0-56-generi
 | **Inference Latency: 99th Percentile (p99)** | **33.902 ms** | Includes periodic micro-batch consumer queueing. |
 | **Maximum Observed Latency (p100)** | **37.993 ms** | Zero thread blocking or execution stalls. |
 | **CPACF AES-256-GCM Hardware Crypto** | **13,304,194 kB/sec (~13.3 GB/s)** | Hardware-accelerated wire encryption (`msa` facility). |
+
+> [!NOTE]
+> **Complete Verifiable Hardware Proof & Audit Trail:**
+> - **Cloud Portal Proof:** Verified instance snapshot at [`docs/screenshots/ibm_linuxone_instance_proof.png`](docs/screenshots/ibm_linuxone_instance_proof.png) (VM `cascadevm`, IP `148.100.98.73`, Flavor `AI_LAB`).
+> - **Hardware Terminal Evidence:** Raw output log of `uname -a`, `/proc/cpuinfo` flags, `/proc/crypto` drivers, OpenSSL EVP speeds, and container health checks at [`docs/screenshots/evidence.txt`](docs/screenshots/evidence.txt).
 
 ---
 
@@ -402,9 +435,8 @@ pip install -r requirements.txt
 
 # 3. Launch the single-process frontend & API server
 python start_frontend.py
-# (Or run directly without activation: .venv/bin/python start_frontend.py or .venv\Scripts\python start_frontend.py)
 ```
-*Open **`http://localhost:8443`** in your browser. The dashboard launches with demo credentials pre-loaded!*
+*Open **`http://127.0.0.1:8000`** in your browser. (On IBM LinuxONE production with TLS, use `https://localhost:8443`). For complete step-by-step instructions across all platforms, see [**Quickstart Guide (`docs/QUICKSTART.md`)**](docs/QUICKSTART.md).*
 
 ---
 
@@ -478,18 +510,24 @@ To provide exhaustive technical proof addressing all judging evaluation criteria
 │   └── routes_*.py         # Endpoints: alerts, metrics, clinical data, and admin
 ├── common/                 # Shared database connectors, cryptographic primitives, and config
 ├── data/                   # Clinical catalogues, WHO ATC mappings, indications, and reactions
+│   ├── CATALOGUE_METHODOLOGY.md # WHO ATC/DDD curation protocol & evidence verification
 │   ├── cascades_known.csv  # Peer-reviewed known prescribing cascades (ThinkCascades)
 │   ├── indications.csv     # Approved indications for drug classes
 │   └── reactions.csv       # Known adverse reactions catalog
 ├── datagen/                # Synthetic patient generator, EHR simulator, and stream injector
 ├── deploy/                 # Docker Compose, Containerfile (Debian s390x), and launch scripts
 ├── docs/                   # Full documentation, architectural decisions, and benchmark data
+│   ├── QUICKSTART.md       # 3-minute evaluation guide for judges across all environments
+│   ├── BENCHMARK_METHODOLOGY.md # Deep dive into latency, throughput, and crypto benchmarks
+│   ├── EVALUATION_AUDIT.md # 4 critical experiments (H1 recovery, Null control, LOPO)
 │   ├── DECISIONS.md        # 12 recorded architectural design records & justifications
 │   ├── evaluation.md       # Reproducible benchmarks, bootstrap CIs, and LOPO evaluation
 │   └── screenshots/        # High-resolution UI captures and hardware verification logs
 ├── eval/                   # Benchmark harness, cross-platform validation, and report generator
+│   └── verify_all.py       # 1-click automated audit suite for hackathon judges (<0.1s)
 ├── genai/                  # Regulatory PvPI dossier builder, LLM connectors, and validator
 ├── loop1/                  # Real-Time Scorer: feature pipeline, XGBoost models, TreeSHAP
+│   └── model/              # Pre-trained models (full, no_asr, no_known ablations)
 ├── loop2/                  # Streaming PSSA: Sequence Symmetry Analysis & BH FDR control
 └── tests/                  # 87 automated tests covering unit, security, and edge cases
 ```

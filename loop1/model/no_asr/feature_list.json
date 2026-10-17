@@ -1,0 +1,31 @@
+{
+  "numeric": [
+    "days_since_A_start",
+    "B_is_marker_class",
+    "different_prescriber",
+    "n_active_drugs",
+    "age_band_ordinal",
+    "A_dose_increase_30d",
+    "B_started_before_A_ever"
+  ],
+  "categories": {
+    "sex": [
+      "F",
+      "M",
+      "U"
+    ]
+  },
+  "columns": [
+    "days_since_A_start",
+    "B_is_marker_class",
+    "different_prescriber",
+    "n_active_drugs",
+    "age_band_ordinal",
+    "A_dose_increase_30d",
+    "B_started_before_A_ever",
+    "sex=F",
+    "sex=M",
+    "sex=U"
+  ],
+  "asr_transform": "log(clip(x, 1e-3, 1000))"
+}
