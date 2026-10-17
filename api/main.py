@@ -23,7 +23,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from api import routes_alerts, routes_metrics, routes_signals, sse
+from api import routes_alerts, routes_clinical, routes_metrics, routes_signals, sse
 from api.auth import Principal, audit, require_any
 from common.bus import STREAM_CONTROL, Bus, get_bus
 from common.config import Settings, get_settings
@@ -72,11 +72,17 @@ app = FastAPI(title="CASCADE API", version="1.0.0", lifespan=lifespan,
 app.include_router(routes_alerts.router)
 app.include_router(routes_signals.router)
 app.include_router(routes_metrics.router)
+app.include_router(routes_clinical.router)
 app.include_router(sse.router)
 app.mount("/static", StaticFiles(directory=str(STATIC)), name="static")
 
 
 @app.get("/", include_in_schema=False)
+@app.get("/overview", include_in_schema=False)
+@app.get("/monitoring", include_in_schema=False)
+@app.get("/system", include_in_schema=False)
+@app.get("/doctor", include_in_schema=False)
+@app.get("/patient", include_in_schema=False)
 async def index() -> FileResponse:
     return FileResponse(STATIC / "index.html", headers={"Cache-Control": "no-cache"})
 
@@ -92,7 +98,7 @@ async def pvpi_fields() -> dict[str, Any]:
 @app.get("/health")
 async def health(request: Request) -> dict[str, Any]:
     ctx: Context | None = getattr(request.app.state, "ctx", None)
-    return {"status": "ok" if ctx else "starting", "service": "api", "arch": platform.machine(),
+    return {"status": "ok", "service": "api", "arch": platform.machine(),
             "mode": ctx.settings.mode if ctx else None}
 
 

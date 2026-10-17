@@ -1,0 +1,30 @@
+========================================================================
+CASCADE - IBM LinuxONE Prescribing Cascade Surveillance System
+========================================================================
+
+QUICK START INSTRUCTIONS:
+-------------------------
+1. Requirements:
+   - Python 3.10, 3.11, or 3.12 installed on Windows, Linux, or macOS.
+
+2. Setup (Optional - if dependencies not yet installed):
+   Open a terminal / command prompt in this folder and run:
+       pip install -r requirements.txt
+
+3. Start the Application:
+   Run the one-click frontend launcher:
+       python start_frontend.py
+
+4. Access the Dashboard:
+   Open your web browser and go to:
+       http://127.0.0.1:8000
+
+WHAT THIS PACKAGE INCLUDES:
+---------------------------
+- Interactive Pharmacy Counter & Cascade Surveillance Dashboard (api/static/)
+- IBM LinuxONE / s390x Hardware Telemetry (CPACF crypto, SIMD acceleration)
+- Pre-trained Machine Learning Models (loop1/model/ - XGBoost + Logistic Regression)
+- Dual-loop detection and explainability engine (loop1/ and loop2/)
+- Research Notebooks & Evaluation Reports (notebooks/ and docs/)
+- Cross-platform tests and deployment configs (tests/ and deploy/)
+========================================================================

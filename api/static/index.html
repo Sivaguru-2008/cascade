@@ -3,101 +3,1371 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CASCADE dashboard</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <title>CASCADE — Real-Time Prescribing Cascade Detection & Pharmacovigilance</title>
+  <link rel="stylesheet" href="/static/style.css?v=4.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-  <script src="/static/app.js" defer></script>
+  <script src="/static/app.js?v=4.0" defer></script>
 </head>
 <body>
-  <header class="strip" aria-label="System status">
-    <div class="brand"><strong>CASCADE</strong><span class="sub">prescribing-cascade detection · synthetic data</span></div>
-    <dl class="kpis">
-      <div><dt>Events/s</dt><dd id="k-eps">—</dd></div>
-      <div><dt>Scoring p95</dt><dd id="k-p95">—</dd></div>
-      <div><dt>Architecture</dt><dd id="k-arch">—</dd></div>
-      <div><dt>Encryption</dt><dd id="k-enc">—</dd></div>
-      <div><dt>Validator pass</dt><dd id="k-val">—</dd></div>
-      <div><dt>Simulated date</dt><dd id="k-sim">—</dd></div>
-    </dl>
-  </header>
+  <div class="app-container">
+    <!-- ================= PERSISTENT SIDEBAR NAVIGATION ================= -->
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Main Navigation">
+      <div class="sidebar-header">
+        <a href="#/overview" class="sidebar-brand">
+          <div class="brand-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <div class="brand-meta">
+            <span class="brand-name">CASCADE</span>
+            <span class="brand-tagline">Pharmacovigilance</span>
+          </div>
+        </a>
+        <button type="button" class="btn-sidebar-toggle" id="btn-toggle-sidebar" aria-label="Toggle navigation drawer" title="Collapse sidebar">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+      </div>
 
-  <form class="keys" id="keys" autocomplete="off" aria-label="API keys (kept in memory only)">
-    <label>Pharmacist key <input id="key-ph" type="password" spellcheck="false"></label>
-    <label>Regulator key <input id="key-reg" type="password" spellcheck="false"></label>
-    <button type="submit" class="primary">Connect</button>
-    <fieldset class="roles" aria-label="View">
-      <legend class="sr-only">View</legend>
-      <label><input type="radio" name="view" value="both" checked> Both</label>
-      <label><input type="radio" name="view" value="pharmacist"> Pharmacist</label>
-      <label><input type="radio" name="view" value="regulator"> Regulator</label>
-    </fieldset>
-    <button type="button" id="demo-btn" hidden>Run demo script</button>
-    <span id="demo-status" class="muted" aria-live="polite"></span>
-  </form>
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Clinical Operations</span>
+        <a href="#/overview" class="nav-link active" data-route="overview">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span class="nav-text">Overview</span>
+        </a>
+        <a href="#/monitoring" class="nav-link" data-route="monitoring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span class="nav-text">Live Monitoring</span>
+          <span class="nav-badge" id="nav-badge-stream">Live</span>
+        </a>
+        <a href="#/alerts" class="nav-link" data-route="alerts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span class="nav-text">Cascade Alerts</span>
+          <span class="nav-badge badge-critical" id="nav-badge-alerts">0</span>
+        </a>
 
-  <main class="grid" id="grid">
-    <section class="panel" id="panel-ph" aria-labelledby="ph-title">
-      <div class="panel-head"><h2 id="ph-title">Pharmacy counter</h2><span class="muted" id="ph-who">not connected</span></div>
-      <div class="ph-body">
-        <div class="feed-wrap">
-          <h3>Live dispensing</h3>
-          <ul class="feed" id="feed" aria-label="Recent dispensing events"></ul>
+        <span class="nav-section-title">EHR &amp; Patient Portal</span>
+        <a href="#/doctor" class="nav-link" data-route="doctor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+          <span class="nav-text">Doctor Station</span>
+          <span class="nav-badge badge-blue">EHR</span>
+        </a>
+        <a href="#/patient" class="nav-link" data-route="patient">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span class="nav-text">Patient Portal</span>
+          <span class="nav-badge badge-green">MyHealth</span>
+        </a>
+
+        <span class="nav-section-title">Epidemiology &amp; Discovery</span>
+        <a href="#/signals" class="nav-link" data-route="signals">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="nav-text">Population Signals</span>
+          <span class="nav-badge badge-purple" id="nav-badge-signals">PSSA</span>
+        </a>
+        <a href="#/reports" class="nav-link" data-route="reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span class="nav-text">Reports &amp; PvPI</span>
+        </a>
+
+        <span class="nav-section-title">Governance &amp; System</span>
+        <a href="#/audit" class="nav-link" data-route="audit">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span class="nav-text">Audit Trail</span>
+        </a>
+        <a href="#/system" class="nav-link" data-route="system">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+          <span class="nav-text">System Status</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="active-role-card" id="sidebar-role-indicator">
+          <div class="role-avatar avatar-pharmacist" id="role-avatar-icon">PH</div>
+          <div class="role-info">
+            <span class="role-title" id="role-display-title">Pharmacist PH030</span>
+            <span class="role-sub" id="role-display-sub">Loop 1 Counter Access</span>
+          </div>
         </div>
-        <div class="alerts-wrap">
-          <h3>Alerts <span class="muted" id="alert-count"></span></h3>
-          <div id="alerts" class="alerts" aria-live="polite"><p class="empty">No alerts yet.</p></div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN VIEWPORT CONTAINER ================= -->
+    <div class="app-main">
+      <!-- Persistent Safety Disclaimer Banner -->
+      <div class="safety-banner" role="alert" aria-label="Clinical safety warning">
+        <div class="safety-banner-content">
+          <span class="safety-banner-badge">Synthetic Data Mode</span>
+          <span><strong>CLINICAL SAFETY NOTICE:</strong> CASCADE identifies potential prescribing cascade patterns for professional investigation. It does not establish causation, diagnose medical conditions, or recommend altering medications. All generated reports require human clinical verification before dispatch.</span>
         </div>
+        <button type="button" class="btn btn-sm btn-secondary" id="btn-banner-guide">Learn Limitations</button>
       </div>
-    </section>
 
-    <section class="panel" id="panel-reg" aria-labelledby="reg-title">
-      <div class="panel-head">
-        <h2 id="reg-title">Population signals</h2>
-        <label class="muted">Window
-          <select id="win"><option>30</option><option selected>90</option><option>180</option></select> days</label>
-        <label class="muted"><input type="checkbox" id="bh"> BH-corrected</label>
-      </div>
-      <p class="muted small" id="sig-summary">not connected</p>
-      <div class="table-wrap">
-        <table class="signals" aria-label="Signals ranked by lower confidence bound">
-          <thead><tr><th scope="col">Pair (A → B)</th><th scope="col">aSR [95% CI]</th><th scope="col">n</th>
-            <th scope="col">Since</th><th scope="col">Status</th></tr></thead>
-          <tbody id="sig-rows"></tbody>
-        </table>
-      </div>
-      <div class="chart-wrap" id="chart-wrap" hidden>
-        <div class="chart-head"><strong id="chart-title"></strong>
-          <button type="button" class="link" id="chart-close" aria-label="Close chart">Close</button></div>
-        <canvas id="chart" height="150" role="img" aria-label="aSR over simulated time"></canvas>
-      </div>
-    </section>
-  </main>
+      <!-- Compact Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <div class="page-breadcrumb">
+            <span class="breadcrumb-root">CASCADE</span>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current" id="topbar-breadcrumb">Overview</span>
+          </div>
 
-  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" hidden>
-    <div class="drawer-inner">
-      <div class="drawer-head">
-        <h2 id="dr-title">Draft</h2>
-        <button type="button" class="link" id="dr-close" aria-label="Close draft">Close</button>
-      </div>
-      <p class="muted small" id="dr-meta"></p>
-      <h3>Note to prescriber</h3>
-      <p id="dr-note" class="note"></p>
-      <h3>PvPI Suspected ADR report (draft)</h3>
-      <p class="small amber-key"><span class="swatch"></span> To be completed by reporter</p>
-      <div id="dr-form" class="pvpi"></div>
-      <div class="drawer-actions">
-        <button type="button" class="primary" id="dr-approve">Approve &amp; export</button>
-        <button type="button" id="dr-dismiss">Dismiss</button>
-      </div>
-      <div id="dismiss-box" hidden>
-        <label for="dismiss-reason">Reason (stored as feedback)</label>
-        <textarea id="dismiss-reason" rows="2"></textarea>
-        <button type="button" id="dismiss-confirm">Confirm dismiss</button>
-      </div>
-      <p class="small muted">Drafts are suggestions for professional review. Nothing is sent automatically.</p>
+          <!-- Live Telemetry KPI Pills -->
+          <div class="telemetry-pills" aria-label="System telemetry">
+            <div class="kpi-pill" title="Real-time ingestion rate">
+              <span class="kpi-label">Ingestion:</span>
+              <span class="kpi-value" id="topbar-eps">—</span>
+            </div>
+            <div class="kpi-pill pill-blue" title="Loop 1 Dispensing Scorer 95th Percentile Latency">
+              <span class="kpi-label">p95 Latency:</span>
+              <span class="kpi-value" id="topbar-p95">—</span>
+            </div>
+            <div class="kpi-pill" title="Target System Architecture">
+              <span class="kpi-label">Arch:</span>
+              <span class="kpi-value" id="topbar-arch">s390x / LinuxONE</span>
+            </div>
+            <div class="kpi-pill pill-green" title="Deterministic medical safety validator pass rate">
+              <span class="kpi-label">PvPI Validator:</span>
+              <span class="kpi-value" id="topbar-val">—</span>
+            </div>
+            <div class="kpi-pill" title="Current simulated chronological date">
+              <span class="kpi-label">Sim Date:</span>
+              <span class="kpi-value" id="topbar-sim">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Connection Status -->
+          <div class="connection-badge connected" id="connection-status-pill" title="Server-Sent Events Stream">
+            <span class="conn-dot"></span>
+            <span id="connection-status-text">Connected</span>
+          </div>
+
+          <!-- Role Switcher -->
+          <div class="role-switch-group" role="group" aria-label="Role Switcher">
+            <button type="button" class="role-btn active" id="role-btn-ph" title="View as Pharmacist (Counter & Alerts)">🏥 Pharmacist</button>
+            <button type="button" class="role-btn" id="role-btn-reg" title="View as Health Authority / Regulator (PSSA Signals)">🏛️ Regulator</button>
+            <button type="button" class="role-btn" id="role-btn-doc" title="View as Doctor (EHR Consultation Station)">🩺 Doctor</button>
+            <button type="button" class="role-btn" id="role-btn-pat" title="View as Patient (MyHealth Portal)">👤 Patient</button>
+          </div>
+
+          <!-- Action Buttons -->
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-quick-demo" title="Run Guided Demonstration Simulation">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Demo Simulation
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-open-settings" title="API Credentials Configuration">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Keys
+          </button>
+        </div>
+      </header>
+
+      <!-- App Main Content Views -->
+      <main class="app-content" id="app-content">
+
+        <!-- ================= PAGE 1: OVERVIEW ================= -->
+        <section class="app-view active" id="view-overview" aria-labelledby="overview-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="overview-heading">CASCADE Overview</h1>
+              <p class="view-subtitle">Monitor medication-safety patterns, review potential prescribing cascades, and investigate emerging population-level signals across healthcare dispensaries.</p>
+            </div>
+            <div class="view-actions">
+              <button type="button" class="btn btn-primary" id="btn-overview-run-demo">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Run Guided Demonstration
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary Metrics Cards -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Dispenses Processed</span>
+                <div class="metric-icon" style="background:#EBF2FF;color:#155EEF;">📊</div>
+              </div>
+              <div class="metric-value" id="ov-metric-scored">—</div>
+              <div class="metric-explainer">Total prescription events evaluated by edge &amp; scoring pipelines.</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Potential Cascade Alerts</span>
+                <div class="metric-icon" style="background:#FEE2E2;color:#B42318;">🚨</div>
+              </div>
+              <div class="metric-value" id="ov-metric-alerts">—</div>
+              <div class="metric-explainer">Candidate cascades flagged for clinical pharmacist review.</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Alerts Awaiting Review</span>
+                <div class="metric-icon" style="background:#FEF3C7;color:#B76E00;">⏳</div>
+              </div>
+              <div class="metric-value" id="ov-metric-open">—</div>
+              <div class="metric-explainer">Open alerts requiring professional inspection before dispatch.</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Population Signals (Loop 2)</span>
+                <div class="metric-icon" style="background:#F3E8FF;color:#7E22CE;">🌐</div>
+              </div>
+              <div class="metric-value" id="ov-metric-signals">—</div>
+              <div class="metric-explainer">Disproportionate start-sequences discovered via PSSA.</div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-header">
+                <span class="metric-label">PvPI Drafts Prepared</span>
+                <div class="metric-icon" style="background:#DCFCE7;color:#16803D;">📝</div>
+              </div>
+              <div class="metric-value" id="ov-metric-drafts">—</div>
+              <div class="metric-explainer">AI-assisted clinical notes &amp; PvPI ADR reporting drafts created.</div>
+            </div>
+          </div>
+
+          <!-- Dual-Loop Intelligence Architecture Summaries -->
+          <div class="dual-loop-container">
+            <!-- Loop 1 Summary -->
+            <div class="loop-highlight-card card-loop1">
+              <span class="loop-tag tag-blue">Loop 1 · Patient-Level Interception</span>
+              <h2 class="loop-headline">Real-Time Cascade Detection</h2>
+              <p class="loop-desc">Evaluates each new medication start at the pharmacy counter against the patient's medication history and known pharmacological side-effect cascades. Prevents mistaken prescribing cascades before the patient leaves.</p>
+              <div class="loop-metrics-mini">
+                <div class="mini-stat">
+                  <span class="mini-stat-val" id="ov-l1-latency">—</span>
+                  <span class="mini-stat-lbl">p95 Scoring Latency</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="mini-stat-val" id="ov-l1-status">Online (XGBoost Blend)</span>
+                  <span class="mini-stat-lbl">Inference Engine</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="mini-stat-val" id="ov-l1-pharmacy">PH030</span>
+                  <span class="mini-stat-lbl">Authorized Counter</span>
+                </div>
+              </div>
+              <a href="#/alerts" class="btn btn-secondary btn-sm" style="align-self: flex-start;">Inspect Cascade Alerts &rarr;</a>
+            </div>
+
+            <!-- Loop 2 Summary -->
+            <div class="loop-highlight-card card-loop2">
+              <span class="loop-tag tag-purple">Loop 2 · Population-Level Discovery</span>
+              <h2 class="loop-headline">Population-Level Signal Discovery</h2>
+              <p class="loop-desc">Analyzes aggregate medication-start sequences across all 50 network pharmacies using streaming Prescription Sequence Symmetry Analysis (PSSA). Discovers uncatalogued drug-cascade relationships while controlling for background secular prescribing trends.</p>
+              <div class="loop-metrics-mini">
+                <div class="mini-stat">
+                  <span class="mini-stat-val" id="ov-l2-window">90 Days</span>
+                  <span class="mini-stat-lbl">Observation Window</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="mini-stat-val" id="ov-l2-bh">FDR Controlled</span>
+                  <span class="mini-stat-lbl">Benjamini-Hochberg</span>
+                </div>
+                <div class="mini-stat">
+                  <span class="mini-stat-val" id="ov-l2-masking">&lt;5 Masked</span>
+                  <span class="mini-stat-lbl">Small-Cell Privacy</span>
+                </div>
+              </div>
+              <a href="#/signals" class="btn btn-secondary btn-sm" style="align-self: flex-start;">Explore Population Signals &rarr;</a>
+            </div>
+          </div>
+
+          <!-- Main Overview Content Grid: Activity & Action Queue -->
+          <div class="overview-grid">
+            <!-- Detection Activity Stream -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Live Ingestion &amp; Detection Activity</h3>
+                  <span class="card-subtitle">Chronological events evaluated by the CASCADE scoring pipeline</span>
+                </div>
+                <a href="#/monitoring" class="btn btn-sm btn-secondary">View Stream &rarr;</a>
+              </div>
+              <div class="table-container">
+                <table class="data-table" id="ov-activity-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Timestamp</th>
+                      <th scope="col">Event Type</th>
+                      <th scope="col">Medication</th>
+                      <th scope="col">Evaluation Outcome</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ov-activity-tbody">
+                    <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:24px;">Listening for live dispensing events...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Action Queue: Requires Attention -->
+            <div class="card">
+              <div class="card-header">
+                <div>
+                  <h3 class="card-title">Requires Your Attention</h3>
+                  <span class="card-subtitle">Pending clinical actions &amp; review items</span>
+                </div>
+              </div>
+              <div class="action-queue-list" id="ov-action-queue">
+                <div class="action-item">
+                  <div class="action-left">
+                    <span class="action-badge-dot dot-warning"></span>
+                    <div class="action-text-group">
+                      <span class="action-title">No pending reviews</span>
+                      <span class="action-detail">Run simulation or check alerts to inspect items</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 2: LIVE MONITORING ================= -->
+        <section class="app-view" id="view-monitoring" aria-labelledby="monitoring-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="monitoring-heading">Live Monitoring &amp; Pipeline Architecture</h1>
+              <p class="view-subtitle">Inspect the end-to-end dispensing event pipeline from pharmacy edge HMAC tokenisation to real-time cascade scoring and streaming population analytics.</p>
+            </div>
+            <div class="view-actions">
+              <button type="button" class="btn btn-primary" id="btn-monitoring-demo">Run Simulation</button>
+            </div>
+          </div>
+
+          <!-- Guided Demonstration Controller Card -->
+          <div class="demo-control-card">
+            <div class="demo-info">
+              <h3>Guided Demonstration: Multi-Stage Prescribing Cascade Simulation</h3>
+              <p>Execute the official benchmark simulation sequence: rapid baseline warm-up, real-time Amlodipine ➔ Furosemide counter interception, coincidental non-cascade discrimination, and population-level emergence of novel drug "Novacor".</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-launch-demo-monitoring">▶ Start Demo Replay</button>
+            <div class="demo-progress-track">
+              <div class="demo-stages">
+                <div class="demo-stage-chip" id="stage-chip-1">1. Historical Baseline Warm-up</div>
+                <div class="demo-stage-chip" id="stage-chip-2">2. Known Cascade Intercepted</div>
+                <div class="demo-stage-chip" id="stage-chip-3">3. Coincidence Check</div>
+                <div class="demo-stage-chip" id="stage-chip-4">4. Novacor Market Uptake</div>
+                <div class="demo-stage-chip" id="stage-chip-5">5. Signal Flagged</div>
+              </div>
+              <div style="font-family:var(--font-mono);font-size:11.5px;color:#94A3B8;" id="demo-status-label">Stage: Idle</div>
+            </div>
+          </div>
+
+          <!-- Pipeline Architecture Diagram -->
+          <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Dispensing Processing Pipeline</h3>
+                <span class="card-subtitle">Real-time asynchronous architecture on IBM LinuxONE (s390x) &amp; distributed edge nodes</span>
+              </div>
+            </div>
+            <div class="pipeline-visualizer">
+              <div class="pipe-step active">
+                <div class="pipe-step-box">1. Dispense Event</div>
+                <span class="pipe-sub">Pharmacy EMR Counter</span>
+              </div>
+              <div class="pipe-connector">&rarr;</div>
+              <div class="pipe-step active">
+                <div class="pipe-step-box">2. Edge Anonymisation</div>
+                <span class="pipe-sub">HMAC-SHA256 Token</span>
+              </div>
+              <div class="pipe-connector">&rarr;</div>
+              <div class="pipe-step active">
+                <div class="pipe-step-box">3. Loop 1 Scorer</div>
+                <span class="pipe-sub">&lt;15ms TreeSHAP ML</span>
+              </div>
+              <div class="pipe-connector">&rarr;</div>
+              <div class="pipe-step active">
+                <div class="pipe-step-box">4. Loop 2 PSSA</div>
+                <span class="pipe-sub">Population Asymmetry</span>
+              </div>
+              <div class="pipe-connector">&rarr;</div>
+              <div class="pipe-step active">
+                <div class="pipe-step-box">5. Pharmacist Review</div>
+                <span class="pipe-sub">Clinical Intervention</span>
+              </div>
+              <div class="pipe-connector">&rarr;</div>
+              <div class="pipe-step active">
+                <div class="pipe-step-box">6. PvPI Report Draft</div>
+                <span class="pipe-sub">GenAI + Deterministic Safety</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Latency Telemetry Panel -->
+          <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Loop 1 Processing Latency Analysis</h3>
+                <span class="card-subtitle">Measured execution latency per dispensing event. Note: Processing latency measures computational throughput, not human clinical response time.</span>
+              </div>
+            </div>
+            <div class="metrics-grid" style="margin-bottom:0;">
+              <div class="metric-card">
+                <span class="metric-label">Median Latency (p50)</span>
+                <div class="metric-value" id="mon-lat-p50">—</div>
+                <div class="metric-explainer">Typical inference time per transaction.</div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">95th Percentile (p95)</span>
+                <div class="metric-value" id="mon-lat-p95">—</div>
+                <div class="metric-explainer">Target SLA: Sub-15ms at dispensing counter.</div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">99th Percentile (p99)</span>
+                <div class="metric-value" id="mon-lat-p99">—</div>
+                <div class="metric-explainer">Worst-case tail latency on busy bursts.</div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Sample Window</span>
+                <div class="metric-value" id="mon-lat-sample">—</div>
+                <div class="metric-explainer">Rolling event latency sample size.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Event Feed Table with Filters -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Real-Time Ingestion Event Stream</h3>
+                <span class="card-subtitle">Recent events ingested from the pharmacy dispensing stream (bounded to 50 entries)</span>
+              </div>
+              <div class="filter-group">
+                <label for="mon-feed-filter" class="sr-only">Filter events</label>
+                <select id="mon-feed-filter" class="select-control">
+                  <option value="all">All Stream Events</option>
+                  <option value="alerts">Cascade Alerts Only</option>
+                  <option value="dispenses">Routine Dispenses Only</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="mon-stream-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Event ID</th>
+                    <th scope="col">Pharmacy</th>
+                    <th scope="col">Medication Dispensed</th>
+                    <th scope="col">ATC Classification</th>
+                    <th scope="col">Evaluation Outcome</th>
+                  </tr>
+                </thead>
+                <tbody id="mon-stream-tbody">
+                  <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">Waiting for SSE stream data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 3: CASCADE ALERTS ================= -->
+        <section class="app-view" id="view-alerts" aria-labelledby="alerts-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="alerts-heading">Prescribing Cascade Alerts</h1>
+              <p class="view-subtitle">Review, investigate, and triage potential prescribing cascades flagged at the pharmacy counter. Prescribing cascades represent sequences where a drug side-effect is mistaken for a new diagnosis and treated with another medication.</p>
+            </div>
+          </div>
+
+          <!-- Alert Filters Toolbar -->
+          <div class="card" style="margin-bottom:20px;padding:14px 20px;">
+            <div class="filter-toolbar">
+              <div class="filter-group">
+                <input type="search" class="search-input" id="alert-search" placeholder="Search by medication (e.g. Amlodipine)..." aria-label="Search alerts">
+                <label for="alert-status-filter" class="sr-only">Filter by status</label>
+                <select id="alert-status-filter" class="select-control">
+                  <option value="">All Review Statuses</option>
+                  <option value="open">Awaiting Review (Open)</option>
+                  <option value="drafted">Draft Prepared</option>
+                  <option value="approved">Approved &amp; Exported</option>
+                  <option value="dismissed">Dismissed</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-alerts">Refresh Alerts</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts Data Table -->
+          <div class="card">
+            <div class="table-container">
+              <table class="data-table" id="alerts-data-table" aria-label="Prescribing cascade alerts table">
+                <thead>
+                  <tr>
+                    <th scope="col">Alert Ref</th>
+                    <th scope="col">Detected</th>
+                    <th scope="col">Index Drug (A) ➔ Marker Drug (B)</th>
+                    <th scope="col">Start Interval</th>
+                    <th scope="col">Risk Score</th>
+                    <th scope="col">Evidence Basis</th>
+                    <th scope="col">Review Status</th>
+                    <th scope="col">Clinical Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="alerts-table-tbody">
+                  <tr><td colspan="8" style="text-align:center;padding:28px;color:var(--text-muted);">Loading alerts for authorized pharmacy PH030...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 4: POPULATION SIGNALS ================= -->
+        <section class="app-view" id="view-signals" aria-labelledby="signals-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="signals-heading">Population Safety Signals (Loop 2 PSSA)</h1>
+              <p class="view-subtitle">Explore medication-start patterns that occur more frequently than expected across all 50 network pharmacies after accounting for secular background prescribing trends. These are statistical signals for investigation; they do not establish causation.</p>
+            </div>
+            <div class="view-actions">
+              <div class="filter-group">
+                <label for="signals-win-select" style="font-weight:600;font-size:12px;">Observation Window:</label>
+                <select id="signals-win-select" class="select-control">
+                  <option value="30">30 Days</option>
+                  <option value="90" selected>90 Days (Default)</option>
+                  <option value="180">180 Days</option>
+                </select>
+                <label style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;cursor:pointer;">
+                  <input type="checkbox" id="signals-bh-checkbox">
+                  <span>BH-FDR Corrected</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- PSSA Educational Visualizer -->
+          <div class="pssa-explainer-box">
+            <div class="pssa-explainer-header">
+              <h3>Prescription Sequence Symmetry Analysis (PSSA) Methodology</h3>
+              <p>PSSA identifies adverse drug reaction cascades by assessing directional asymmetry in the order patients initiate pairs of medications:</p>
+            </div>
+            <div class="pssa-diagram-grid">
+              <div class="pssa-sequence-card">
+                <div class="pssa-sequence-title">
+                  <span>Directional Sequence A: Drug A ➔ Drug B (n_AB)</span>
+                  <span class="badge badge-known">Candidate Cascade</span>
+                </div>
+                <div class="pssa-timeline-track">
+                  <div class="timeline-node">Day 0: Drug A Started</div>
+                  <div class="timeline-arrow">&rarr;</div>
+                  <div class="timeline-node" style="border-color:#FCA5A5;background:#FEE2E2;">ADR Side Effect</div>
+                  <div class="timeline-arrow">&rarr;</div>
+                  <div class="timeline-node" style="border-color:#93C5FD;background:#EBF2FF;">Drug B Prescribed</div>
+                </div>
+                <p style="font-size:11.5px;color:var(--text-secondary);margin:6px 0 0;">Suspected cascade: Drug B is initiated to treat an unrecognised adverse reaction caused by Drug A.</p>
+              </div>
+
+              <div class="pssa-sequence-card">
+                <div class="pssa-sequence-title">
+                  <span>Directional Sequence B: Drug B ➔ Drug A (n_BA)</span>
+                  <span class="badge" style="background:#E2E8F0;">Reverse Control</span>
+                </div>
+                <div class="pssa-timeline-track">
+                  <div class="timeline-node">Day 0: Drug B Started</div>
+                  <div class="timeline-arrow">&rarr;</div>
+                  <div class="timeline-node">Independent History</div>
+                  <div class="timeline-arrow">&rarr;</div>
+                  <div class="timeline-node">Drug A Prescribed</div>
+                </div>
+                <p style="font-size:11.5px;color:var(--text-secondary);margin:6px 0 0;">Natural control sequence: Drug A is initiated after Drug B for independent clinical indications.</p>
+              </div>
+            </div>
+            <div class="formula-card">
+              <strong>Statistical Calculations:</strong><br>
+              &bull; <strong>Crude Sequence Ratio (cSR):</strong> <code>cSR = n_AB / n_BA</code> &mdash; Ratio of observed directional starts.<br>
+              &bull; <strong>Null-effect Ratio (nSR):</strong> Accounts for background temporal growth or decay in prescribing volumes over time.<br>
+              &bull; <strong>Adjusted Sequence Ratio (aSR):</strong> <code>aSR = cSR / nSR</code> with 95% Clopper-Pearson Confidence Intervals. An <code>aSR &gt; 1.0</code> indicates Drug B starts after Drug A significantly more often than expected.<br>
+              &bull; <strong>Benjamini-Hochberg (BH) Multiple-Testing Correction:</strong> Controls the False Discovery Rate across hundreds of tested drug pairs.
+            </div>
+          </div>
+
+          <!-- Summary Metric Banner -->
+          <div class="card" style="margin-bottom:20px;padding:14px 20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+              <span id="signals-stat-summary" style="font-weight:600;font-size:13px;color:var(--text-primary);">Querying population sequence symmetry analysis...</span>
+              <div style="display:flex;gap:10px;font-size:11.5px;">
+                <span class="badge badge-known">Known Literature</span>
+                <span class="badge" style="background:#DCFCE7;color:#16803D;">FAERS Corroborated</span>
+                <span class="badge badge-novel">🚨 Novel Discovered Signal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Longitudinal Trajectory Chart Card -->
+          <div class="chart-card" id="signals-chart-card" hidden>
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="signals-chart-title">Longitudinal aSR Trajectory</h3>
+                <span class="card-subtitle">Adjusted Sequence Ratio over simulated days vs. Null Boundary (aSR = 1.0) with 95% Clopper-Pearson CI</span>
+              </div>
+              <button type="button" class="btn btn-sm btn-secondary" id="btn-close-chart">✕ Close Chart</button>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="signals-history-chart" role="img" aria-label="Signal longitudinal trajectory"></canvas>
+            </div>
+          </div>
+
+          <!-- Signals Table -->
+          <div class="card">
+            <div class="table-container">
+              <table class="data-table" id="signals-datatable" aria-label="Population signals matrix">
+                <thead>
+                  <tr>
+                    <th scope="col">Drug Pair (Index A ➔ Marker B)</th>
+                    <th scope="col">Adjusted Ratio (aSR) [95% CI]</th>
+                    <th scope="col">Patient Sample (n)</th>
+                    <th scope="col">Directional (n_AB : n_BA)</th>
+                    <th scope="col">First Flagged</th>
+                    <th scope="col">Classification Status</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="signals-tbody">
+                  <tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text-muted);">Loading population signals...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 5: REPORTS & PVPI ================= -->
+        <section class="app-view" id="view-reports" aria-labelledby="reports-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="reports-heading">Reports &amp; Document Generation</h1>
+              <p class="view-subtitle">Prepare, review, and export prescriber peer notes and official Pharmacovigilance Programme of India (PvPI) Suspected ADR reporting drafts. Note: CASCADE prepares drafts; it does not dispatch reports externally.</p>
+            </div>
+          </div>
+
+          <!-- 9-Step Guided Workflow Banner -->
+          <div class="workflow-stepper">
+            <div class="wf-step completed"><span class="wf-step-num">1</span><span>Select Alert</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step completed"><span class="wf-step-num">2</span><span>Review Evidence</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step active"><span class="wf-step-num">3</span><span>Draft Note &amp; ADR</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step"><span class="wf-step-num">4</span><span>Validate Rules</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step"><span class="wf-step-num">5</span><span>Highlight Amber Fields</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step"><span class="wf-step-num">6</span><span>Human Edits</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step"><span class="wf-step-num">7</span><span>Review Draft</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step"><span class="wf-step-num">8</span><span>Approve</span></div>
+            <span class="wf-sep">&rarr;</span>
+            <div class="wf-step"><span class="wf-step-num">9</span><span>Export PDF/JSON</span></div>
+          </div>
+
+          <!-- Existing Reports Table -->
+          <div class="card" style="margin-bottom:24px;">
+            <div class="card-header">
+              <div>
+                <h3 class="card-title">Prepared Reporting Drafts</h3>
+                <span class="card-subtitle">Drafts and approved submissions generated for Pharmacy PH030</span>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="reports-datatable">
+                <thead>
+                  <tr>
+                    <th scope="col">Report Ref</th>
+                    <th scope="col">Related Alert</th>
+                    <th scope="col">Medication Sequence</th>
+                    <th scope="col">Draft Status</th>
+                    <th scope="col">Generator Provenance</th>
+                    <th scope="col">Medical Safety Validator</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reports-tbody">
+                  <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">No report drafts currently prepared. Select an alert from Cascade Alerts to create one.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Document Preview Pane (Active Draft) -->
+          <div class="card" id="reports-preview-container" hidden>
+            <div class="card-header">
+              <div>
+                <h3 class="card-title" id="report-preview-title">Document Preview: Alert</h3>
+                <span class="card-subtitle">Review peer communication and PvPI draft fields</span>
+              </div>
+              <div class="view-actions">
+                <button type="button" class="btn btn-success" id="btn-report-approve">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  Approve &amp; Export (Download PDF + JSON)
+                </button>
+              </div>
+            </div>
+
+            <!-- Provenance & Safety Bar -->
+            <div class="provenance-bar" id="report-provenance-bar">
+              <!-- Rendered dynamically -->
+            </div>
+
+            <div class="doc-preview-grid">
+              <!-- Prescriber Note Preview -->
+              <div class="doc-card">
+                <div class="card-header" style="padding-top:0;">
+                  <h4 class="card-title">1. Prescriber Peer Communication</h4>
+                  <span class="badge" style="background:#EBF2FF;color:#155EEF;">Clinical Note</span>
+                </div>
+                <div class="doc-paper" id="report-note-preview">Loading note content...</div>
+              </div>
+
+              <!-- PvPI Form Preview -->
+              <div class="doc-card">
+                <div class="card-header" style="padding-top:0;">
+                  <h4 class="card-title">2. Indian Pharmacopoeia Commission (PvPI Draft)</h4>
+                  <span class="badge" style="background:#DCFCE7;color:#16803D;">Suspected ADR Form</span>
+                </div>
+                <div class="doc-paper" id="report-form-preview" style="max-height:480px;overflow-y:auto;">Loading PvPI draft fields...</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 6: AUDIT TRAIL ================= -->
+        <section class="app-view" id="view-audit" aria-labelledby="audit-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="audit-heading">Tamper-Evident Audit Trail</h1>
+              <p class="view-subtitle">Immutable log recording every clinical inspection, draft generation, approval, dismissal, and export across the platform. Demonstrates accountability and compliance with healthcare data regulations.</p>
+            </div>
+            <div class="view-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-audit">Refresh Log</button>
+            </div>
+          </div>
+
+          <!-- Privacy & Anonymisation Disclaimer -->
+          <div class="card" style="margin-bottom:20px;padding:14px 20px;background:var(--bg-subtle);">
+            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
+              <strong>🛡️ Privacy Protection by Architecture:</strong> All recorded audit events reference pseudonymous alert references and role identifiers. No raw patient names, prescriber identities, or sensitive internal encryption keys are ever logged.
+            </div>
+          </div>
+
+          <!-- Audit Table -->
+          <div class="card">
+            <div class="table-container">
+              <table class="data-table" id="audit-datatable" aria-label="System audit log">
+                <thead>
+                  <tr>
+                    <th scope="col">Log ID</th>
+                    <th scope="col">Timestamp (UTC)</th>
+                    <th scope="col">Authorised Actor / Role</th>
+                    <th scope="col">Action Type</th>
+                    <th scope="col">Object / Alert Reference</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-tbody">
+                  <tr><td colspan="5" style="text-align:center;padding:28px;color:var(--text-muted);">Loading audit records...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 7: SYSTEM STATUS ================= -->
+        <section class="app-view" id="view-system" aria-labelledby="system-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="system-heading">System Status &amp; Technical Telemetry</h1>
+              <p class="view-subtitle">Operational health, machine learning service availability, cryptographic safeguards, and IBM LinuxONE s390x infrastructure status.</p>
+            </div>
+            <div class="view-actions">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-system">Run Health Check</button>
+            </div>
+          </div>
+
+          <!-- Service Status Grid -->
+          <div class="system-status-grid">
+            <!-- Core Services Card -->
+            <div class="card">
+              <h3 class="card-title" style="margin-bottom:12px;">Core Services &amp; Daemons</h3>
+              <div class="status-check-item">
+                <span>FastAPI Ingestion &amp; API Service</span>
+                <span class="status-badge status-ok">● Online (200 OK)</span>
+              </div>
+              <div class="status-check-item">
+                <span>Loop 1 Real-Time Scorer (Counter)</span>
+                <span class="status-badge status-ok">● Active (&lt;15ms p95)</span>
+              </div>
+              <div class="status-check-item">
+                <span>Loop 2 Streaming PSSA Engine</span>
+                <span class="status-badge status-ok">● Online (50 Pharmacies)</span>
+              </div>
+              <div class="status-check-item">
+                <span>Server-Sent Events (SSE) Bus</span>
+                <span class="status-badge status-ok" id="sys-sse-badge">● Streaming</span>
+              </div>
+              <div class="status-check-item">
+                <span>Storage Dialect</span>
+                <span class="status-badge status-ok" id="sys-db-badge">SQLite / Postgres</span>
+              </div>
+            </div>
+
+            <!-- Cryptography & Privacy Verification -->
+            <div class="card">
+              <h3 class="card-title" style="margin-bottom:12px;">Cryptography &amp; Security Controls</h3>
+              <div class="status-check-item">
+                <span>Data-at-Rest Encryption</span>
+                <span class="status-badge status-ok" id="sys-enc-rest">AES-256-GCM Authenticated</span>
+              </div>
+              <div class="status-check-item">
+                <span>Edge Identity Tokenisation</span>
+                <span class="status-badge status-ok">HMAC-SHA256 (Zero Name Leakage)</span>
+              </div>
+              <div class="status-check-item">
+                <span>In-Transit Transport Security</span>
+                <span class="status-badge status-ok" id="sys-enc-tls">TLS / Encrypted Stream</span>
+              </div>
+              <div class="status-check-item">
+                <span>Small-Cell Suppression Policy</span>
+                <span class="status-badge status-ok">Enforced (&lt;5 Masked)</span>
+              </div>
+              <div class="status-check-item">
+                <span>Authentication Model</span>
+                <span class="status-badge status-ok">Constant-Time Header API Keys</span>
+              </div>
+            </div>
+
+            <!-- ML Models & Statistical Algorithms -->
+            <div class="card">
+              <h3 class="card-title" style="margin-bottom:12px;">ML &amp; Statistical Engines</h3>
+              <div class="status-check-item">
+                <span>Loop 1 Model Architecture</span>
+                <span class="status-badge status-ok">XGBoost + Calibrated LR Blend</span>
+              </div>
+              <div class="status-check-item">
+                <span>Model Explainability</span>
+                <span class="status-badge status-ok">TreeSHAP Feature Attributions</span>
+              </div>
+              <div class="status-check-item">
+                <span>Loop 2 Statistical Engine</span>
+                <span class="status-badge status-ok">PSSA with 30/90/180d Windows</span>
+              </div>
+              <div class="status-check-item">
+                <span>Multiple Testing Correction</span>
+                <span class="status-badge status-ok">Benjamini-Hochberg FDR Control</span>
+              </div>
+              <div class="status-check-item">
+                <span>PvPI Medical Safety Validator</span>
+                <span class="status-badge status-ok">Deterministic Rule Guardrails</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 8: DOCTOR STATION (EHR) ================= -->
+        <section class="app-view" id="view-doctor" aria-labelledby="doctor-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="doctor-heading">Doctor Consultation Station (EHR)</h1>
+              <p class="view-subtitle">Cross-physician longitudinal encounters, clinical SOAP notes, structured e-Prescribing pad, and real-time CASCADE prescribing-cascade interception.</p>
+            </div>
+            <div class="view-actions" style="display:flex;gap:12px;align-items:center;">
+              <div class="form-group-inline">
+                <label for="doc-doctor-select" class="clinical-label">Attending Clinician:</label>
+                <select id="doc-doctor-select" class="form-select form-select-sm" style="min-width:240px;font-weight:600;">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patient Search and Demographics Banner -->
+          <div class="patient-banner-card">
+            <div class="patient-banner-left">
+              <div class="patient-selector-wrap">
+                <label for="doc-patient-select" class="clinical-label">Select Patient File:</label>
+                <select id="doc-patient-select" class="form-select" style="min-width:260px;font-weight:700;">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+              <div class="patient-demographics-strip" id="doc-patient-demographics">
+                <!-- Demographic pills: Age, Sex, Blood Group, Phone, Emergency -->
+              </div>
+            </div>
+            <div class="patient-banner-right" id="doc-patient-conditions">
+              <!-- Chronic condition tags -->
+            </div>
+          </div>
+
+          <!-- 3-Column Clinical Split Layout -->
+          <div class="clinical-workspace-grid">
+            <!-- Column 1: Longitudinal Visit History across all doctors -->
+            <div class="clinical-col clinical-col-history">
+              <div class="clinical-col-header">
+                <div class="col-title-wrap">
+                  <span class="col-icon">📋</span>
+                  <h3 class="col-title">Longitudinal Encounters</h3>
+                </div>
+                <span class="badge badge-neutral" id="doc-encounter-count">0 Visits</span>
+              </div>
+              <p class="col-desc">Complete cross-doctor consultation timeline across all hospitals and clinics.</p>
+              
+              <div class="encounter-timeline-feed" id="doc-encounter-feed">
+                <!-- Encounter history cards rendered here -->
+              </div>
+            </div>
+
+            <!-- Column 2: Active Consultation & Prescription Pad -->
+            <div class="clinical-col clinical-col-consultation">
+              <div class="clinical-col-header">
+                <div class="col-title-wrap">
+                  <span class="col-icon">🩺</span>
+                  <h3 class="col-title">Current Consultation &amp; Rx Pad</h3>
+                </div>
+                <span class="badge badge-blue">Active Encounter</span>
+              </div>
+
+              <!-- Consultation Encounter Form -->
+              <form id="doc-consultation-form" onsubmit="return false;" class="clinical-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label class="clinical-label">Visit Timestamp</label>
+                    <input type="text" id="doc-visit-ts" class="form-input form-input-sm" readonly>
+                  </div>
+                  <div class="form-group">
+                    <label class="clinical-label">Provisional / Final Diagnosis <span class="required">*</span></label>
+                    <input type="text" id="doc-diagnosis" class="form-input form-input-sm" placeholder="e.g. Peripheral dependent oedema" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="clinical-label">Chief Complaint / Cause of Visit <span class="required">*</span></label>
+                  <input type="text" id="doc-chief-complaint" list="reactions-datalist" class="form-input" placeholder="e.g. Bilateral ankle swelling and tight shoes for 10 days" required autocomplete="off">
+                  <datalist id="reactions-datalist"></datalist>
+                  <span class="form-hint">State the primary symptom or clinical reason reported by the patient.</span>
+                </div>
+
+                <!-- Objective Vitals Strip -->
+                <div class="vitals-input-strip">
+                  <div class="vital-cell">
+                    <span class="vital-label">BP (mmHg)</span>
+                    <input type="text" id="doc-vital-bp" class="form-input form-input-xs" placeholder="130/80">
+                  </div>
+                  <div class="vital-cell">
+                    <span class="vital-label">Pulse (bpm)</span>
+                    <input type="number" id="doc-vital-pulse" class="form-input form-input-xs" placeholder="72">
+                  </div>
+                  <div class="vital-cell">
+                    <span class="vital-label">SpO2 (%)</span>
+                    <input type="number" id="doc-vital-spo2" class="form-input form-input-xs" placeholder="98">
+                  </div>
+                  <div class="vital-cell">
+                    <span class="vital-label">Weight (kg)</span>
+                    <input type="number" step="0.1" id="doc-vital-weight" class="form-input form-input-xs" placeholder="65.0">
+                  </div>
+                  <div class="vital-cell">
+                    <span class="vital-label">Temp (°F)</span>
+                    <input type="number" step="0.1" id="doc-vital-temp" class="form-input form-input-xs" placeholder="98.4">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="clinical-label">Clinical Observations &amp; Progress Notes (SOAP)</label>
+                  <textarea id="doc-clinical-notes" class="form-textarea" rows="2" placeholder="Physical examination findings, oedema pitting grading, auscultation notes..."></textarea>
+                </div>
+
+                <!-- Prescription Section -->
+                <div class="rx-pad-section">
+                  <div class="rx-pad-header">
+                    <h4>Electronic Prescription (e-Rx)</h4>
+                    <span class="badge badge-purple">Formulary Verified</span>
+                  </div>
+
+                  <!-- Drug Add Row -->
+                  <div class="rx-add-box">
+                    <div class="rx-row-top">
+                      <div class="form-group" style="flex:2;">
+                        <label class="clinical-label">Select Medication <span class="required">*</span></label>
+                        <select id="doc-rx-drug-select" class="form-select form-select-sm">
+                          <option value="">-- Choose drug from catalogue --</option>
+                        </select>
+                      </div>
+                      <div class="form-group" style="flex:1;">
+                        <label class="clinical-label">Dose (mg)</label>
+                        <input type="number" step="0.5" id="doc-rx-dose" class="form-input form-input-sm" placeholder="e.g. 20">
+                      </div>
+                    </div>
+                    <div class="rx-row-bottom">
+                      <div class="form-group" style="flex:1.5;">
+                        <label class="clinical-label">Frequency / Timing</label>
+                        <select id="doc-rx-frequency" class="form-select form-select-sm">
+                          <option value="Once Daily (Morning)">Once Daily (Morning)</option>
+                          <option value="Once Daily (Night)">Once Daily (Night)</option>
+                          <option value="Twice Daily (After Meals)">Twice Daily (After Meals)</option>
+                          <option value="Thrice Daily">Thrice Daily</option>
+                          <option value="As Needed (SOS)">As Needed (SOS)</option>
+                        </select>
+                      </div>
+                      <div class="form-group" style="flex:1;">
+                        <label class="clinical-label">Duration (Days)</label>
+                        <input type="number" id="doc-rx-duration" class="form-input form-input-sm" value="30">
+                      </div>
+                      <div class="form-group" style="flex:2;">
+                        <label class="clinical-label">Indication (Prescribed For)</label>
+                        <input type="text" id="doc-rx-indication" class="form-input form-input-sm" placeholder="e.g. Peripheral swelling">
+                      </div>
+                      <div class="form-group" style="align-self:flex-end;">
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-doc-add-drug">+ Add Drug</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Real-Time CASCADE Interception Co-Pilot Banner -->
+                  <div class="cascade-interception-card" id="doc-cascade-copilot" hidden>
+                    <div class="cascade-copilot-header">
+                      <div class="copilot-alert-badge">
+                        <span class="copilot-pulse"></span>
+                        <span id="doc-copilot-level">HIGH SUSPICION CASCADE</span>
+                      </div>
+                      <span class="copilot-model-tag">CASCADE Loop 1 Live Interceptor</span>
+                    </div>
+                    <div class="copilot-body">
+                      <h4 class="copilot-title" id="doc-copilot-title">Prescribing Cascade Warning</h4>
+                      <p class="copilot-text" id="doc-copilot-text">
+                        The candidate drug appears to treat an adverse effect of a recently initiated medication from another prescriber.
+                      </p>
+                      <div class="copilot-evidence-box" id="doc-copilot-evidence">
+                        <!-- Evidence breakdown -->
+                      </div>
+                      <div class="copilot-recommendation" id="doc-copilot-recom">
+                        <!-- Clinical recommendation -->
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Prescriptions Table -->
+                  <div class="rx-items-table-wrap">
+                    <table class="table-compact" id="doc-rx-table">
+                      <thead>
+                        <tr>
+                          <th>Medication</th>
+                          <th>Dose</th>
+                          <th>Schedule</th>
+                          <th>Duration</th>
+                          <th>Prescribed For</th>
+                          <th>Cascade Risk</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody id="doc-rx-items-body">
+                        <!-- Added drugs -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="consultation-actions">
+                  <button type="button" class="btn btn-primary" id="btn-doc-commit-encounter">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    Commit Encounter &amp; Save Prescription
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="btn-doc-reset-form">Reset Form</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Column 3: Active Patient Regimen across doctors & Safety -->
+            <div class="clinical-col clinical-col-regimen">
+              <div class="clinical-col-header">
+                <div class="col-title-wrap">
+                  <span class="col-icon">💊</span>
+                  <h3 class="col-title">Active Regimen</h3>
+                </div>
+                <span class="badge badge-green" id="doc-active-rx-count">0 Active</span>
+              </div>
+              <p class="col-desc">All concurrent medications currently taken by this patient across all prescribers.</p>
+              
+              <div class="active-drugs-feed" id="doc-active-drugs-feed">
+                <!-- Active drug cards rendered here -->
+              </div>
+
+              <!-- Patient Reported Symptoms Section -->
+              <div class="patient-symptoms-box">
+                <div class="box-header">
+                  <span class="box-icon">⚠️</span>
+                  <h4 class="box-title">Patient Reported Symptoms</h4>
+                </div>
+                <div class="symptoms-feed" id="doc-symptoms-feed">
+                  <!-- Symptoms reported by patient -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PAGE 9: PATIENT PORTAL (MYHEALTH) ================= -->
+        <section class="app-view" id="view-patient" aria-labelledby="patient-heading">
+          <div class="view-header">
+            <div class="view-title-group">
+              <h1 id="patient-heading">MyHealth Patient Portal</h1>
+              <p class="view-subtitle">Your complete, transparent healthcare record: review all doctor consultations, visit causes, diagnoses, prescribed medications with dosage schedules, and medication safety alerts.</p>
+            </div>
+            <div class="view-actions" style="display:flex;gap:12px;align-items:center;">
+              <div class="form-group-inline">
+                <label for="pat-patient-select" class="clinical-label">Viewing Record Of:</label>
+                <select id="pat-patient-select" class="form-select form-select-sm" style="min-width:260px;font-weight:700;">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Patient Safety & Pharmacovigilance Advisory Banner -->
+          <div class="patient-safety-advisory" id="pat-safety-banner" hidden>
+            <div class="safety-advisory-badge">
+              <span class="safety-advisory-icon">🛡️</span>
+              <span>MEDICATION SAFETY ADVISORY</span>
+            </div>
+            <h3 class="safety-advisory-title" id="pat-safety-title">Active Medication Review Notice</h3>
+            <p class="safety-advisory-text" id="pat-safety-text">
+              Our clinical safety system has flagged a potential interaction between your recently prescribed water pill and your earlier blood pressure tablet.
+            </p>
+            <div class="safety-advisory-action" id="pat-safety-action">
+              <strong>Patient Guidance:</strong> Do not discontinue your prescribed medicines abruptly. Please discuss this notice with your doctor at your next scheduled visit.
+            </div>
+          </div>
+
+          <!-- Patient Demographics Header Card -->
+          <div class="patient-profile-strip" id="pat-profile-card">
+            <!-- Profile avatar, name, age band, blood group, emergency contact -->
+          </div>
+
+          <!-- 2-Column Patient Experience Layout -->
+          <div class="patient-workspace-grid">
+            <!-- Left Column: Chronological Doctor Visits & Causes -->
+            <div class="patient-col-timeline">
+              <div class="section-title-wrap">
+                <span class="sec-icon">🏥</span>
+                <div>
+                  <h3 class="sec-title">My Doctor Visits &amp; Care Journey</h3>
+                  <p class="sec-subtitle">Chronological record of when you visited each doctor, the cause for your visit, and what medicines were prescribed.</p>
+                </div>
+              </div>
+
+              <div class="patient-visit-timeline" id="pat-visits-feed">
+                <!-- Chronological visit cards -->
+              </div>
+            </div>
+
+            <!-- Right Column: Active Medications Cabinet & Report a Symptom -->
+            <div class="patient-col-cabinet">
+              <!-- Active Medications -->
+              <div class="cabinet-card">
+                <div class="cabinet-header">
+                  <span class="sec-icon">💊</span>
+                  <div>
+                    <h3 class="sec-title">My Active Medications Cabinet</h3>
+                    <p class="sec-subtitle">Everything you are currently taking, who prescribed it, and the medical cause it treats.</p>
+                  </div>
+                </div>
+
+                <div class="cabinet-list" id="pat-active-meds-feed">
+                  <!-- Active medication pill cards -->
+                </div>
+              </div>
+
+              <!-- Report a Symptom / Adverse Reaction Form -->
+              <div class="patient-report-card">
+                <div class="report-card-header">
+                  <span class="sec-icon">📝</span>
+                  <div>
+                    <h4 class="report-title">Report a New Symptom or Side Effect</h4>
+                    <p class="report-subtitle">Experiencing unexpected discomfort? Log your symptom here to immediately notify your treating doctors and India's Pharmacovigilance Programme (PvPI).</p>
+                  </div>
+                </div>
+
+                <form id="pat-symptom-form" onsubmit="return false;" class="clinical-form">
+                  <div class="form-group">
+                    <label class="clinical-label">What symptom are you experiencing? <span class="required">*</span></label>
+                    <input type="text" id="pat-sym-name" class="form-input" placeholder="e.g. Swollen feet, dizzy spells, persistent dry cough" required>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label class="clinical-label">Severity Level</label>
+                      <select id="pat-sym-severity" class="form-select">
+                        <option value="mild">Mild (Noticeable but does not affect daily routine)</option>
+                        <option value="moderate" selected>Moderate (Uncomfortable, affects some activities)</option>
+                        <option value="severe">Severe (Significantly restricts movement or sleep)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="clinical-label">Suspected Medicine (Optional)</label>
+                      <select id="pat-sym-drug" class="form-select">
+                        <option value="">-- I am not sure --</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="clinical-label">Additional Details / Notes</label>
+                    <textarea id="pat-sym-notes" class="form-textarea" rows="2" placeholder="e.g. Started about 4 days after taking the new morning tablet..."></textarea>
+                  </div>
+
+                  <button type="button" class="btn btn-primary" id="btn-pat-submit-symptom" style="width:100%;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Send Report to Doctor &amp; PvPI Safety
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
     </div>
-  </aside>
+  </div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <!-- ================= DEDICATED ALERT DETAIL MODAL ================= -->
+  <div class="modal-backdrop" id="modal-alert-detail" hidden>
+    <div class="modal-box modal-lg" role="dialog" aria-modal="true" aria-labelledby="alert-modal-title">
+      <div class="modal-header">
+        <div>
+          <h3 id="alert-modal-title">Prescribing Cascade Investigation</h3>
+          <span style="font-size:12px;color:var(--text-secondary);" id="alert-modal-sub">Alert Ref</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-alert-modal" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="alert-detail-sections">
+          <!-- Section A: What Happened? -->
+          <div class="alert-sec">
+            <div class="alert-sec-title">Section A · Clinical Context &amp; Sequence Overview</div>
+            <p id="det-sec-a-text" style="font-size:13px;line-height:1.6;margin:0;">Evaluating medication sequence...</p>
+          </div>
+
+          <!-- Section B: Medication Timeline -->
+          <div class="alert-sec">
+            <div class="alert-sec-title">Section B · Patient Medication Timeline</div>
+            <div class="timeline-horizontal" id="det-sec-b-timeline">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Section C: Explainable AI TreeSHAP Factors -->
+          <div class="alert-sec">
+            <div class="alert-sec-title">Section C · Explainable AI (TreeSHAP) Feature Contributions</div>
+            <p style="font-size:11.5px;color:var(--text-secondary);margin:0 0 10px;">The model scored this sequence based on the following mathematically verified feature attributions:</p>
+            <ul class="reasons-list" id="det-sec-c-reasons">
+              <li>Loading explanations...</li>
+            </ul>
+          </div>
+
+          <!-- Section D: Statistical & FAERS Context -->
+          <div class="alert-sec">
+            <div class="alert-sec-title">Section D · Statistical Evidence &amp; External Context</div>
+            <div style="font-size:12.5px;line-height:1.6;color:var(--text-primary);" id="det-sec-d-evidence">
+              Loading external safety evidence...
+            </div>
+          </div>
+
+          <!-- Section E: Pharmacist Workflow Actions -->
+          <div class="alert-sec" style="background:#F8FAFC;">
+            <div class="alert-sec-title">Section E · Pharmacist Review Actions</div>
+            <p style="font-size:12px;color:var(--text-secondary);margin:0 0 14px;">Select the clinical resolution. CASCADE assists with draft generation; it never transmits data to prescribers without manual verification.</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button type="button" class="btn btn-primary" id="btn-modal-create-draft">📝 Generate / View PvPI Draft</button>
+              <button type="button" class="btn btn-outline-danger" id="btn-modal-dismiss">Dismiss Alert (Provide Reason)</button>
+            </div>
+            <!-- Dismiss Reason Box -->
+            <div id="modal-dismiss-box" style="margin-top:14px;" hidden>
+              <label for="modal-dismiss-input" style="font-weight:600;font-size:12px;display:block;margin-bottom:6px;">Clinical Reason for Dismissal (Saved for model evaluation feedback):</label>
+              <textarea id="modal-dismiss-input" rows="2" style="width:100%;padding:8px 10px;border:1px solid var(--border-color);border-radius:var(--radius-sm);font-family:inherit;font-size:12px;" placeholder="e.g., Pre-existing chronic ankle edema documented prior to calcium channel blocker initiation..."></textarea>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-modal-confirm-dismiss" style="margin-top:8px;">Confirm Dismissal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-modal-close-footer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CREDENTIALS & SETTINGS MODAL ================= -->
+  <div class="modal-backdrop" id="modal-settings" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="modal-header">
+        <h3 id="settings-title">API Authentication Keys</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-settings">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:12.5px;color:var(--text-secondary);margin-bottom:16px;">
+          CASCADE uses constant-time header authentication (<code>X-API-Key</code>). Credentials are held in browser volatile memory and never exposed in URL parameters or persisted to local disk storage.
+        </p>
+        <form id="settings-form">
+          <div style="margin-bottom:14px;">
+            <label for="input-key-ph" style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">Pharmacist Key (Pharmacy PH030):</label>
+            <input type="password" class="search-input" id="input-key-ph" style="width:100%;font-family:var(--font-mono);font-size:11.5px;" spellcheck="false">
+          </div>
+          <div style="margin-bottom:14px;">
+            <label for="input-key-reg" style="font-weight:600;font-size:12px;display:block;margin-bottom:4px;">National Regulator Key (Loop 2 PSSA):</label>
+            <input type="password" class="search-input" id="input-key-reg" style="width:100%;font-family:var(--font-mono);font-size:11.5px;" spellcheck="false">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-autofill-keys">⚡ Reset to Demo Keys</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save &amp; Connect</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= "HOW IT WORKS" GUIDE MODAL ================= -->
+  <div class="modal-backdrop" id="modal-guide" hidden>
+    <div class="modal-box modal-lg" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+      <div class="modal-header">
+        <h3 id="guide-title">How CASCADE Solves Prescribing Cascades</h3>
+        <button type="button" class="btn-close-modal" id="btn-close-guide">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card" style="padding:16px;">
+            <h4 style="margin:0 0 8px 0;font-size:14px;color:var(--brand-primary);">1. The Healthcare Challenge</h4>
+            <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin:0;">Polypharmacy is an urgent patient-safety epidemic. When a patient takes Drug A (e.g., Amlodipine) and develops a side-effect (e.g., ankle edema), a secondary physician mistakes it for a new disorder and prescribes Drug B (e.g., Furosemide). Because doctors work in silos, neither sees the cascade.</p>
+          </div>
+          <div class="card" style="padding:16px;">
+            <h4 style="margin:0 0 8px 0;font-size:14px;color:var(--brand-primary);">2. Loop 1: Counter Interception</h4>
+            <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin:0;">At the moment of dispensing, CASCADE scores the prescription against patient medication history in &lt;15ms. An XGBoost model trained on clinical sequence patterns presents the pharmacist with plain-language TreeSHAP factors explaining why the sequence is suspicious.</p>
+          </div>
+          <div class="card" style="padding:16px;">
+            <h4 style="margin:0 0 8px 0;font-size:14px;color:var(--color-purple);">3. Loop 2: Population Discovery</h4>
+            <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin:0;">Streaming Prescription Sequence Symmetry Analysis (PSSA) scans dispensing patterns across all 50 network pharmacies. When medication B starts after medication A significantly more often than the reverse, Loop 2 flags it as a candidate safety signal even if never previously catalogued in literature.</p>
+          </div>
+          <div class="card" style="padding:16px;">
+            <h4 style="margin:0 0 8px 0;font-size:14px;color:var(--color-success);">4. Human-in-the-Loop Reporting</h4>
+            <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.6;margin:0;">CASCADE prepares polite prescriber notes and pre-fills official Indian Pharmacopoeia Commission PvPI suspected adverse drug reaction forms. Crucially, CASCADE generates drafts &mdash; it never automatically submits reports without human clinical approval.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btn-guide-close-foot">Understood</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast-box" id="app-toast" role="status" aria-live="polite" hidden></div>
 </body>
 </html>

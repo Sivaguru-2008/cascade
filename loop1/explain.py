@@ -60,6 +60,12 @@ def reason_text(feature: str, f: Mapping[str, Any], cat: Catalogue, b_drug_id: s
                 else f"No recent {an} dose increase")
     if feature == "B_started_before_A_ever":
         return f"{bn} was used before {an}" if f["B_started_before_A_ever"] else f"{bn} not used before {an}"
+    if feature == "prior_cascade_count":
+        cnt = f.get("prior_cascade_count", 0)
+        return f"Patient has {cnt} prior cascade alerts" if cnt > 0 else "No prior cascade alerts for this patient"
+    if feature == "has_primary_indication_for_B":
+        return (f"{bn} has documented primary indication in patient history" if f.get("has_primary_indication_for_B")
+                else f"No documented primary indication for {bn}")
     return feature
 
 

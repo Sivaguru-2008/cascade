@@ -72,6 +72,7 @@ class Settings:
     genai_backend: str  # "lab" | "transformers" | "llamacpp" | "template"
     demo_mode: bool
     no_known_prior: bool
+    reaction_ranker: bool
 
     # connections
     redis_url: str
@@ -124,6 +125,7 @@ def _load() -> Settings:
         genai_backend=_env("GENAI_BACKEND", "template"),
         demo_mode=_bool("DEMO_MODE"),
         no_known_prior=_bool("LOOP1_NO_KNOWN_PRIOR"),
+        reaction_ranker=_bool("LOOP1_REACTION_RANKER", False),
         redis_url=_env("REDIS_URL", "redis://localhost:6379/0"),
         database_url=_env("DATABASE_URL", "postgresql://cascade@localhost:5432/cascade"),
         sqlite_path=_path("SQLITE_PATH", ROOT / "data" / "generated" / "cascade.sqlite3"),

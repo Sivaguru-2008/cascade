@@ -55,7 +55,7 @@ def test_seed_reproducible(tmp_path):
 def test_known_list_excludes_novacor():
     cat = load_catalogue()
     assert all("Novacor" not in k.index_drugs + k.marker_drugs for k in cat.known)
-    assert all(k.source.startswith("VERIFY:") for k in cat.known)
+    assert all(len(k.source) > 5 and not k.source.startswith("VERIFY:") for k in cat.known)
 
 
 def test_scaled_minimum_and_lag():

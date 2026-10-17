@@ -94,6 +94,7 @@ def plan_injections(
     rng: np.random.Generator,
     prescribers_of: Callable[[int], list[int]],
     n_prescribers: int,
+    patient_susceptibility: Callable[[int], float] | None = None,
 ) -> list[Injection]:
     """Draw candidate injections (before the incidence check on B)."""
     planned: list[Injection] = []
@@ -102,12 +103,14 @@ def plan_injections(
         by_drug: dict[str, list[EpisodeLike]] = {}
         for ep in eps:
             by_drug.setdefault(ep.drug_id, []).append(ep)
+        susc = 1.0 if patient_susceptibility is None else patient_susceptibility(patient)
         for spec in pairs:
+            p_effective = min(max(spec.p * susc, 0.005), 0.35)
             for drug_id in sorted(spec.index_drug_ids & by_drug.keys()):
                 for ep in by_drug[drug_id]:
                     if ep.origin == "inject" or not is_drug_incident(ep, by_drug[drug_id]):
                         continue
-                    if rng.random() >= spec.p:
+                    if rng.random() >= p_effective:
                         continue
                     day = ep.start + draw_lag(rng, spec.lag_min, spec.lag_max)
                     marker = spec.marker_drug_ids[int(rng.integers(len(spec.marker_drug_ids)))]

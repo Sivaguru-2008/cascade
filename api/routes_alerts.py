@@ -4,7 +4,12 @@ from __future__ import annotations
 
 import base64
 import time
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+
+try:
+    from datetime import UTC
+except ImportError:
+    UTC = timezone.utc  # type: ignore
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
@@ -81,6 +86,23 @@ async def list_alerts(request: Request, since: str | None = None, status_: str |
     rows = ctx.db.fetchall(sql, params)
     audit(ctx.db, p, "alerts_list", p.pharmacy_id)
     return [_public(Alert.model_validate(ctx.cipher.decrypt_json(r[3], aad=r[0])), r[2], r[4]) for r in rows]
+
+
+@router.get("/reports")
+async def list_reports(request: Request, p: Principal = Depends(require_pharmacist)) -> list[dict[str, Any]]:
+    ctx = request.app.state.ctx
+    sql = f"SELECT {ALERT_COLS} FROM alerts WHERE pharmacy_id = ? AND status IN ('drafted', 'approved') ORDER BY updated_ts DESC"
+    rows = ctx.db.fetchall(sql, (p.pharmacy_id,))
+    out = []
+    for r in rows:
+        alert = Alert.model_validate(ctx.cipher.decrypt_json(r[3], aad=r[0]))
+        draft = load_draft(ctx.db, ctx.cipher, r[0])
+        pub = _public(alert, r[2], r[4])
+        pub["draft"] = draft.model_dump(mode="json") if draft else None
+        pub["evidence"] = {"aSR": alert.pair_aSR, "aSR_ci": alert.pair_aSR_ci, "known_source": alert.known_source,
+                           "pair_status": alert.pair_status, "faers": _faers_note(ctx, alert)}
+        out.append(pub)
+    return out
 
 
 @router.get("/alerts/{alert_id}")

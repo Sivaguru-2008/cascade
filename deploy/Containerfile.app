@@ -1,6 +1,6 @@
 # One image for every CASCADE app service (edge, scorer, signals, genai, api); CMD differs per service.
-# Multi-arch: debian:bookworm-slim is published for s390x, x86_64 and arm64.
-FROM docker.io/library/debian:bookworm-slim
+# Multi-arch: ubuntu:22.04 is published for s390x, x86_64 and arm64.
+FROM docker.io/library/ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -28,7 +28,7 @@ COPY loop2 ./loop2
 COPY genai ./genai
 COPY api ./api
 COPY eval ./eval
-COPY data/drug_catalogue.csv data/cascades_known.csv data/pvpi_form_fields.json ./data/
+COPY data/drug_catalogue.csv data/cascades_known.csv data/pvpi_form_fields.json data/reactions.csv data/treatments.csv data/indications.csv ./data/
 COPY pyproject.toml ./
 RUN mkdir -p /app/data/generated /app/loop1/model /app/docs /state && chown cascade /state \
  && python -c "import numpy, scipy, sklearn, cryptography, fastapi, pydantic, redis, pg8000; print('deps ok')"

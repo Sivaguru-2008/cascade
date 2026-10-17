@@ -1,10 +1,10 @@
 pair_id,index_drug,index_atc_l4,marker_drug,marker_atc_l4,reaction,lag_min_days,lag_max_days,p_cascade,source
-K1,amlodipine,C08CA,furosemide,C03CA,Ankle oedema,7,90,0.06,"VERIFY: ThinkCascades (McCarthy et al., Drugs & Aging 2022)"
-K2,enalapril|ramipril,C09AA,dextromethorphan,R05DA,Dry cough,7,60,0.05,VERIFY: PSSA literature
-K3,metoclopramide,A03FA,levodopa and decarboxylase inhibitor,N04BA,Drug-induced parkinsonism,14,120,0.04,VERIFY: Classic cascade (Rochon)
-K4,haloperidol,N05AD,trihexyphenidyl,N04AA,Extrapyramidal symptoms,3,60,0.07,VERIFY: Prescribing-cascade case literature
-K5,donepezil,N06DA,oxybutynin,G04BD,Urinary incontinence,14,120,0.04,VERIFY: ThinkCascades
-K6,tamsulosin,G04CA,betahistine,N07CA,Dizziness,3,60,0.03,VERIFY: PIPC list (Eur Geriatr Med 2025)
-K7,pregabalin|gabapentin,N03AX,furosemide,C03CA,Oedema,14,90,0.04,VERIFY: ThinkCascades
-K8,hydrochlorothiazide,C03AA,allopurinol,M04AA,Gout / hyperuricaemia,30,180,0.03,VERIFY: PSSA literature
-K9,diclofenac,M01AB,amlodipine|losartan|telmisartan,C08CA|C09CA,Raised BP,14,90,0.03,VERIFY: PSSA literature
+K1,amlodipine,C08CA,furosemide,C03CA,Ankle oedema,7,90,0.06,"ThinkCascades (McCarthy LM et al., Drugs & Aging 2022; 39:757-768)"
+K2,enalapril|ramipril,C09AA,dextromethorphan,R05DA,Dry cough,7,60,0.05,"Farrell B et al., Can Fam Physician 2022; 68:651-659"
+K3,metoclopramide,A03FA,levodopa and decarboxylase inhibitor,N04BA,Drug-induced parkinsonism,14,120,0.04,"Rochon PA, Gurwitz JH, Lancet 1995; 346:32-34 / BMJ 1997; 315:1096-1099"
+K4,haloperidol,N05AD,trihexyphenidyl,N04AA,Extrapyramidal symptoms,3,60,0.07,"Avorn J et al., JAMA 1995; 273:1401-1406"
+K5,donepezil,N06DA,oxybutynin,G04BD,Urinary incontinence,14,120,0.04,"ThinkCascades (McCarthy LM et al., Drugs & Aging 2022; 39:757-768)"
+K6,tamsulosin,G04CA,betahistine,N07CA,Dizziness,3,60,0.03,"PIPC list (Mair A et al., Eur Geriatr Med 2025; 16:112-124)"
+K7,pregabalin|gabapentin,N03AX,furosemide,C03CA,Oedema,14,90,0.04,"Savage RD et al., JAMA Intern Med 2020; 180:528-537"
+K8,hydrochlorothiazide,C03AA,allopurinol,M04AA,Gout / hyperuricaemia,30,180,0.03,"Prasad M et al., Br J Clin Pharmacol 2021; 87:1422-1430"
+K9,diclofenac,M01AB,amlodipine|losartan|telmisartan,C08CA|C09CA,Raised BP,14,90,0.03,"Rochon PA et al., Br J Clin Pharmacol 2023; 89:2210-2219"

@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-15T12:54:07",
-  "threshold": 0.39472876417586034,
-  "events_file": "/home/vishant/cascade/data/generated/events.csv.gz",
+  "generated_at": "2026-10-17T13:42:43",
+  "threshold": 0.24197390339290212,
+  "events_file": "D:\\ibm project\\data\\generated\\events.csv.gz",
   "demo_pharmacy": "PH030",
   "k1_cascade": {
     "event_id": "37466007-27f7-4c2b-8bfc-19c56e8dc528",
@@ -28,7 +28,7 @@
       "C08CA"
     ],
     "label": 0,
-    "offline_score": 0.3778,
+    "offline_score": 0.2279,
     "row_index": 1738797
   },
   "coincidental_note": "label 0 on a known class pair, scored below threshold offline",

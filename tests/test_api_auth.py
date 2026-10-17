@@ -169,3 +169,14 @@ def test_alert_rows_are_ciphertext(client):
 def test_demo_endpoint_disabled_without_demo_mode(client):
     c, _ = client
     assert c.post("/admin/demo/start", headers=h(PH1)).status_code == 404
+
+
+def test_audit_endpoint(client):
+    c, _ = client
+    assert c.get("/audit").status_code == 401
+    r_ph = c.get("/audit", headers=h(PH1))
+    assert r_ph.status_code == 200
+    assert isinstance(r_ph.json(), list)
+    r_reg = c.get("/audit", headers=h(REG))
+    assert r_reg.status_code == 200
+    assert isinstance(r_reg.json(), list)

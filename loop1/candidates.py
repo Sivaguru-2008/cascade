@@ -51,13 +51,28 @@ class PatientState:
     drugs: dict[str, DrugRec] = field(default_factory=dict)
     class_last: dict[str, int] = field(default_factory=dict)
     class_first: dict[str, int] = field(default_factory=dict)
+    prior_cascade_count: int = 0
+    indications: dict[str, int] = field(default_factory=dict)
 
     @classmethod
     def from_hash(cls, h: Mapping[str, str]) -> PatientState:
         st = cls()
         for k, v in h.items():
             if k == "_f":
-                st.first_seen = int(v)
+                try:
+                    st.first_seen = int(v)
+                except (ValueError, TypeError):
+                    pass
+            elif k == "pc":
+                try:
+                    st.prior_cascade_count = int(v)
+                except (ValueError, TypeError):
+                    st.prior_cascade_count = 0
+            elif k.startswith("ind:"):
+                try:
+                    st.indications[k[4:]] = int(v)
+                except (ValueError, TypeError):
+                    pass
             elif k.startswith("d:"):
                 st.drugs[k[2:]] = DrugRec.load(k[2:], v)
             elif k.startswith("cf:"):
@@ -119,6 +134,8 @@ class StepResult:
     n_active_drugs: int
     b_class_first_prev: int | None
     fields: dict[str, str]  # changed pstate fields (for Redis)
+    prior_cascade_count: int = 0
+    has_primary_indication_for_b: bool = False
 
 
 def step(st: PatientState, ev: Ev, lookback: int = LOOKBACK_DAYS,
@@ -134,6 +151,7 @@ def step(st: PatientState, ev: Ev, lookback: int = LOOKBACK_DAYS,
     candidates: list[Candidate] = []
     n_active = 0
     b_first_prev = st.class_first.get(ev.atc_l4)
+    has_indication = ev.atc_l4 in st.indications
     if incident:
         for rec in st.drugs.values():
             if rec.atc_l4 == ev.atc_l4:
@@ -165,4 +183,5 @@ def step(st: PatientState, ev: Ev, lookback: int = LOOKBACK_DAYS,
     if ev.atc_l4 not in st.class_first:
         st.class_first[ev.atc_l4] = ev.day
         fields[f"cf:{ev.atc_l4}"] = str(ev.day)
-    return StepResult(incident, candidates, n_active, b_first_prev, fields)
+    return StepResult(incident, candidates, n_active, b_first_prev, fields,
+                      st.prior_cascade_count, has_indication)

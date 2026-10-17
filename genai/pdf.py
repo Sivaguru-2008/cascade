@@ -5,7 +5,12 @@ from __future__ import annotations
 import html
 import io
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+
+try:
+    from datetime import UTC
+except ImportError:
+    UTC = timezone.utc  # type: ignore
 from functools import lru_cache
 from pathlib import Path
 from typing import Any

@@ -99,7 +99,7 @@ def main() -> None:
     args = ap.parse_args()
     res = asyncio.run(run(args.n, args.backend))
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(res, indent=2, ensure_ascii=False))
+    args.out.write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps({k: res[k] for k in ("backend_requested", "n_drafts", "validator_pass_rate",
                                           "template_fallback_rate", "gen_ms_mean", "gen_ms_p95")}, indent=2))
 

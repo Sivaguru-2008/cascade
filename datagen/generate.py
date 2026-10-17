@@ -296,6 +296,27 @@ class Generator:
                 drug_id = self._maybe_novacor(drugs[int(di)].drug_id, int(day), r)
                 self.add_episode(int(pi), drug_id, int(day), "background", r)
 
+    def make_confounding_episodes(self) -> int:
+        """Inject realistic clinical confounding:
+        1. Heart-failure patients receiving furosemide without preceding amlodipine.
+        2. Indication-correlated co-starts (e.g. simultaneous starts of antihypertensives and statins).
+        """
+        r = self.rng_cond
+        added = 0
+        furo_id = self.cat.drug("furosemide").drug_id
+        for p in self.patients:
+            if "heart_failure" in p.conditions:
+                day = int(r.integers(0, self.end_day + 1))
+                if self.add_episode(p.idx, furo_id, day, "confounding", r):
+                    added += 1
+            if "hypertension" in p.conditions and "dyslipidaemia" in p.conditions and r.random() < 0.25:
+                day = int(r.integers(0, self.end_day + 1))
+                statin_id = self.cat.drug("atorvastatin").drug_id
+                if self.add_episode(p.idx, statin_id, day, "confounding", r):
+                    added += 1
+        return added
+
+
     def _eligible_for(self, name: str, p: Patient, r: np.random.Generator) -> bool:
         if name == "tamsulosin":
             return p.sex == "M" or r.random() < 0.3  # also used short-term for ureteric stones
@@ -303,29 +324,35 @@ class Generator:
             return p.age >= 55
         return True
 
-    def _count_incident(self, drug_ids: set[str], lo: int, hi: int) -> int:
-        n = 0
+    def _count_all_incident_starts(self) -> dict[str, list[int]]:
+        """Map each drug_id to start days of incident episodes in a single pass over patients."""
+        starts: dict[str, list[int]] = {}
         for eps in self.eps.values():
             by_drug: dict[str, list[Episode]] = {}
             for ep in eps:
                 by_drug.setdefault(ep.drug_id, []).append(ep)
-            for did in drug_ids & by_drug.keys():
-                for ep in by_drug[did]:
-                    if lo <= ep.start <= hi and inject.is_drug_incident(ep, by_drug[did]):
-                        n += 1
-        return n
+            for did, dep_list in by_drug.items():
+                for ep in dep_list:
+                    if inject.is_drug_incident(ep, dep_list):
+                        starts.setdefault(did, []).append(ep.start)
+        return starts
+
+    def _count_incident(self, drug_ids: set[str], lo: int, hi: int) -> int:
+        starts = self._count_all_incident_starts()
+        return sum(sum(1 for d in starts.get(did, []) if lo <= d <= hi) for did in drug_ids)
 
     def top_up_index_starts(self, specs: list[inject.PairSpec]) -> dict[str, dict[str, int]]:
         """Add incident index-drug starts so the injected counts can meet the assertions."""
         r = self.rng_top
         report: dict[str, dict[str, int]] = {}
+        starts = self._count_all_incident_starts()
         for spec in specs:
             if spec.hidden:
                 continue
             minimum = inject.scaled_minimum(MIN_KNOWN_EVENTS, self.n)
             target = inject.topup_target(minimum, spec.p)
             hi = self.end_day - spec.lag_max
-            have = self._count_incident(set(spec.index_drug_ids), 0, hi)
+            have = sum(sum(1 for d in starts.get(did, []) if 0 <= d <= hi) for did in spec.index_drug_ids)
             added = 0
             index_ids = sorted(spec.index_drug_ids)
             attempts = 0
@@ -335,8 +362,10 @@ class Generator:
                 p = self.patients[int(r.integers(self.n))]
                 if not self._eligible_for(self.cat.by_id[drug_id].generic_name, p, r):
                     continue
-                if self.add_episode(p.idx, drug_id, int(r.integers(0, hi + 1)), "topup", r):
+                day = int(r.integers(0, hi + 1))
+                if self.add_episode(p.idx, drug_id, day, "topup", r):
                     added += 1
+                    starts.setdefault(drug_id, []).append(day)
             report[spec.pair_id] = {"target_incident_starts": target, "existing": have, "added": added}
         return report
 
@@ -345,7 +374,8 @@ class Generator:
         minimum = inject.scaled_minimum(MIN_HIDDEN_EVENTS, self.n)
         target = inject.topup_target(minimum, spec.p)
         hi = self.end_day - spec.lag_max
-        have = self._count_incident({"DNOVA"}, self.launch_day, hi)
+        starts = self._count_all_incident_starts()
+        have = sum(1 for d in starts.get("DNOVA", []) if self.launch_day <= d <= hi)
         hypertensive = [p.idx for p in self.patients if "hypertension" in p.conditions]
         older = [p.idx for p in self.patients if p.age >= 40]
         added = attempts = 0
@@ -357,6 +387,7 @@ class Generator:
             day = self.launch_day + int(span * math.sqrt(r.random()))  # density rises linearly (ramp)
             if self.add_episode(patient, "DNOVA", day, "novacor", r):
                 added += 1
+                starts.setdefault("DNOVA", []).append(day)
         return {"target_incident_starts": target, "existing": have, "added": added}
 
     # ---------- injection ----------
@@ -386,8 +417,17 @@ class Generator:
                 self.patients[inj.patient].prescribers.append(inj.prescriber)
             return ep
 
+        def patient_susc(pid: int) -> float:
+            p = self.patients[pid]
+            age_factor = 1.0 + 0.006 * (p.age - 50)
+            cond_factor = 1.0 + 0.04 * len(p.conditions)
+            idiosyncratic = 0.85 + 0.3 * ((pid * 2654435761 % 1000) / 1000.0)
+            return max(0.5, min(1.8, age_factor * cond_factor * idiosyncratic))
+
         planned = inject.plan_injections(
-            specs, self.eps, self.end_day, r, lambda i: self.patients[i].prescribers, N_PRESCRIBERS)
+            specs, self.eps, self.end_day, r, lambda i: self.patients[i].prescribers, N_PRESCRIBERS,
+            patient_susceptibility=patient_susc
+        )
         return inject.accept_injections(planned, self.eps, lambda did: self.cat.by_id[did].atc_l4, make)
 
     # ---------- output ----------
@@ -478,6 +518,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--years", type=int, default=3)
     ap.add_argument("--out", type=Path, default=None)
     ap.add_argument("--no-inject", action="store_true", help="null run: no cascades are injected")
+    ap.add_argument("--confound", action="store_true", help="inject realistic clinical confounding (heart failure furosemide, correlated co-starts)")
     args = ap.parse_args(argv)
     out = args.out or get_settings().generated_dir
     t0 = time.time()
@@ -486,7 +527,10 @@ def main(argv: list[str] | None = None) -> int:
     g.make_population()
     g.make_condition_episodes()
     g.make_background_episodes()
+    if args.confound:
+        g.make_confounding_episodes()
     specs = g.pair_specs()
+
     topups = g.top_up_index_starts(specs)
     topups["H1"] = g.top_up_novacor(next(s for s in specs if s.hidden))
     accepted: list[inject.Injection] = []

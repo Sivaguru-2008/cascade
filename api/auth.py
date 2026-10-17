@@ -11,7 +11,12 @@ from __future__ import annotations
 import hashlib
 import hmac
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+
+try:
+    from datetime import UTC
+except ImportError:
+    UTC = timezone.utc  # type: ignore
 from typing import Literal
 
 from fastapi import Depends, Header, HTTPException, Request, status

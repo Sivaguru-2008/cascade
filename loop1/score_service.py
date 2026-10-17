@@ -15,7 +15,12 @@ import contextlib
 import os
 import time
 from collections.abc import AsyncIterator, Mapping
-from datetime import UTC, datetime
+from datetime import datetime
+
+try:
+    from datetime import UTC
+except ImportError:
+    UTC = UTC  # type: ignore
 from typing import Any
 
 import numpy as np
@@ -122,6 +127,11 @@ class Scorer:
                 k = int(np.argmax(scores))
                 d.scored, d.score = True, round(float(scores[k]), 6)
                 if scores[k] >= self.threshold:
+                    # Update patient memory of prior cascade
+                    st = states[ev.patient]
+                    st.prior_cascade_count += 1
+                    dirty[ev.patient]["pc"] = str(st.prior_cascade_count)
+
                     alert = await self._alert(e, ev, res, feats[k], X[k], float(scores[k]))
                     d.alerted, d.alert = True, alert
             d.latency_ms = round((time.perf_counter() - t_read) * 1000.0, 3)
@@ -135,9 +145,26 @@ class Scorer:
 
     async def _alert(self, e: DispenseEvent, ev: Ev, res: StepResult, f: Mapping[str, Any], x: np.ndarray,
                      score: float) -> Alert:
+        if await self.bus.get("seq:alert") is None:
+            row = self.db.fetchone("SELECT alert_id FROM alerts WHERE alert_id LIKE 'AL-%' ORDER BY alert_id DESC LIMIT 1")
+            max_seq = 0
+            if row and row[0]:
+                try:
+                    max_seq = int(row[0].split("-")[1])
+                except (IndexError, ValueError):
+                    pass
+            await self.bus.set("seq:alert", str(max_seq))
         seq = await self.bus.incr("seq:alert")
+        known = self.cat.known_by_id.get(f.get("_known_pair_id") or "")
+        suspected_rx = known.reaction if known else self.cat.reaction_for_pair(f["_A_atc_l4"], ev.atc_l4)
+        if (self.s.reaction_ranker or self.model.rx_model is not None) and self.model.rx_model is not None:
+            top_rx, rx_p, _ = self.model.rank_reaction(x)
+            if top_rx != UNKNOWN_REACTION:
+                suspected_rx = top_rx
+
         alert = make_alert(self.cat, self.faers, f"AL-{seq:06d}", ev.event_id, e.ts, ev.pharmacy_id, ev.patient,
-                           ev.drug_id, ev.atc_l4, f, score, self.model.reasons(f, x, ev.drug_id))
+                           ev.drug_id, ev.atc_l4, f, score, self.model.reasons(f, x, ev.drug_id),
+                           suspected_reaction=suspected_rx)
         payload = alert.model_dump(mode="json")
         ts = now_iso()
         await asyncio.to_thread(
@@ -183,12 +210,13 @@ class Scorer:
 
 def make_alert(cat: Catalogue, faers: set[tuple[str, str]], alert_id: str, event_id: str, ts: datetime,
                pharmacy_id: str, patient: str, b_drug_id: str, b_l4: str, f: Mapping[str, Any], score: float,
-               reasons: list[str]) -> Alert:
+               reasons: list[str], suspected_reaction: str | None = None) -> Alert:
     """The Alert payload (section 5.5) from a scored feature row; shared by the live scorer and eval."""
     a = cat.by_id.get(f["_A_drug_id"])
     b = cat.by_id.get(b_drug_id)
     known = cat.known_by_id.get(f.get("_known_pair_id") or "")
     n = int(f["_aSR_n"])
+    final_rx = suspected_reaction or (known.reaction if known else cat.reaction_for_pair(f["_A_atc_l4"], b_l4))
     return Alert(
         alert_id=alert_id, event_id=event_id, ts=ts, pharmacy_id=pharmacy_id, patient_token=patient,
         index_drug=a.display_name if a else f["_A_drug_id"], marker_drug=b.display_name if b else b_drug_id,
@@ -198,7 +226,7 @@ def make_alert(cat: Catalogue, faers: set[tuple[str, str]], alert_id: str, event
         pair_aSR_ci=[round(float(f["pair_aSR_lower_ci"]), 3), _r(f.get("_aSR_hi"))] if n else [None, None],
         known_source=known_source_label(cat, known.pair_id if known else None),
         index_drug_id=f["_A_drug_id"], marker_drug_id=b_drug_id, index_dose_mg=float(f["_A_dose"]),
-        marker_dose_mg=float(f["_B_dose"]), suspected_reaction=known.reaction if known else UNKNOWN_REACTION,
+        marker_dose_mg=float(f["_B_dose"]), suspected_reaction=final_rx,
         age_band=f["_age_band"], sex=f["sex"], n_active_drugs=int(f["n_active_drugs"]),
         different_prescriber=bool(f["different_prescriber"]),
         pair_status=classify(f["_A_atc_l4"], b_l4, cat.known_class_pairs, faers),  # type: ignore[arg-type]

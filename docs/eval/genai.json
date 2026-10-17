@@ -1,42 +1,46 @@
 {
-  "backend_requested": "template",
-  "arch": "x86_64",
-  "n_drafts": 50,
+  "backend_requested": "lab",
+  "arch": "AMD64",
+  "n_drafts": 10,
   "validator_pass_rate": 1.0,
-  "template_fallback_rate": 0.0,
+  "template_fallback_rate": 0.8,
   "generator_mix": {
-    "template": 50
+    "llm:lab": 2,
+    "template (fallback)": 8
   },
-  "gen_ms_mean": 5.08,
-  "gen_ms_p95": 5.31,
-  "fallback_reasons_sample": [],
+  "gen_ms_mean": 8685.61,
+  "gen_ms_p95": 12214.15,
+  "fallback_reasons_sample": [
+    "llm:lab rejected: note: missing evidence source",
+    "llm:lab rejected: note: missing gap in days"
+  ],
   "validator_failures": [],
-  "llm_evaluated": false,
+  "llm_evaluated": true,
   "examples": [
     {
       "alert_id": "EV-001",
-      "index_drug": "Diclofenac",
-      "marker_drug": "Amlodipine",
-      "generator": "template",
-      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (20-24, male). Amlodipine 5 mg was started 1 day after Diclofenac 100 mg, by a different prescriber. This is a possible prescribing cascade. Suspected reaction: possible raised BP. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 1.7 (CI 1.2–2.5). Thank you for considering this. Could you please review whether Amlodipine 5 mg is treating a side-effect of Diclofenac 100 mg?",
-      "reaction_description": "Possible raised BP: Amlodipine 5 mg was started 1 day after Diclofenac 100 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 1.7 (CI 1.2–2.5). Please review."
+      "index_drug": "Metoclopramide",
+      "marker_drug": "Levodopa and decarboxylase inhibitor",
+      "generator": "template (fallback)",
+      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (40-44, male). Levodopa and decarboxylase inhibitor 300 mg was started 22 days after Metoclopramide 15 mg. This is a possible prescribing cascade. Suspected reaction: possible drug-induced parkinsonism. Evidence: listed in Classic cascade (source not yet verified); population signal aSR 23.5 (CI 8.9–87.9). Thank you for considering this. Could you please review whether Levodopa and decarboxylase inhibitor 300 mg is treating a side-effect of Metoclopramide 15 mg?",
+      "reaction_description": "Possible drug-induced parkinsonism: Levodopa and decarboxylase inhibitor 300 mg was started 22 days after Metoclopramide 15 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in Classic cascade (source not yet verified); population signal aSR 23.5 (CI 8.9–87.9). Please review."
     },
     {
       "alert_id": "EV-002",
-      "index_drug": "Amlodipine",
-      "marker_drug": "Furosemide",
-      "generator": "template",
-      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (25-29, male). Furosemide 40 mg was started 28 days after Amlodipine 10 mg, by a different prescriber. This is a possible prescribing cascade. Suspected reaction: possible ankle oedema. Evidence: listed in ThinkCascades (source not yet verified); population signal aSR 24.6 (CI 9.3–92.1). Thank you for considering this. Could you please review whether Furosemide 40 mg is treating a side-effect of Amlodipine 10 mg?",
-      "reaction_description": "Possible ankle oedema: Furosemide 40 mg was started 28 days after Amlodipine 10 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in ThinkCascades (source not yet verified); population signal aSR 24.6 (CI 9.3–92.1). Please review."
+      "index_drug": "Hydrochlorothiazide",
+      "marker_drug": "Allopurinol",
+      "generator": "llm:lab",
+      "note": "Dear Prescriber, I am writing to bring to your attention a possible prescribing cascade. The patient was prescribed Hydrochlorothiazide 12.5 mg on [index_drug] and Allopurinol 300 mg on [marker_drug] with a gap of 41 days. This may be related to Gout / hyperuricaemia, as per the PSSA literature (source not yet verified). I would appreciate it if you could review this combination and consider the potential implications. Please review.",
+      "reaction_description": "The patient, a female aged 65-69, experienced Gout / hyperuricaemia possibly related to the concomitant use of Hydrochlorothiazide 12.5 mg and Allopurinol 300 mg, 41 days apart."
     },
     {
       "alert_id": "EV-003",
-      "index_drug": "Hydrochlorothiazide",
-      "marker_drug": "Allopurinol",
-      "generator": "template",
-      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (45-49, female). Allopurinol 300 mg was started 57 days after Hydrochlorothiazide 12.5 mg, by a different prescriber. This is a possible prescribing cascade. Suspected reaction: possible gout / hyperuricaemia. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 12.8 (CI 6–32.9). Thank you for considering this. Could you please review whether Allopurinol 300 mg is treating a side-effect of Hydrochlorothiazide 12.5 mg?",
-      "reaction_description": "Possible gout / hyperuricaemia: Allopurinol 300 mg was started 57 days after Hydrochlorothiazide 12.5 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in PSSA literature (source not yet verified); population signal aSR 12.8 (CI 6–32.9). Please review."
+      "index_drug": "Pregabalin",
+      "marker_drug": "Furosemide",
+      "generator": "template (fallback)",
+      "note": "Dear Prescriber, I am the dispensing pharmacist for a shared patient (80-84, female). Furosemide 40 mg was started 58 days after Pregabalin 150 mg, by a different prescriber. This is a possible prescribing cascade. Suspected reaction: possible oedema. Evidence: listed in ThinkCascades (source not yet verified); population signal aSR 14.1 (CI 6.9–33.4). Thank you for considering this. Could you please review whether Furosemide 40 mg is treating a side-effect of Pregabalin 150 mg?",
+      "reaction_description": "Possible oedema: Furosemide 40 mg was started 58 days after Pregabalin 150 mg. Flagged as a possible prescribing cascade by pharmacy dispensing analysis. Evidence: listed in ThinkCascades (source not yet verified); population signal aSR 14.1 (CI 6.9–33.4). Please review."
     }
   ],
-  "human_review_csv": "docs/eval/genai_human_review.csv"
+  "human_review_csv": "docs\\eval\\genai_human_review.csv"
 }

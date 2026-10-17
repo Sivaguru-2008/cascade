@@ -1,0 +1,31 @@
+condition_id,condition_name,atc_l4,drug_names,first_line,typical_age_min
+IND01,hypertension,C08CA,amlodipine|nifedipine,1,30
+IND02,hypertension,C09AA,enalapril|ramipril|lisinopril|perindopril,1,30
+IND03,hypertension,C09CA,losartan|telmisartan|valsartan|olmesartan medoxomil,1,30
+IND04,hypertension,C03AA,hydrochlorothiazide,1,30
+IND05,heart_failure,C03CA,furosemide|torasemide,1,40
+IND06,heart_failure,C03DA,spironolactone,1,40
+IND07,heart_failure,C07AG,carvedilol,1,40
+IND08,gerd,A02BC,omeprazole|pantoprazole|rabeprazole|esomeprazole|lansoprazole,1,18
+IND09,parkinson,N04BA,levodopa and decarboxylase inhibitor,1,50
+IND10,parkinson,N04BC,pramipexole|ropinirole,1,50
+IND11,psychosis,N05AD,haloperidol,1,18
+IND12,psychosis,N05AH,olanzapine|quetiapine,1,18
+IND13,psychosis,N05AX,risperidone|aripiprazole,1,18
+IND14,dementia,N06DA,donepezil|rivastigmine,1,55
+IND15,dementia,N06DX,memantine,1,55
+IND16,bph,G04CA,tamsulosin|alfuzosin|silodosin,1,45
+IND17,overactive_bladder,G04BD,oxybutynin|solifenacin|tolterodine|mirabegron,1,40
+IND18,neuropathic_pain,N03AX,pregabalin|gabapentin,1,20
+IND19,gout,M04AA,allopurinol|febuxostat,1,30
+IND20,vertigo,N07CA,betahistine|cinnarizine,1,30
+IND21,osteoarthritis,M01AB,diclofenac,1,35
+IND22,osteoarthritis,M01AE,ibuprofen|naproxen,1,35
+IND23,osteoarthritis,N02BE,paracetamol,1,18
+IND24,constipation,A06AD,lactulose|macrogol,1,18
+IND25,insomnia,N05CF,zolpidem|zopiclone,1,18
+IND26,diabetes,A10BA,metformin,1,25
+IND27,diabetes,A10BB,glimepiride|gliclazide,1,35
+IND28,dyslipidaemia,C10AA,atorvastatin|rosuvastatin|simvastatin,1,30
+IND29,depression,N06AB,sertraline|escitalopram|fluoxetine,1,18
+IND30,asthma_copd,R03AC,salbutamol,1,10

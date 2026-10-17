@@ -1,19 +1,19 @@
 {
   "mode": "inprocess (single-process, in-memory bus, SQLite)",
-  "arch": "x86_64",
-  "cpu_count": 4,
-  "events_published": 1306000,
-  "events_scored": 1306000,
-  "publish_seconds": 302.0,
-  "scoring_span_seconds": 301.4,
-  "sustained_events_per_s": 4332.4,
+  "arch": "s390x",
+  "cpu_count": 3,
+  "events_published": 718000,
+  "events_scored": 556641,
+  "publish_seconds": 60.0,
+  "scoring_span_seconds": 59.5,
+  "sustained_events_per_s": 9355.5,
   "latency_ms": {
-    "p50": 8.739,
-    "p95": 17.083,
-    "p99": 60.976,
-    "max": 424.482
+    "p50": 6.001,
+    "p95": 7.068,
+    "p99": 33.902,
+    "max": 37.993
   },
-  "alerts": 804,
+  "alerts": 1,
   "note": "latency includes queueing inside a consumer batch (scorer batches of up to 200 events)",
-  "requested_duration_s": 300.0
+  "requested_duration_s": 60.0
 }

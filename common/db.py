@@ -108,6 +108,69 @@ CREATE TABLE IF NOT EXISTS service_state (
     value TEXT NOT NULL,
     updated_ts TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS doctors (
+    doctor_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    specialty TEXT NOT NULL,
+    hospital TEXT NOT NULL,
+    reg_no TEXT NOT NULL,
+    phone TEXT,
+    email TEXT
+);
+CREATE TABLE IF NOT EXISTS patient_profiles (
+    patient_id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    age_band TEXT NOT NULL,
+    sex TEXT NOT NULL,
+    blood_group TEXT NOT NULL,
+    phone TEXT,
+    emergency_contact TEXT,
+    conditions_json TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS encounters (
+    encounter_id TEXT PRIMARY KEY,
+    patient_id TEXT NOT NULL,
+    doctor_id TEXT NOT NULL,
+    visit_ts TEXT NOT NULL,
+    chief_complaint TEXT NOT NULL,
+    vitals_json TEXT,
+    clinical_notes TEXT,
+    diagnosis TEXT NOT NULL,
+    cascade_flag {INT} DEFAULT 0,
+    created_ts TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS encounters_patient_idx ON encounters (patient_id, visit_ts);
+CREATE INDEX IF NOT EXISTS encounters_doctor_idx ON encounters (doctor_id, visit_ts);
+CREATE TABLE IF NOT EXISTS prescriptions (
+    rx_id TEXT PRIMARY KEY,
+    encounter_id TEXT NOT NULL,
+    patient_id TEXT NOT NULL,
+    doctor_id TEXT NOT NULL,
+    drug_id TEXT NOT NULL,
+    generic_name TEXT NOT NULL,
+    atc_l4 TEXT NOT NULL,
+    dose_mg {REAL} NOT NULL,
+    frequency TEXT NOT NULL,
+    duration_days {INT} NOT NULL,
+    indication TEXT NOT NULL,
+    status TEXT NOT NULL,
+    warning_note TEXT,
+    created_ts TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS rx_patient_idx ON prescriptions (patient_id, created_ts);
+CREATE INDEX IF NOT EXISTS rx_encounter_idx ON prescriptions (encounter_id);
+CREATE TABLE IF NOT EXISTS patient_symptoms (
+    id {SERIAL},
+    patient_id TEXT NOT NULL,
+    symptom TEXT NOT NULL,
+    onset_ts TEXT NOT NULL,
+    severity TEXT NOT NULL,
+    suspected_drug TEXT,
+    notes TEXT,
+    status TEXT NOT NULL,
+    created_ts TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS symptoms_patient_idx ON patient_symptoms (patient_id, created_ts);
 """
 
 _TYPES = {
@@ -117,7 +180,10 @@ _TYPES = {
 
 _INSERT_VALUES = re.compile(r"^(INSERT INTO .+? VALUES )\((\?(?:, \?)*)\)(.*)$", re.S)
 
-TABLES = ("alerts", "latency", "signals", "signals_latest", "drafts", "audit", "feedback", "service_state")
+TABLES = (
+    "alerts", "latency", "signals", "signals_latest", "drafts", "audit", "feedback", "service_state",
+    "doctors", "patient_profiles", "encounters", "prescriptions", "patient_symptoms"
+)
 
 
 def ddl(dialect: str) -> str:

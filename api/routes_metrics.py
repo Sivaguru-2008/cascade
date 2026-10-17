@@ -56,3 +56,18 @@ async def metrics(request: Request, p: Principal = Depends(require_any)) -> dict
         "loop2_sim_date": None if sim_day is None else (s.epoch + timedelta(days=int(sim_day))).isoformat(),
         "role": p.label,
     }
+
+
+@router.get("/audit")
+async def audit_logs(request: Request, limit: int = 100, p: Principal = Depends(require_any)) -> list[dict[str, Any]]:
+    ctx = request.app.state.ctx
+    db = ctx.db
+    sql = "SELECT id, ts, role, action, object_id FROM audit"
+    params: list[Any] = []
+    if p.role == "pharmacist":
+        sql += " WHERE role = ? OR role = 'pharmacist' OR role LIKE ?"
+        params.extend([p.label, f"pharmacist:{p.pharmacy_id}"])
+    sql += " ORDER BY id DESC LIMIT ?"
+    params.append(min(max(limit, 1), 500))
+    rows = db.fetchall(sql, params)
+    return [{"id": r[0], "ts": r[1], "role": r[2], "action": r[3], "object_id": r[4]} for r in rows]

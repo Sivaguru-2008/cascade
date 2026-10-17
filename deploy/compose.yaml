@@ -7,7 +7,7 @@ x-app: &app
   restart: unless-stopped
   read_only: true
   tmpfs: [/tmp]
-  security_opt: [no-new-privileges:true]
+  security_opt: [no-new-privileges]
   cap_drop: [ALL]
   env_file: [../secrets/app.env]
   environment:

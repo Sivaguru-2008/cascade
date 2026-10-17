@@ -1,0 +1,41 @@
+== CASCADE evidence ==
+date (UTC): 2026-10-17T15:52:12Z
+git commit: 6cbabab
+
+== uname -m
+s390x
+== uname -a
+Linux cascadevm 5.15.0-56-generic #62-Ubuntu SMP Tue Nov 22 19:57:26 UTC 2022 s390x s390x s390x GNU/Linux
+
+== containers (docker)
+NAMES              IMAGE                          STATUS
+cascade-signals    localhost/cascade-app:latest   Up 26 minutes (healthy)
+cascade-scorer     localhost/cascade-app:latest   Up 26 minutes (healthy)
+cascade-genai      localhost/cascade-app:latest   Up 26 minutes (healthy)
+cascade-api        localhost/cascade-app:latest   Up 26 minutes (healthy)
+cascade-edge       localhost/cascade-app:latest   Up 26 minutes (healthy)
+cascade-postgres   postgres:16-alpine             Up 27 minutes (healthy)
+cascade-redis      redis:7.2-alpine               Up 27 minutes (healthy)
+
+== CPU feature flags from /proc/cpuinfo (printed as found; nothing assumed)
+features	: esan3 zarch stfle msa ldisp eimm dfp edat etf3eh highgprs te vx vxd vxe gs vxe2 vxp sort dflt vxp2 nnpa sie 
+-- crypto-related flags present:
+msa 
+-- /proc/crypto drivers for gcm(aes) / aes:
+  aes -> aes-generic (priority 100)
+  aes -> aes-s390 (priority 300)
+  gcm(aes) -> gcm-aes-s390 (priority 900)
+
+== openssl
+OpenSSL 3.0.2 15 Mar 2022 (Library: OpenSSL 3.0.2 15 Mar 2022)
+-- openssl speed -evp aes-256-gcm -seconds 3 (last lines)
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+AES-256-GCM     229634.17k   875487.63k  2957287.77k  8449238.80k 13284729.56k 13304194.15k
+
+== one encrypted DB row
+no alerts stored yet
+
+== regulator key on an alert endpoint (expect 403)
+curl -sk -H 'X-API-Key: <REGULATOR key, redacted>' https://localhost:8443/alerts
+HTTP status: 403

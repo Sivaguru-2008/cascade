@@ -21,7 +21,12 @@ import json
 import re
 import time
 from collections.abc import AsyncIterator
-from datetime import UTC, datetime
+from datetime import datetime, timezone
+
+try:
+    from datetime import UTC
+except ImportError:
+    UTC = timezone.utc  # type: ignore
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
