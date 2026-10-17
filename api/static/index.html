@@ -453,7 +453,7 @@
           <div class="view-header">
             <div class="view-title-group">
               <h1 id="alerts-heading">Prescribing Cascade Alerts</h1>
-              <p class="view-subtitle">Review, investigate, and triage potential prescribing cascades flagged at the pharmacy counter. Prescribing cascades represent sequences where a drug side-effect is mistaken for a new diagnosis and treated with another medication.</p>
+              <p class="view-subtitle">Pharmacy counter cascade detections requiring clinical review and intervention.</p>
             </div>
           </div>
 
@@ -506,7 +506,7 @@
           <div class="view-header">
             <div class="view-title-group">
               <h1 id="signals-heading">Population Safety Signals (Loop 2 PSSA)</h1>
-              <p class="view-subtitle">Explore medication-start patterns that occur more frequently than expected across all 50 network pharmacies after accounting for secular background prescribing trends. These are statistical signals for investigation; they do not establish causation.</p>
+              <p class="view-subtitle">Network-wide sequence symmetry analysis detecting uncatalogued drug-cascade signals across 50 dispensaries.</p>
             </div>
             <div class="view-actions">
               <div class="filter-group">
@@ -524,51 +524,15 @@
             </div>
           </div>
 
-          <!-- PSSA Educational Visualizer -->
-          <div class="pssa-explainer-box">
-            <div class="pssa-explainer-header">
-              <h3>Prescription Sequence Symmetry Analysis (PSSA) Methodology</h3>
-              <p>PSSA identifies adverse drug reaction cascades by assessing directional asymmetry in the order patients initiate pairs of medications:</p>
+          <!-- PSSA Methodology (Collapsible) -->
+          <details style="margin-bottom:16px;background:var(--bg-surface);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:10px 16px;font-size:12px;">
+            <summary style="font-weight:600;color:var(--brand-primary);cursor:pointer;user-select:none;">
+              Statistical Methodology: Prescription Sequence Symmetry Analysis (PSSA)
+            </summary>
+            <div style="margin-top:8px;color:var(--text-secondary);line-height:1.5;">
+              Directional starts \(n_{AB}\) (Drug A &rarr; Drug B) vs. reverse controls \(n_{BA}\). Adjusted Sequence Ratio (aSR) accounts for background secular trends with 95% Clopper-Pearson confidence intervals and Benjamini-Hochberg FDR control.
             </div>
-            <div class="pssa-diagram-grid">
-              <div class="pssa-sequence-card">
-                <div class="pssa-sequence-title">
-                  <span>Directional Sequence A: Drug A ➔ Drug B (n_AB)</span>
-                  <span class="badge badge-known">Candidate Cascade</span>
-                </div>
-                <div class="pssa-timeline-track">
-                  <div class="timeline-node">Day 0: Drug A Started</div>
-                  <div class="timeline-arrow">&rarr;</div>
-                  <div class="timeline-node" style="border-color:#FCA5A5;background:#FEE2E2;">ADR Side Effect</div>
-                  <div class="timeline-arrow">&rarr;</div>
-                  <div class="timeline-node" style="border-color:#93C5FD;background:#EBF2FF;">Drug B Prescribed</div>
-                </div>
-                <p style="font-size:11.5px;color:var(--text-secondary);margin:6px 0 0;">Suspected cascade: Drug B is initiated to treat an unrecognised adverse reaction caused by Drug A.</p>
-              </div>
-
-              <div class="pssa-sequence-card">
-                <div class="pssa-sequence-title">
-                  <span>Directional Sequence B: Drug B ➔ Drug A (n_BA)</span>
-                  <span class="badge" style="background:#E2E8F0;">Reverse Control</span>
-                </div>
-                <div class="pssa-timeline-track">
-                  <div class="timeline-node">Day 0: Drug B Started</div>
-                  <div class="timeline-arrow">&rarr;</div>
-                  <div class="timeline-node">Independent History</div>
-                  <div class="timeline-arrow">&rarr;</div>
-                  <div class="timeline-node">Drug A Prescribed</div>
-                </div>
-                <p style="font-size:11.5px;color:var(--text-secondary);margin:6px 0 0;">Natural control sequence: Drug A is initiated after Drug B for independent clinical indications.</p>
-              </div>
-            </div>
-            <div class="formula-card">
-              <strong>Statistical Calculations:</strong><br>
-              &bull; <strong>Crude Sequence Ratio (cSR):</strong> <code>cSR = n_AB / n_BA</code> &mdash; Ratio of observed directional starts.<br>
-              &bull; <strong>Null-effect Ratio (nSR):</strong> Accounts for background temporal growth or decay in prescribing volumes over time.<br>
-              &bull; <strong>Adjusted Sequence Ratio (aSR):</strong> <code>aSR = cSR / nSR</code> with 95% Clopper-Pearson Confidence Intervals. An <code>aSR &gt; 1.0</code> indicates Drug B starts after Drug A significantly more often than expected.<br>
-              &bull; <strong>Benjamini-Hochberg (BH) Multiple-Testing Correction:</strong> Controls the False Discovery Rate across hundreds of tested drug pairs.
-            </div>
-          </div>
+          </details>
 
           <!-- Summary Metric Banner -->
           <div class="card" style="margin-bottom:20px;padding:14px 20px;">
@@ -623,30 +587,20 @@
         <section class="app-view" id="view-reports" aria-labelledby="reports-heading">
           <div class="view-header">
             <div class="view-title-group">
-              <h1 id="reports-heading">Reports &amp; Document Generation</h1>
-              <p class="view-subtitle">Prepare, review, and export prescriber peer notes and official Pharmacovigilance Programme of India (PvPI) Suspected ADR reporting drafts. Note: CASCADE prepares drafts; it does not dispatch reports externally.</p>
+              <h1 id="reports-heading">ADR Reports &amp; Prescriber Notes</h1>
+              <p class="view-subtitle">Prescriber communications and Indian Pharmacopoeia Commission (PvPI) reporting records.</p>
             </div>
           </div>
 
-          <!-- 9-Step Guided Workflow Banner -->
+          <!-- Workflow Stages -->
           <div class="workflow-stepper">
-            <div class="wf-step completed"><span class="wf-step-num">1</span><span>Select Alert</span></div>
+            <div class="wf-step completed"><span class="wf-step-num">1</span><span>Cascade Flagged</span></div>
             <span class="wf-sep">&rarr;</span>
-            <div class="wf-step completed"><span class="wf-step-num">2</span><span>Review Evidence</span></div>
+            <div class="wf-step completed"><span class="wf-step-num">2</span><span>Evidence Verified</span></div>
             <span class="wf-sep">&rarr;</span>
-            <div class="wf-step active"><span class="wf-step-num">3</span><span>Draft Note &amp; ADR</span></div>
+            <div class="wf-step active"><span class="wf-step-num">3</span><span>Draft Generated</span></div>
             <span class="wf-sep">&rarr;</span>
-            <div class="wf-step"><span class="wf-step-num">4</span><span>Validate Rules</span></div>
-            <span class="wf-sep">&rarr;</span>
-            <div class="wf-step"><span class="wf-step-num">5</span><span>Highlight Amber Fields</span></div>
-            <span class="wf-sep">&rarr;</span>
-            <div class="wf-step"><span class="wf-step-num">6</span><span>Human Edits</span></div>
-            <span class="wf-sep">&rarr;</span>
-            <div class="wf-step"><span class="wf-step-num">7</span><span>Review Draft</span></div>
-            <span class="wf-sep">&rarr;</span>
-            <div class="wf-step"><span class="wf-step-num">8</span><span>Approve</span></div>
-            <span class="wf-sep">&rarr;</span>
-            <div class="wf-step"><span class="wf-step-num">9</span><span>Export PDF/JSON</span></div>
+            <div class="wf-step"><span class="wf-step-num">4</span><span>Approved &amp; Exported</span></div>
           </div>
 
           <!-- Existing Reports Table -->
@@ -654,7 +608,7 @@
             <div class="card-header">
               <div>
                 <h3 class="card-title">Prepared Reporting Drafts</h3>
-                <span class="card-subtitle">Drafts and approved submissions generated for Pharmacy PH030</span>
+                <span class="card-subtitle">Clinical notes and regulatory submissions</span>
               </div>
             </div>
             <div class="table-container">
@@ -723,18 +677,11 @@
         <section class="app-view" id="view-audit" aria-labelledby="audit-heading">
           <div class="view-header">
             <div class="view-title-group">
-              <h1 id="audit-heading">Tamper-Evident Audit Trail</h1>
-              <p class="view-subtitle">Immutable log recording every clinical inspection, draft generation, approval, dismissal, and export across the platform. Demonstrates accountability and compliance with healthcare data regulations.</p>
+              <h1 id="audit-heading">Clinical Audit Trail</h1>
+              <p class="view-subtitle">Cryptographic ledger of clinical reviews, draft generations, and regulatory exports.</p>
             </div>
             <div class="view-actions">
               <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-audit">Refresh Log</button>
-            </div>
-          </div>
-
-          <!-- Privacy & Anonymisation Disclaimer -->
-          <div class="card" style="margin-bottom:20px;padding:14px 20px;background:var(--bg-subtle);">
-            <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">
-              <strong>🛡️ Privacy Protection by Architecture:</strong> All recorded audit events reference pseudonymous alert references and role identifiers. No raw patient names, prescriber identities, or sensitive internal encryption keys are ever logged.
             </div>
           </div>
 
@@ -763,8 +710,8 @@
         <section class="app-view" id="view-system" aria-labelledby="system-heading">
           <div class="view-header">
             <div class="view-title-group">
-              <h1 id="system-heading">System Status &amp; Technical Telemetry</h1>
-              <p class="view-subtitle">Operational health, machine learning service availability, cryptographic safeguards, and IBM LinuxONE s390x infrastructure status.</p>
+              <h1 id="system-heading">Hospital IT Telemetry</h1>
+              <p class="view-subtitle">Core services, cryptographic controls, and inference pipeline status.</p>
             </div>
             <div class="view-actions">
               <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-system">Run Health Check</button>

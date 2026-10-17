@@ -1533,7 +1533,7 @@ function addPrescriptionItem() {
   if ($("doc-cascade-copilot")) $("doc-cascade-copilot").hidden = true;
 
   renderPrescriptionPadItems();
-  showToast(`Added ${genericName} (${dose}mg) to prescription slip.`);
+  showToast(`Added ${genericName} (${dose}mg) to Rx.`);
 }
 
 function removePrescriptionItem(idx) {
@@ -1547,7 +1547,7 @@ function renderPrescriptionPadItems() {
   tbody.innerHTML = "";
 
   if (state.currentPrescriptions.length === 0) {
-    const tr = el("tr", {}, el("td", { colspan: "8", style: "text-align:center;color:var(--text-secondary);padding:14px;", text: "No medications added to this prescription slip yet. Select a drug above." }));
+    const tr = el("tr", {}, el("td", { colspan: "8", style: "text-align:center;color:var(--text-secondary);padding:14px;", text: "No medications added yet. Select a medication above." }));
     tbody.appendChild(tr);
     return;
   }
@@ -1579,26 +1579,26 @@ function handleCdssSubstitute() {
     }
   }
   if ($("doc-rx-dose")) $("doc-rx-dose").value = "40";
-  if ($("doc-rx-indication")) $("doc-rx-indication").value = "Hypertension (Substituted ARB Alternative)";
+  if ($("doc-rx-indication")) $("doc-rx-indication").value = "Hypertension (ARB Alternative)";
   if ($("doc-cascade-copilot")) $("doc-cascade-copilot").hidden = true;
-  showToast("⚡ Substituted with ARB (Telmisartan 40mg). Potential cascade successfully avoided!");
+  showToast("Substituted with ARB (Telmisartan 40mg). Cascade averted.");
 }
 
 function handleCdssTitrate() {
   if ($("doc-rx-dose")) $("doc-rx-dose").value = "2.5";
-  if ($("doc-rx-indication")) $("doc-rx-indication").value = "Hypertension (Step-down titration to minimise edema)";
+  if ($("doc-rx-indication")) $("doc-rx-indication").value = "Hypertension (Dose step-down)";
   if ($("doc-cascade-copilot")) $("doc-cascade-copilot").hidden = true;
-  showToast("⚡ Primary dose titrated to 2.5mg once daily to eliminate adverse edema risk.");
+  showToast("Dose titrated to 2.5mg once daily.");
 }
 
 function handleCdssOverride() {
   const reason = prompt(
-    "Enter clinical justification for overriding the CASCADE CDSS safety alert:\n(e.g., Acute congestive heart failure with fluid retention; loop diuretic therapy clinically mandatory)",
-    "Symptomatic fluid retention confirmed; loop diuretic therapy clinically indicated under close monitoring"
+    "Enter clinical justification for overriding the CDSS alert:\n(e.g., Symptomatic fluid retention; loop diuretic therapy clinically indicated)",
+    "Symptomatic fluid retention; loop diuretic clinically indicated under close monitoring"
   );
   if (reason && reason.trim()) {
     if ($("doc-cascade-copilot")) $("doc-cascade-copilot").hidden = true;
-    showToast(`Alert overridden with clinical justification: "${reason.slice(0, 45)}..."`);
+    showToast(`Alert overridden: "${reason.slice(0, 35)}..."`);
   }
 }
 
@@ -1744,9 +1744,9 @@ async function commitDoctorEncounter() {
     const result = await res.json();
 
     if (result.cascade_flag) {
-      showToast("🚨 Encounter recorded: Prescribing Cascade Intercepted & Pharmacovigilance Alert Created!", true);
+      showToast("Encounter saved: Cascade alert recorded in safety audit.", true);
     } else {
-      showToast("✅ Encounter and Prescription committed to patient record.");
+      showToast("Encounter and prescription saved to patient record.");
     }
 
     resetDoctorConsultationForm();
