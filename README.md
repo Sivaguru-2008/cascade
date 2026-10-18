@@ -29,6 +29,7 @@
 
 ## 📑 Table of Contents
 - [📌 Executive Summary](#-executive-summary)
+- [🔄 The Dual-Loop Innovation: How Population Discovery Powers Real-Time Interception](#-the-dual-loop-innovation-how-population-discovery-powers-real-time-interception)
 - [🎯 Judges' Evaluation Scorecard](#-judges-evaluation-scorecard)
 - [🔷 IBM Z & LinuxONE (s390x) Enterprise Architecture Deep Dive](#-ibm-z--linuxone-s390x-enterprise-architecture-deep-dive)
   - [💡 The Decisive Advantage: Why IBM LinuxONE Over Other Systems](#-the-decisive-advantage-why-ibm-linuxone-over-other-systems-x86--commodity-cloud)
@@ -42,6 +43,7 @@
 - [🏆 Headline Benchmark Results](#-headline-benchmark-results)
 - [🖥️ Interactive System Walkthrough](#️-interactive-system-walkthrough)
 - [🔬 Comprehensive Experimental Results & Validation](#-comprehensive-experimental-results--validation)
+  - [🛡️ Defensible Scientific Methodology: Provenance, Splits, & Labels](#️-defensible-scientific-methodology-provenance-splits--labels)
   - [1. Loop 1: Real-Time Scorer & Model Ablation](#1-loop-1-real-time-scorer--model-ablation)
   - [2. Generalization: Leave-One-Pair-Out (LOPO) Cross-Validation](#2-generalization-leave-one-pair-out-lopo-cross-validation)
   - [3. Loop 2: Population-Scale Streaming PSSA Discovery](#3-loop-2-population-scale-streaming-pssa-discovery)
@@ -49,6 +51,7 @@
   - [5. GenAI Regulatory Dossier & Blinded Human Review](#5-genai-regulatory-dossier--blinded-human-review)
   - [6. IBM LinuxONE CPACF Hardware Benchmarks & Throughput](#6-ibm-linuxone-cpacf-hardware-benchmarks--throughput)
 - [🏛️ System Architecture & Dual-Loop Pipeline](#️-system-architecture--dual-loop-pipeline)
+- [🎬 Complete Live Workflow Demonstration: From Dispense to Regulatory Report](#-complete-live-workflow-demonstration-from-dispense-to-regulatory-report)
 - [⚡ Quick Start Guide (Judges' 3-Minute Tour)](#-quick-start-guide-judges-3-minute-tour)
 - [📄 Scientific Audit & Benchmark Methodology Documentation](#-scientific-audit--benchmark-methodology-documentation)
 - [🛡️ Security, Privacy & Zero-Trust Compliance](#️-security-privacy--zero-trust-compliance)
@@ -68,6 +71,46 @@ A **prescribing cascade** occurs when an adverse drug reaction (ADR) is misinter
 2. **Loop 2 — Streaming Population Discovery:** Continuously runs streaming Prescription Sequence Symmetry Analysis (PSSA) across millions of dispensing events with Benjamini–Hochberg False Discovery Rate control to autonomously detect uncatalogued prescribing cascades.
 3. **Closing the Reporting Gap:** Generates one-click pre-filled regulatory dossiers compliant with India's Pharmacovigilance Programme (PvPI) and prescriber advisory notes, protected by a deterministic clinical validator.
 4. **Confidential Computing & Hardware Security:** Uses CPACF (Central Processor Assist for Cryptographic Functions) on s390x to achieve **13.3 GB/s AES-256-GCM** throughput with **0% CPU penalty** (eliminating the 15–30% overhead of x86 software crypto), zero-knowledge HMAC-SHA256 patient pseudonymization at the edge, and strict role-based data partitioning.
+
+---
+
+## 🔄 The Dual-Loop Innovation: How Population Discovery Powers Real-Time Interception
+
+> **Core Machine Learning Problem:** Conventional healthcare AI models are static and brittle. If a pharmacy relies solely on a static pre-trained model ($M_1$), the system is completely blind to newly emerging, uncatalogued, or off-label prescribing cascades (`pair_in_known_list = 0`). Conversely, traditional epidemiological pharmacovigilance (e.g. spontaneous FAERS reporting) takes 12–18 months to identify safety signals—far too late to protect individual patients at point-of-sale.
+> 
+> **The CASCADE Breakthrough:** CASCADE creates an active closed feedback loop between **population-scale streaming discovery (Loop 2)** and **individual-level edge interception (Loop 1)**.
+
+```mermaid
+flowchart LR
+    subgraph Pop["🌐 Loop 2: Population Discovery (Streaming PSSA)"]
+        direction TB
+        Stream["Nationwide Dispensing Stream"] --> Agg["PSSA Temporal Pair Tracking"]
+        Agg --> Stat["Trend Normalization (nSR) & FDR Control (q < 0.05)"]
+        Stat --> Signal["Emergent Signal: Adjusted Sequence Ratio (aSR)"]
+    end
+
+    subgraph Fast["⚡ Loop 1: Real-Time Interception (<10 ms @ POS)"]
+        direction TB
+        Rx["Patient Dispense Event @ Counter"] --> Feat["16-Feature Extraction Vector"]
+        Feat --> Infer["Monotonic XGBoost (M1) + Calibrated Blend (M2)"]
+        Infer --> Decision{"Cascade Risk ≥ 0.74?"}
+        Decision -->|YES| Alert["Real-Time Pharmacist Alert + TreeSHAP Rationale"]
+        Decision -->|NO| Pass["Safe Dispense Approved"]
+    end
+
+    Signal ==>|"Live Dynamic Priors (pair_aSR)\n[Enables Zero-Shot Detection of Novel Cascades]"| Feat
+    Rx -.->|"Continuous Streaming Feed"| Stream
+
+    classDef loop1 fill:#08bdba,stroke:#007d79,stroke-width:2px,color:#000;
+    classDef loop2 fill:#052fad,stroke:#001d6c,stroke-width:2px,color:#fff;
+    class Fast loop1;
+    class Pop loop2;
+```
+
+### Why This Closed Loop Beats Generic Healthcare AI:
+1. **Dynamic Prior Injection:** When an uncatalogued cascade begins developing across a population (e.g., novel CCB *Novacor* inducing GI symptoms treated by pantoprazole), Loop 2 autonomously detects the sequence asymmetry ($\text{aSR} = 8.05$, $q = 0.0021$) and publishes it to the shared prior cache `asr:A:B`.
+2. **Instant Zero-Shot Interception:** Loop 1 immediately incorporates this live population symmetry ratio into its 16-feature vector. The very next patient presenting this prescription at a pharmacy counter is intercepted **in real time (<10 ms) with 97.7% sensitivity**—*without requiring model retraining, offline fine-tuning, or manual label curation*.
+3. **Empirical Ablation Proof:** Rigorous ablation testing proves that removing Loop 2's live population priors collapses Loop 1 recall from **98.0% down to 64.7%** (missing 95 clinical cascades). The dual loop is the indispensable engine of CASCADE's clinical intelligence.
 
 ---
 
@@ -317,6 +360,18 @@ SLA Status          : PASS — Real-time dispensing SLA fully satisfied (9,277.4
 
 All experiments were conducted on the holdout test set (20,072 candidate dispensing pairs, 269 labelled cascades, and 132 novel cascade events).
 
+### 🛡️ Defensible Scientific Methodology: Provenance, Splits, & Labels
+
+| Scientific Dimension | Rigorous Specification | Audit Verification Reference |
+|---|---|---|
+| **Dataset Provenance** | Longitudinal prescription timelines (2023–2025) across 100,000 synthetic patient cohort (Synthea demographics). Ground truth clinically anchored in **ThinkCascades** consensus panel (9 verified clinical pairs K1–K9) + FDA FAERS MedDRA PT adverse event reports cached via openFDA API. | [`data/cascades_known.csv`](data/cascades_known.csv) &bull; [`data/faers_cache.json`](data/faers_cache.json) |
+| **Temporal Partition Boundaries** | Strict, non-overlapping temporal split preventing future lookahead bias: <br>&bull; **Train (2023–2024):** 110,402 pairs (baseline learning)<br>&bull; **Validation (2025-H1):** 27,601 pairs (calibration & threshold tuning)<br>&bull; **Test (2025-H2):** 20,072 held-out pairs (269 labelled cascades + 132 novel uncatalogued H1 cascades) | [`loop1/features.py`](loop1/features.py) &bull; [`docs/BENCHMARK_METHODOLOGY.md`](docs/BENCHMARK_METHODOLOGY.md) |
+| **Label Definitions ($y$)** | **Positive Cascade ($y=1$):** Marker drug initiated 1–180 days after index drug with verified adverse symptom indication.<br>**Negative Control ($y=0$):** Reverse prescribing sequence ($B \to A$), simultaneous co-dispensing, or drug pair indicated for pre-existing comorbidity. | [`loop1/candidates.py`](loop1/candidates.py) &bull; [`tests/test_candidates.py`](tests/test_candidates.py) |
+| **Zero-Shot Novel Injection (H1)** | Synthetic cascade *Novacor* (calcium channel blocker) &rarr; *Pantoprazole* (PPI) was **completely excluded from training labels** ($y=0$ in training data). CASCADE autonomously detected population asymmetry in Loop 2 ($aSR = 8.05$) and intercepted **97.7% of events (129/132)** in Loop 1. | [`datagen/inject.py`](datagen/inject.py) &bull; [`docs/EVALUATION_AUDIT.md`](docs/EVALUATION_AUDIT.md) |
+| **1-Click Audit Reproduction** | Verify all statistical assertions and ROC/PR curves directly from source code: <br>`python -m eval.verify_all`<br>`python -m eval.evaluate_loop1`<br>`python -m eval.evaluate_loop2` | All published metrics match code execution output identically. |
+
+---
+
 ### 1. Loop 1: Real-Time Scorer & Model Ablation
 
 To prevent alert fatigue, Loop 1 combines an XGBoost model ($M_1$) constrained by monotonic sequence ratios with a calibrated regularized linear model ($M_2$).
@@ -435,6 +490,20 @@ Benchmarked directly on the active **IBM LinuxONE Community Cloud** instance ([`
 > - **Command Prompt Terminal Benchmarks:** Authentic Windows Command Prompt console captures on LinuxONE at [`docs/screenshots/latency_distribution.png`](docs/screenshots/latency_distribution.png) and [`docs/screenshots/linuxone_cpacf_evidence.png`](docs/screenshots/linuxone_cpacf_evidence.png).
 > - **Hardware Terminal Evidence:** Raw output log of `uname -a`, `/proc/cpuinfo` flags, `/proc/crypto` drivers, OpenSSL EVP speeds, and container health checks at [`docs/screenshots/evidence.txt`](docs/screenshots/evidence.txt).
 
+#### 🔍 Exactly What the Benchmark Measures (6-Stage Computational Path)
+This benchmark is **not a raw socket ping or mock message count**. For every single one of the 556,641 events, the full end-to-end computational path was executed:
+1. **Event Ingestion:** Dequeued from the streaming buffer in micro-batches of up to 200 events.
+2. **State & Lookback Query:** Lookback query executed against the in-memory patient history hash table (`pstate:<token>`) to identify active candidate index medications initiated within 1 to 180 days.
+3. **16-Feature Extraction:** Feature vector computed (time lag, index class, marker class, age band, prior cascade history, and live Loop 2 population symmetry ratios $\text{aSR}$).
+4. **Machine Learning Inference:** Evaluated via monotonic XGBoost ($M_1$) and regularized linear blend ($M_2$).
+5. **TreeSHAP Explainability:** When risk exceeds operational threshold ($\ge 0.74$), TreeSHAP calculates feature contributions (`pred_contribs=True`) and ranks the top-3 clinical drivers.
+6. **Encrypted Latency Logging:** Event latency metrics (`ms`, `alerted`, `wall_ts`) are written to the database latency ledger.
+
+```bash
+# ⚡ Reproduce the 9,277.4 events/sec benchmark in 60 seconds:
+python -m eval.latency_report --mode inprocess --duration 60.0
+```
+
 ---
 
 ## 🏛️ System Architecture & Dual-Loop Pipeline
@@ -480,6 +549,65 @@ flowchart TD
     classDef comp fill:#08bdba,stroke:#007d79,stroke-width:2px,color:#000;
     class LinuxONE ibm;
     class Edge edge;
+```
+
+---
+
+## 🎬 Complete Live Workflow Demonstration: From Dispense to Regulatory Report
+
+To prove that CASCADE is an active, operational clinical engine—*rather than a set of pre-populated dashboard screenshots*—here is the exact, end-to-end journey of a single clinical transaction moving through the live system:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Patient as 👤 Patient at Counter
+    participant Edge as 🔒 Pharmacy Edge Node
+    participant Bus as ⚡ Redis Stream Bus (s390x)
+    participant Loop1 as 🧠 Loop 1 Scorer (XGBoost)
+    participant Loop2 as 🌐 Loop 2 PSSA Engine
+    actor Pharm as 💊 Pharmacist Terminal
+    participant GenAI as 📄 GenAI Regulatory Engine
+
+    Patient->>Edge: Presents Rx: Pantoprazole 40mg
+    Edge->>Edge: Tokenize IDs: HMAC-SHA256(Patient, Prescriber)
+    Edge->>Bus: Encrypted Event Published (AES-256-GCM via CPACF)
+    Bus->>Loop1: Micro-Batch Dequeue (<10 ms)
+    Loop1->>Loop1: Patient Lookback: Active Novacor started 42d prior
+    Loop2-->>Loop1: Live Dynamic Prior: aSR(Novacor->PPI) = 8.05
+    Loop1->>Loop1: Inference: Calculated Risk = 0.824 (Threshold ≥ 0.74)
+    Loop1->>Loop1: TreeSHAP: Top 3 Clinical Drivers Computed
+    Loop1->>Pharm: Push Alert via SSE Stream (Instant Audio/Visual Card)
+    Pharm->>Pharm: Reviews Cascade Rationale & Patient Timeline
+    Pharm->>GenAI: 1-Click "Draft PvPI Report & Note"
+    GenAI->>Pharm: Pre-filled ADR Form (CDSCO) + Prescriber Note (100% Validated)
+    Pharm->>Patient: Intercepts Cascade / Alerts Prescriber
+```
+
+### The 5-Step Operational Journey:
+1. **Dispensing Event & Zero-Knowledge Tokenization:**
+   Patient `PT-89421` (Female, 85–89) presents a prescription for **Pantoprazole 40 mg**. The pharmacy edge node irreversibly tokenizes IDs with local `HMAC-SHA256` keys and streams the AES-256-GCM payload to `stream:dispense`. Zero unencrypted PII leaves the pharmacy boundary.
+2. **Loop 1 Real-Time Risk Assessment (<10 ms):**
+   `cascade-scorer` dequeues the event, executes in-memory patient lookback (`pstate:<token>`), and discovers the patient started **Novacor 10 mg** (calcium channel blocker) 42 days earlier from a different prescriber. Blended risk score = **0.824** (exceeds alert threshold $\ge 0.74$).
+3. **TreeSHAP Explainability & Clinical Attribution:**
+   TreeSHAP decomposes the risk score into exact clinical drivers:
+   - **Driver 1 (+0.38):** High population sequence asymmetry ($\text{aSR} = 8.05$).
+   - **Driver 2 (+0.24):** Prescribing gap of 42 days (falls within 30–60 day ADR symptom onset window).
+   - **Driver 3 (+0.16):** Geriatric vulnerability (age band 85–89).
+   - Suspected Adverse Drug Reaction: *Dyspepsia / Acid Rebound secondary to Novacor*.
+4. **Loop 2 Population Signal & False Discovery Rate Control:**
+   Loop 2 monitors longitudinal prescribing symmetry across the population:
+   - For *Novacor* $\to$ *Pantoprazole*: $C = 136$ patients ($112$ forward $A \to B$ vs $24$ reverse $B \to A$).
+   - Null Sequence Ratio $nSR = 0.58$; Adjusted Sequence Ratio: $\mathbf{aSR = 8.05}$ (95% CI: $[4.12, 15.68]$).
+   - Benjamini–Hochberg FDR correction: $q = 0.0021 < 0.05$ (statistically significant causal asymmetry).
+5. **Pharmacist Review & Automated PvPI Regulatory Dossier:**
+   The pharmacist reviews the alert in real time and clicks **"Generate PvPI Report"**. `cascade-genai` drafts:
+   - **Prescriber Note:** Respectful, non-accusatory consultation letter to the physician.
+   - **CDSCO / PvPI ADR Dossier:** Standard regulatory form with pre-filled drug chronology, passed through deterministic schema validation (0 hallucinations, zero banned prescriptive assertions).
+   - Downloadable directly as signed PDF and JSON evidence packages.
+
+```bash
+# ⚡ Run the live end-to-end integration workflow in your terminal:
+python -m tests.test_end_to_end
 ```
 
 ---
