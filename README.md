@@ -239,7 +239,7 @@ All metrics are experimentally measured on an **IBM LinuxONE Community Cloud VM*
 | Instance Parameter | IBM LinuxONE Community Cloud Portal Specification | Verified Live Status |
 |---|---|:---:|
 | **Virtual Server Name** | `cascadevm` | ✅ **ACTIVE** |
-| **Architecture** | **IBM z/Architecture (`s390x`)** &mdash; Machine Type `8561` (IBM LinuxONE III / z15) | ✅ Verified |
+| **Architecture** | **IBM z/Architecture (`s390x`)** &mdash; Machine Type `9175` (IBM LinuxONE 4 / z16) | ✅ Verified |
 | **Public IP Address** | `[REDACTED / SECURED]` | ✅ Masked for Security |
 | **Instance Flavor** | `AI_LAB` (3 vCPUs, 8,192 MB RAM, 50 GB Root Disk) | ✅ Provisioned |
 | **Operating System** | Ubuntu 22.04 LTS (`Linux cascadevm 5.15.0-56-generic s390x`) | ✅ Deployed |
@@ -250,7 +250,7 @@ All metrics are experimentally measured on an **IBM LinuxONE Community Cloud VM*
 <br>
 
 #### ⚡ Proof 2: Direct s390x Host Execution & CPACF Hardware Cryptography
-*Direct terminal execution on `cascadevm` verifying `uname -m = s390x`, `msa` CPU facility flag, CPACF 13.3 GB/s throughput, and sub-10ms latency profile:*
+*Direct terminal execution via Windows Command Prompt SSH session to `cascadevm` verifying `uname -m = s390x`, `msa` CPU facility flag, CPACF 13.24 GB/s throughput, and sub-10ms latency profile:*
 <br><br>
 <p align="center">
   <img src="docs/screenshots/linuxone_cpacf_evidence.png" alt="LinuxONE CPACF Evidence" width="450" />
