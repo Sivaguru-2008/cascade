@@ -50,6 +50,12 @@ Durability Status   : PASS — 100% queue durability (0 dropped, 161,359 drained
 SLA Status          : PASS — Real-time dispensing SLA fully satisfied (9,277.4 events/s)
 ```
 
+<br>
+<p align="center">
+  <img src="screenshots/latency_distribution.png" alt="Sustained Throughput Benchmark CMD Session" width="850" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+</p>
+<br>
+
 ### Complete End-to-End Processing Path & Stream Reconciliation
 1. **Mathematical Rate Agreement:** Throughput is strictly computed as $\text{scored} \div \text{duration} = 556,641 \div 60.0\text{ s} = 9,277.4\text{ events/s}$.
 2. **Buffer & Queue Reconciliation (Zero Dropped Events):** During the 60.0-second publisher burst, 718,000 events were pushed into the pipeline. The scorer actively consumed and scored 556,641 events during the 60-second window. The remaining 161,359 events were held safely in the stream buffer in flight and drained to zero upon test completion ($556,641 + 161,359 = 718,000$). Dropped events = 0 (100.0% queue durability).

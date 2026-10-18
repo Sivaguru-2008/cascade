@@ -7,10 +7,10 @@
 [![CI Test & Build](https://github.com/Sivaguru-2008/cascade/actions/workflows/ci.yml/badge.svg)](https://github.com/Sivaguru-2008/cascade/actions/workflows/ci.yml)
 [![Architecture: s390x](https://img.shields.io/badge/Architecture-IBM%20LinuxONE%20(s390x)-052FAD?logo=ibm&logoColor=white)](docs/screenshots/ibm_linuxone_instance_proof.png)
 [![IBM LinuxONE Verified](https://img.shields.io/badge/IBM%20LinuxONE-VM%20Verified%20(cascadevm)-052FAD?logo=ibm&logoColor=white)](docs/screenshots/ibm_linuxone_instance_proof.png)
-[![Hardware Crypto: CPACF](https://img.shields.io/badge/CPACF-HW%20Accelerated%20(13.3%20GB%2Fs)-008080?logo=ibm&logoColor=white)](docs/screenshots/evidence.txt)
+[![Hardware Crypto: CPACF](https://img.shields.io/badge/CPACF-HW%20Accelerated%20(13.3%20GB%2Fs)-008080?logo=ibm&logoColor=white)](docs/screenshots/linuxone_cpacf_evidence.png)
 [![IBM Telum AI Ready](https://img.shields.io/badge/IBM%20Telum-NNPA%20%26%20SIMD%20Ready-0062FF?logo=ibm&logoColor=white)](docs/evaluation.md)
 [![IBM Secure Execution](https://img.shields.io/badge/Confidential%20Computing-IBM%20Secure%20Execution-198038?logo=ibm&logoColor=white)](docs/screenshots/evidence.txt)
-[![Throughput](https://img.shields.io/badge/Throughput-9%2C277%20events%2Fsec-success)](docs/evaluation.md)
+[![Throughput](https://img.shields.io/badge/Throughput-9%2C277%20events%2Fsec-success)](docs/screenshots/latency_distribution.png)
 [![Loop 1 Latency](https://img.shields.io/badge/Latency%20(p50)-6.0%20ms-brightgreen)](docs/evaluation.md)
 [![Loop 1 Precision](https://img.shields.io/badge/Precision-81.5%25%20(Target%20%E2%89%A580%25)-blue)](docs/evaluation.md)
 [![Loop 1 Recall](https://img.shields.io/badge/Recall-98.0%25%20(Target%20%E2%89%A570%25)-blue)](docs/evaluation.md)
@@ -253,8 +253,11 @@ All metrics are experimentally measured on an **IBM LinuxONE Community Cloud VM*
 *Direct host execution and hardware verification on `cascadevm` (`s390x`), confirming CPACF 13.24 GB/s wire throughput and 9,277.4 events/s scoring latency in authentic Windows Command Prompt session:*
 <br><br>
 <p align="center">
-  <img src="docs/screenshots/linuxone_cpacf_evidence.png" alt="LinuxONE CPACF Evidence" width="460" />
-  <img src="docs/screenshots/latency_distribution.png" alt="Latency Distribution Benchmark" width="460" />
+  <img src="docs/screenshots/latency_distribution.png" alt="CASCADE LinuxONE Sustained Throughput & Latency Benchmark" width="920" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+</p>
+<br>
+<p align="center">
+  <img src="docs/screenshots/linuxone_cpacf_evidence.png" alt="LinuxONE CPACF Hardware Acceleration Evidence" width="920" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
 </p>
 <br>
 
@@ -419,6 +422,12 @@ Benchmarked directly on the active **IBM LinuxONE Community Cloud** instance ([`
 | **Inference Latency: 99th Percentile (p99)** | **33.902 ms** | Includes periodic micro-batch consumer queueing. |
 | **Maximum Observed Latency (p100)** | **37.993 ms** | Zero thread blocking or execution stalls. |
 | **CPACF AES-256-GCM Hardware Crypto** | **13,304,194 kB/sec (~13.3 GB/s)** | Hardware-accelerated wire encryption (`msa` facility). |
+
+<br>
+<p align="center">
+  <img src="docs/screenshots/latency_distribution.png" alt="Sustained Throughput Benchmark CMD Session" width="920" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+</p>
+<br>
 
 > [!NOTE]
 > **Complete Verifiable Hardware Proof & Audit Trail:**

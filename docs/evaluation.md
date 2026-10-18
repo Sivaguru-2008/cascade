@@ -196,6 +196,12 @@ SLA Status          : PASS — Real-time dispensing SLA fully satisfied (9,277.4
 |---|---|---|---|---|---|---|---|---|---|---|
 | 556,641 | 718,000 | 161,359 | 0 | 60.0 s | **9,277.4** | 6.001 ms | 7.068 ms | 33.902 ms | 37.993 ms | 1 |
 
+<br>
+<p align="center">
+  <img src="screenshots/latency_distribution.png" alt="Sustained Throughput Benchmark CMD Session" width="850" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+</p>
+<br>
+
 Latency = time from message read to alert write or no-alert decision; latency includes queueing inside a consumer batch (scorer batches of up to 200 events). Sustained throughput is strictly computed as $\text{scored} \div \text{duration} = 556,641 \div 60.0\text{ s} = 9,277.4\text{ events/s}$. During the 60s burst, 161,359 events remained buffered in flight and drained cleanly to zero post-test with zero message loss ($556,641 + 161,359 = 718,000$).
 
 ### IBM LinuxONE CPACF Hardware Acceleration Evidence
