@@ -553,7 +553,7 @@ def build_03_eval() -> nbformat.NotebookNode:
             "    ('Target Hardware Architecture', 'IBM LinuxONE (s390x)'),\n"
             "    ('CPU Cryptographic Coprocessor', 'CPACF (msa facility, gcm-aes-s390 priority 900)'),\n"
             "    ('Hardware AES-256-GCM Speed', '13.3 GB/s (OpenSSL benchmark)'),\n"
-            "    ('Sustained Event Throughput', '9,355.5 events / sec (556,641 events in 60s)'),\n"
+            "    ('Sustained Event Throughput', '9,277.4 events / sec (556,641 events in 60s)'),\n"
             "    ('Median Scoring Latency (p50)', '6.0 ms (SLA Target \u2264 50 ms)'),\n"
             "    ('95th Percentile Latency (p95)', '7.1 ms (SLA Target \u2264 50 ms)'),\n"
             "    ('99th Percentile Latency (p99)', '33.9 ms (SLA Target \u2264 50 ms)'),\n"
@@ -569,7 +569,7 @@ def build_03_eval() -> nbformat.NotebookNode:
             "plt.figure(figsize=(8, 4.5))\n"
             "plt.plot(percentiles, latencies, marker='o', color='#756bb1', linewidth=2.5, markersize=8, label='LinuxONE Scoring Latency')\n"
             "plt.axhline(50.0, color='red', linestyle='--', linewidth=1.5, label='Production SLA Limit (50 ms)')\n"
-            "plt.title('IBM LinuxONE s390x Latency Distribution under 9,355 events/s Load', fontweight='bold')\n"
+            "plt.title('IBM LinuxONE s390x Latency Distribution under 9,277 events/s Load', fontweight='bold')\n"
             "plt.xlabel('Latency Percentile')\n"
             "plt.ylabel('Response Time (ms)')\n"
             "plt.ylim(0, 60)\n"
@@ -607,7 +607,7 @@ def build_03_eval() -> nbformat.NotebookNode:
             "- **Real-time Interception**: Operational Precision **81.5%** (\u226580%), Recall **98.0%** (\u226570%).\n"
             "- **Novel Cascade Discovery**: **97.7%** sensitivity on held-out novel cascade H1 (*Novacor* \u2192 PPI).\n"
             "- **Generalization**: 100% recall on 7 of 9 held-out pairs in Leave-One-Pair-Out cross-validation.\n"
-            "- **Hardware Performance**: **9,355.5 events/sec** sustained, **6.0 ms** median latency, **13.3 GB/s** CPACF AES-256-GCM crypto on LinuxONE s390x.\n"
+            "- **Hardware Performance**: **9,277.4 events/sec** sustained, **6.0 ms** median latency, **13.3 GB/s** CPACF AES-256-GCM crypto on LinuxONE s390x.\n"
             "- **Closing the Reporting Gap**: 100% validator pass rate and 90% human clinical usability for automated PvPI reports."
         )
     ]
