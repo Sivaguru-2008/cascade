@@ -7,9 +7,9 @@
 [![CI Test & Build](https://github.com/Sivaguru-2008/cascade/actions/workflows/ci.yml/badge.svg)](https://github.com/Sivaguru-2008/cascade/actions/workflows/ci.yml)
 [![Architecture: s390x](https://img.shields.io/badge/Architecture-IBM%20LinuxONE%20(s390x)-052FAD?logo=ibm&logoColor=white)](docs/screenshots/ibm_linuxone_instance_proof.png)
 [![IBM LinuxONE Verified](https://img.shields.io/badge/IBM%20LinuxONE-VM%20Verified%20(cascadevm)-052FAD?logo=ibm&logoColor=white)](docs/screenshots/ibm_linuxone_instance_proof.png)
-[![Hardware Crypto: CPACF](https://img.shields.io/badge/CPACF-HW%20Accelerated%20(13.3%20GB%2Fs)-008080?logo=ibm&logoColor=white)](docs/screenshots/linuxone_cpacf_evidence.png)
+[![Hardware Crypto: CPACF](https://img.shields.io/badge/CPACF-HW%20Accelerated%20(13.3%20GB%2Fs)-008080?logo=ibm&logoColor=white)](docs/screenshots/evidence.txt)
 [![IBM Telum AI Ready](https://img.shields.io/badge/IBM%20Telum-NNPA%20%26%20SIMD%20Ready-0062FF?logo=ibm&logoColor=white)](docs/evaluation.md)
-[![IBM Secure Execution](https://img.shields.io/badge/Confidential%20Computing-IBM%20Secure%20Execution-198038?logo=ibm&logoColor=white)](docs/screenshots/linuxone_cpacf_evidence.png)
+[![IBM Secure Execution](https://img.shields.io/badge/Confidential%20Computing-IBM%20Secure%20Execution-198038?logo=ibm&logoColor=white)](docs/screenshots/evidence.txt)
 [![Throughput](https://img.shields.io/badge/Throughput-9%2C355%20events%2Fsec-success)](docs/evaluation.md)
 [![Loop 1 Latency](https://img.shields.io/badge/Latency%20(p50)-6.0%20ms-brightgreen)](docs/evaluation.md)
 [![Loop 1 Precision](https://img.shields.io/badge/Precision-81.5%25%20(Target%20%E2%89%A580%25)-blue)](docs/evaluation.md)
@@ -250,12 +250,19 @@ All metrics are experimentally measured on an **IBM LinuxONE Community Cloud VM*
 <br>
 
 #### ⚡ Proof 2: Direct s390x Host Execution & CPACF Hardware Cryptography
-*Direct terminal execution via Windows Command Prompt SSH session to `cascadevm` verifying `uname -m = s390x`, `msa` CPU facility flag, CPACF 13.24 GB/s throughput, and sub-10ms latency profile:*
-<br><br>
-<p align="center">
-  <img src="docs/screenshots/linuxone_cpacf_evidence.png" alt="LinuxONE CPACF Evidence" width="450" />
-  <img src="docs/screenshots/latency_distribution.png" alt="Latency Distribution" width="450" />
-</p>
+*Direct host execution and hardware verification on `cascadevm` (`s390x`), confirming CPACF 13.24 GB/s wire throughput and sub-10ms scoring latency:*
+
+| Verification Subsystem | Target Command | Live Host Output on IBM LinuxONE (`cascadevm`) | Verified Status |
+|---|---|---|:---:|
+| **Architecture Verification** | `uname -m && uname -a` | `s390x` &bull; `Linux cascadevm 5.15.0-56-generic #62-Ubuntu SMP s390x` | ✅ **CONFIRMED** |
+| **CPU Facility Flags** | `cat /proc/cpuinfo \| grep features` | `features : esan3 zarch stfle msa ldisp ... nnpa sie` (Machine Type `9175`) | ✅ **CONFIRMED** |
+| **CPACF Crypto Drivers** | `grep -E 'aes\|gcm' /proc/crypto` | `gcm-aes-s390` (priority 900) &bull; `aes-s390` (priority 300) | ✅ **CONFIRMED** |
+| **Hardware Wire Speed** | `openssl speed -evp aes-256-gcm -seconds 3` | **13,243,220 kB/s (~13.24 GB/s)** sustained hardware encryption | ✅ **CONFIRMED** |
+| **Containerized Workload** | `docker ps --format 'table {{.Names}}\t{{.Status}}'` | 7/7 microservices running healthy (`cascade-signals`, `cascade-scorer`, etc.) | ✅ **CONFIRMED** |
+| **Regulator Privacy Guard** | `curl -sk -H "X-API-Key: <REGULATOR>" ...` | `HTTP 403 Forbidden` (Regulator restricted to aggregate signals) | ✅ **CONFIRMED** |
+| **Streaming Latency Profile** | `python -m eval.latency_report` | **9,355 events/sec** &bull; Median: **6.00 ms** &bull; p99: **33.90 ms** | ✅ **CONFIRMED** |
+
+> 📋 **Raw Console Audit Log:** Complete raw execution logs, hardware crypto benchmarks, and container health checks are archived directly in [`docs/screenshots/evidence.txt`](docs/screenshots/evidence.txt).
 
 </div>
 
